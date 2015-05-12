@@ -30,7 +30,7 @@ describe Organizer do
 
       it "creates the collection instance method on the generated MyOrganizer class" do
         subject.define("my_organizer") { collection {} }
-        expect(MyOrganizer.new.respond_to?(:collection)).to be_truthy
+        expect(MyOrganizer.new.respond_to?(:collection, true)).to be_truthy
       end
 
       it "raises error with undefined collection" do
@@ -43,7 +43,7 @@ describe Organizer do
           collection { "I'm not an array" }
         end
 
-        expect { MyOrganizer.new.collection }.to raise_organizer_error(:invalid_collection_structure)
+        expect { MyOrganizer.new.send(:collection) }.to raise_organizer_error(:invalid_collection_structure)
       end
 
       it "raises error with collection method not returning a Array of Hashes" do
@@ -51,7 +51,7 @@ describe Organizer do
           collection { ["I'm not a hash"] }
         end
 
-        expect { MyOrganizer.new.collection }.to raise_organizer_error(:invalid_collection_item_structure)
+        expect { MyOrganizer.new.send(:collection) }.to raise_organizer_error(:invalid_collection_item_structure)
       end
 
       it "returns valid defined collection" do
@@ -61,7 +61,7 @@ describe Organizer do
           collection { valid_collection }
         end
 
-        expect(MyOrganizer.new.collection).to eq(valid_collection)
+        expect(MyOrganizer.new.send(:collection)).to eq(valid_collection)
       end
 
     end

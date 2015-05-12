@@ -13,6 +13,8 @@ class OrganizerBase
 
       result
     end
+
+    private :collection
   end
 
   def method_missing(_m, *args, &block)
