@@ -1,19 +1,21 @@
 require "organizer/version"
 require "organizer/error"
+require "organizer/organizer_base"
 require "active_support/all"
 
 module Organizer
-  extend Error
+  include Error
 
-  def self.define(_organize_name)
-    klass = create_organizer_class(_organize_name)
+  def self.define(_organizer_name, &block)
+    klass = create_organizer_class(_organizer_name)
+    klass.class_eval(&block)
   end
 
   private
 
-  def self.create_organizer_class(_organize_name)
-    class_name = _organize_name.to_s.classify
-    self.const_set(class_name, Class.new)
+  def self.create_organizer_class(_organizer_name)
+    class_name = _organizer_name.to_s.classify
+    Object.const_set(class_name, Class.new(OrganizerBase))
 
   rescue
     raise_error(:invalid_organizer_name)
