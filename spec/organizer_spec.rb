@@ -8,7 +8,7 @@ describe Organizer do
 
   describe "define method" do
 
-    after do
+    before do
       Object.send(:remove_const, :MyOrganizer) if Object.const_defined?("MyOrganizer")
     end
 
@@ -55,7 +55,7 @@ describe Organizer do
       end
 
       it "returns valid defined collection" do
-        valid_collection = [{ attr1: "value1" }, {attr1: "value2"}]
+        valid_collection = [{ attr1: "value1" }, { attr1: "value2" }]
 
         subject.define("my_organizer") do
           collection { valid_collection }

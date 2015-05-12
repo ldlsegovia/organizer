@@ -7,20 +7,64 @@ Organizer is a ruby gem that allows you to perform different actions like: filte
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'organizer'
+gem "organizer"
 ```
 
 And then execute:
 
-    $ bundle
+```bash
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install organizer
+```bash
+$ gem install organizer
+```
+
+## Organizer Definition
+
+First, you need to define an organizer like this:
+
+```ruby
+Organizer.define("my_organizer") do
+  # definition methods
+end
+```
+
+Inside define's method block, you can pass:
+
+### A Collection
+
+This method takes a block containing a denormalized collection. The block's content will be executed later. So, you can pass anything that produces a collection.
+
+```ruby
+Organizer.define("my_organizer") do
+  collection do
+    [
+      { attr1: 4, attr2: "Hi"},
+      { attr1: 6, attr2: "Ciao" },
+      { attr1: 84, attr2: "Hola" }
+    ]
+  end
+end
+```
+
+```ruby
+Organizer.define("my_organizer") do
+  collection do
+    SampleClass.get_collection
+  end
+end
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+After define a new Organizer, you can use it like this:
+
+```ruby
+organizer = MyOrganizer.new
+```
 
 ## Contributing
 
