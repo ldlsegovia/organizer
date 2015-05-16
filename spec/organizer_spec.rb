@@ -9,7 +9,9 @@ describe Organizer do
   describe "define method" do
 
     before do
-      Object.send(:remove_const, :MyOrganizer) if Object.const_defined?("MyOrganizer")
+      if Object.const_defined?("MyOrganizer")
+        Object.send(:remove_const, :MyOrganizer)
+      end
     end
 
     it "creates a MyOrganizer class" do
@@ -19,11 +21,13 @@ describe Organizer do
     end
 
     it "raises error with invalid organizer name" do
-      expect { subject.define("invalid*class<name") }.to raise_organizer_error(:invalid_organizer_name)
+      expect { subject.define("invalid*class<name") }.to(
+        raise_organizer_error(:invalid_organizer_name))
     end
 
     it "raises error with nil organizer name" do
-      expect { subject.define(nil) }.to raise_organizer_error(:invalid_organizer_name)
+      expect { subject.define(nil) }.to(
+        raise_organizer_error(:invalid_organizer_name))
     end
 
     describe "collection method" do
@@ -35,7 +39,8 @@ describe Organizer do
 
       it "raises error with undefined collection" do
         subject.define("my_organizer") {}
-        expect { MyOrganizer.new.collection }.to raise_organizer_error(:undefined_collection_method)
+        expect { MyOrganizer.new.collection }.to(
+          raise_organizer_error(:undefined_collection_method))
       end
 
       it "raises error with collection method not returning an Array collection" do
@@ -43,7 +48,8 @@ describe Organizer do
           collection { "I'm not an array" }
         end
 
-        expect { MyOrganizer.new.send(:collection) }.to raise_organizer_error(:invalid_collection_structure)
+        expect { MyOrganizer.new.send(:collection) }.to(
+          raise_organizer_error(:invalid_collection_structure))
       end
 
       it "raises error with collection method not returning a Array of Hashes" do
@@ -51,7 +57,8 @@ describe Organizer do
           collection { ["I'm not a hash"] }
         end
 
-        expect { MyOrganizer.new.send(:collection) }.to raise_organizer_error(:invalid_collection_item_structure)
+        expect { MyOrganizer.new.send(:collection) }.to(
+          raise_organizer_error(:invalid_collection_item_structure))
       end
 
       it "returns an OrganizedCollection instance" do
