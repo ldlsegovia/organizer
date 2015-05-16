@@ -9,9 +9,7 @@ describe Organizer do
   describe "define method" do
 
     before do
-      if Object.const_defined?("MyOrganizer")
-        Object.send(:remove_const, :MyOrganizer)
-      end
+      Object.send(:remove_const, :MyOrganizer) rescue nil
     end
 
     it "creates a MyOrganizer class" do
@@ -33,35 +31,6 @@ describe Organizer do
     describe "collection method" do
 
       it "creates the collection instance method on the generated MyOrganizer class" do
-        subject.define("my_organizer") { collection {} }
-        expect(MyOrganizer.new.respond_to?(:collection, true)).to be_truthy
-      end
-
-      it "raises error with undefined collection" do
-        subject.define("my_organizer") {}
-        expect { MyOrganizer.new.collection }.to(
-          raise_organizer_error(:undefined_collection_method))
-      end
-
-      it "raises error with collection method not returning an Array collection" do
-        subject.define("my_organizer") do
-          collection { "I'm not an array" }
-        end
-
-        expect { MyOrganizer.new.send(:collection) }.to(
-          raise_organizer_error(:invalid_collection_structure))
-      end
-
-      it "raises error with collection method not returning a Array of Hashes" do
-        subject.define("my_organizer") do
-          collection { ["I'm not a hash"] }
-        end
-
-        expect { MyOrganizer.new.send(:collection) }.to(
-          raise_organizer_error(:invalid_collection_item_structure))
-      end
-
-      it "returns an OrganizedCollection instance" do
         valid_collection = [{ attr1: "value1" }, { attr1: "value2" }]
 
         subject.define("my_organizer") do
