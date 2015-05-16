@@ -1,6 +1,8 @@
 require "organizer/version"
 require "organizer/error"
 require "organizer/organizer_base"
+require "organizer/organized_collection"
+require "organizer/organized_item"
 require "active_support/all"
 
 module Organizer

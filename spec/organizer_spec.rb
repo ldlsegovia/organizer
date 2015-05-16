@@ -54,14 +54,16 @@ describe Organizer do
         expect { MyOrganizer.new.send(:collection) }.to raise_organizer_error(:invalid_collection_item_structure)
       end
 
-      it "returns valid defined collection" do
+      it "returns an OrganizedCollection instance" do
         valid_collection = [{ attr1: "value1" }, { attr1: "value2" }]
 
         subject.define("my_organizer") do
           collection { valid_collection }
         end
 
-        expect(MyOrganizer.new.send(:collection)).to eq(valid_collection)
+        collection = MyOrganizer.new.send(:collection)
+        expect(collection).to be_a(OrganizedCollection)
+        expect(collection.count).to eq(2)
       end
 
     end
