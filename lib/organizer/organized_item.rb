@@ -1,6 +1,34 @@
 class OrganizedItem
   include Organizer::Error
 
+  # Creates attribute readers based on _hash keys. A reader's value will be the hash value of that key.
+  # It's no intended to use this method directly. OrganizedItems will be created executing the
+  # {OrganizerBase.collection} method.
+  #
+  # @param _hash [Hash]
+  # @return [OrganizedItem] self
+  #
+  # @raise [Organizer::Exception] :organized_item_must_be_a_hash, :invalid_organized_item_attribute and
+  #   :method_redefinition_not_allowed
+  #
+  # @example
+  #   hash = {
+  #     "withCamelCase" => "Hi!",
+  #     "with-hypen-characters" => "Bye!",
+  #     "UPPERCASE_CHARACTERS" => false,
+  #     "spaces   are   allowed" => 4,
+  #     "underscore_characters" => 6,
+  #     "num3r1c_ch4r4ct3rs" => true,
+  #   }
+  #
+  #   i = OrganizedItem.new
+  #   i.define_attributes(hash)
+  #   i.with_camel_case #=> "Hi!"
+  #   i.with_hypen_characters #=> "Bye!"
+  #   i.uppercase_characters #=> false
+  #   i.spaces___are___allowed #=> 4
+  #   i.underscore_characters #=> 6
+  #   i.num3r1c_ch4r4ct3rs #=> true
   def define_attributes(_hash)
     raise_error(:organized_item_must_be_a_hash) unless _hash.is_a?(Hash)
 
