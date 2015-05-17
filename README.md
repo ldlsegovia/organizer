@@ -42,7 +42,7 @@ This method takes a block containing a denormalized collection. The block's cont
 Organizer.define("my_organizer") do
   collection do
     [
-      { attr1: 4, attr2: "Hi"},
+      { attr1: 4, attr2: "Hi" },
       { attr1: 6, attr2: "Ciao" },
       { attr1: 84, attr2: "Hola" }
     ]

@@ -2,8 +2,8 @@ class OrganizedItem
   include Organizer::Error
 
   # Creates attribute readers based on _hash keys. A reader's value will be the hash value of that key.
-  # It's no intended to use this method directly. OrganizedItems will be created executing the
-  # {OrganizerBase.collection} method.
+  # It's no intended to use this method directly. OrganizedItems will be created executing the "collection"
+  # instance method defined by the {OrganizerBase::ChildClassMethods#collection} class method.
   #
   # @param _hash [Hash]
   # @return [OrganizedItem] self
