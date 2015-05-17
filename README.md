@@ -27,7 +27,7 @@ $ gem install organizer
 First, you need to define an organizer like this:
 
 ```ruby
-Organizer.define("my_organizer") do
+Organizer::Template.define("my_organizer") do
   # definition methods
 end
 ```
@@ -39,7 +39,7 @@ Inside define's method block, you can pass:
 This method takes a block containing a denormalized collection. The block's content will be executed later. So, you can pass anything that produces a collection.
 
 ```ruby
-Organizer.define("my_organizer") do
+Organizer::Template.define("my_organizer") do
   collection do
     [
       { attr1: 4, attr2: "Hi" },
@@ -51,7 +51,7 @@ end
 ```
 
 ```ruby
-Organizer.define("my_organizer") do
+Organizer::Template.define("my_organizer") do
   collection do
     SampleClass.get_collection
   end

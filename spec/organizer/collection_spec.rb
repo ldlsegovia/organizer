@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OrganizedCollection do
+describe Organizer::Collection do
 
   describe "#<<" do
 
@@ -9,10 +9,10 @@ describe OrganizedCollection do
         raise_organizer_error(:invalid_organizer_collection_item))
     end
 
-    it "adds OrganizedItem to collection" do
-      subject << OrganizedItem.new
+    it "adds Organizer::Item to collection" do
+      subject << Organizer::Item.new
       expect(subject.size).to eq(1)
-      expect(subject.first).to be_a(OrganizedItem)
+      expect(subject.first).to be_a(Organizer::Item)
     end
 
   end

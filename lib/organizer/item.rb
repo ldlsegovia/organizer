@@ -1,12 +1,12 @@
-class OrganizedItem
+class Organizer::Item
   include Organizer::Error
 
   # Creates attribute readers based on _hash keys. A reader's value will be the hash value of that key.
-  # It's no intended to use this method directly. OrganizedItems will be created executing the "collection"
-  # instance method defined by the {OrganizerBase::ChildClassMethods#collection} class method.
+  # It's no intended to use this method directly. Organizer::Item's will be created executing the "collection"
+  # instance method defined by the {Organizer::Base::ChildClassMethods#collection} class method.
   #
   # @param _hash [Hash]
-  # @return [OrganizedItem] self
+  # @return [Organizer::Item] self
   #
   # @raise [Organizer::Exception] :organized_item_must_be_a_hash, :invalid_organized_item_attribute and
   #   :method_redefinition_not_allowed
@@ -21,7 +21,7 @@ class OrganizedItem
   #     "num3r1c_ch4r4ct3rs" => true,
   #   }
   #
-  #   i = OrganizedItem.new
+  #   i = Organizer::Item.new
   #   i.define_attributes(hash)
   #   i.with_camel_case #=> "Hi!"
   #   i.with_hypen_characters #=> "Bye!"

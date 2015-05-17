@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe OrganizedItem do
+describe Organizer::Item do
   let(:valid_attributes) do
     {
       first_name: "Leandro",
@@ -19,7 +19,7 @@ describe OrganizedItem do
       end
     end
 
-    it "converts each attribute hash into OrganizedItem instance attribute readers" do
+    it "converts each attribute hash into Organizer::Item instance attribute readers" do
       subject.define_attributes(valid_attributes)
       valid_attributes.each do |attribute, value|
         expect(subject).to respond_to(attribute)
@@ -79,9 +79,9 @@ describe OrganizedItem do
     end
 
     it "defines attributes inside singleton class" do
-      item1 = OrganizedItem.new
+      item1 = Organizer::Item.new
       item1.define_attributes({method_for_item1: "I'm a method for item1"})
-      item2 = OrganizedItem.new
+      item2 = Organizer::Item.new
       item2.define_attributes({method_for_item2: "I'm a method for item2"})
       expect(item1).to respond_to(:method_for_item1)
       expect(item1).not_to respond_to(:method_for_item2)
