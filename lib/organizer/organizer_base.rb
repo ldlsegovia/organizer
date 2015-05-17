@@ -1,6 +1,29 @@
 class OrganizerBase
   include Organizer::Error
 
+  # Defines a privated instance method named "collection". After execute OrganizerBase.collection, if you
+  # execute OrganizerBase.new.send(:collection) (instance) you will get an OrganizedCollection instance
+  # containing many OrganizedItem instances as Hash items were passed into the block param.
+  # It's no intended to use this method directly on the OrganizerBase class. This method will be used
+  # inside {Organizer.define} block and executed in a new OrganizerBase child class.
+  #
+  # @yield it must return an Array containing Hash items.
+  # @raise [Organizer::Exception] :undefined_collection_method, :invalid_collection_structure and
+  #   :invalid_collection_item_structure
+  #
+  # @example
+  #   OrganizerBase.collection do
+  #     [
+  #       { attr1: 4, attr2: "Hi"},
+  #       { attr1: 6, attr2: "Ciao" },
+  #       { attr1: 84, attr2: "Hola" }
+  #    ]
+  #   end
+  #
+  #   OrganizerBase.new.send(:collection).class
+  #   #=> OrganizedCollection
+  #   OrganizerBase.new.send(:collection)
+  #   #=> [#<OrganizedItem:0x007fe6a09b2010 @attr1=4, @attr2="Hi">, #<OrganizedItem...
   def self.collection(&block)
     define_method :collection do
       raw_collection = block.call

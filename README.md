@@ -66,6 +66,22 @@ After define a new Organizer, you can use it like this:
 organizer = MyOrganizer.new
 ```
 
+## Docs
+
+We are using [YARD](http://yardoc.org/) in this project.
+
+To generate documentation
+
+```bash
+$ yard doc
+```
+
+To see documentation on `http://localhost:8808/`
+
+```bash
+$ yard server --reload
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/organizer/fork )
