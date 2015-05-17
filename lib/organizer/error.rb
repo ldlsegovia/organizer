@@ -1,5 +1,3 @@
-require "organizer/exception"
-
 module Organizer::Error
 
   def self.included(_base)

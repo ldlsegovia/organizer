@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe OrganizerBase do
+describe Organizer::Base do
 
   describe "#collection" do
 
     before do
       Object.send(:remove_const, :BaseChild) rescue nil
-      class BaseChild < OrganizerBase; end
+      class BaseChild < Organizer::Base; end
     end
 
     let(:valid_raw_collection) do
@@ -36,10 +36,10 @@ describe OrganizerBase do
         raise_organizer_error(:invalid_collection_item_structure))
     end
 
-    it "returns an OrganizedCollection instance" do
+    it "returns an Organizer::Collection instance" do
       BaseChild.collection { valid_raw_collection }
       collection = BaseChild.new.send(:collection)
-      expect(collection).to be_a(OrganizedCollection)
+      expect(collection).to be_a(Organizer::Collection)
       expect(collection.count).to eq(2)
     end
 
