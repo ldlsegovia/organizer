@@ -14,10 +14,14 @@ module Organizer::Template
   #   Organizer::Template.define("my_organizer") do
   #     collection do
   #       [
-  #         { attr1: 4, attr2: "Hi" },
-  #         { attr1: 6, attr2: "Ciao" },
-  #         { attr1: 84, attr2: "Hola" }
+  #         { attr1: 4, attr2: "Hi", attr3: 13 },
+  #         { attr1: 6, attr2: "Ciao", attr3: 2},
+  #         { attr1: 84, attr2: "Hola", attr3: 82 }
   #       ]
+  #     end
+  #
+  #     default_filter do |organizer_item|
+  #       organizer_item.attr1 > 5
   #     end
   #   end
   #

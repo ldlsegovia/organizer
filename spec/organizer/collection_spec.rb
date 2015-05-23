@@ -4,8 +4,8 @@ describe Organizer::Collection do
 
   describe "#<<" do
 
-    it "raises error trying to add non organized items to collection" do
-      expect { subject << "not an organized item" }.to(
+    it "raises error trying to add non organizer items to collection" do
+      expect { subject << "not an organizer item" }.to(
         raise_organizer_error(:invalid_organizer_collection_item))
     end
 

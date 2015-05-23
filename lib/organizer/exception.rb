@@ -10,6 +10,7 @@ class Organizer::Exception < Exception
     invalid_organizer_collection_item: "Invalid item for collection. Must be Organizer::Item instance",
     filter_definition_must_be_a_proc: "Filter definition must be a Proc",
     filter_applied_on_organizer_items_only: "Filters can be applied on Organizer::Items only",
-    filter_definition_must_return_boolean: "Invalid filter definition result. The definition bock call must return a boolean value"
+    filter_definition_must_return_boolean: "Invalid filter definition result. The definition bock call must return a boolean value",
+    invalid_filter_collection_item: "Invalid filter collection item. Must be Organizer:Filter only"
   }
 end

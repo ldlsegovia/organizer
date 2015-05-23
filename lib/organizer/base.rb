@@ -41,6 +41,33 @@ class Organizer::Base
 
       private :collection
     end
+
+    # Creates a {Organizer::Filter} based on block param and adds this new filter to default_filters collection.
+    # It's no intended to use this method directly. This method will be used inside {Organizer::Template.define} block
+    #
+    # @yield you can use the {Organizer::Item} instance param to evaluate a condition and return a Boolean value.
+    # @yieldparam organizer_item [Organizer::Item]
+    # @yieldreturn [Boolean]
+    # @raise [Organizer::Exception] :filter_definition_must_be_a_proc
+    #
+    # @example
+    #   class MyInheritedClass < Organizer::Base; end
+    #
+    #   MyInheritedClass.default_filter do |organizer_item|
+    #     organizer_item.attr1 == organizer_item.attr2
+    #   end
+    def default_filter(&block)
+      filter = Organizer::Filter.new(block)
+      @default_filters ||= Organizer::FiltersCollection.new
+      @default_filters << filter
+    end
+
+    # Returns default filters collection added using {Organizer::Base::ChildClassMethods#default_filter} method.
+    #
+    # @return [Organizer::FiltersCollection]
+    def default_filters
+      @default_filters
+    end
   end
 
   module ChildInstanceMethods
