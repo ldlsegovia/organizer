@@ -5,6 +5,8 @@ require "organizer/template"
 require "organizer/base"
 require "organizer/collection"
 require "organizer/item"
+require "organizer/filter"
+require "organizer/filters_collection"
 
 require "active_support/all"
 

@@ -58,6 +58,22 @@ Organizer::Template.define("my_organizer") do
 end
 ```
 
+### A Default Filter
+
+You can add conditions that will be evaluated over each collection's item in order to perform an initial filter of the whole dataset.
+
+```ruby
+Organizer::Template.define("my_organizer") do
+  # collection definiton...
+
+  default_filter do |item|
+    item.attr1 > 5
+  end
+end
+```
+
+Adding this default filter will reduce the whole dataset to work with `[{ attr1: 6, attr2: "Ciao" }, { attr1: 84, attr2: "Hola" }]` only.
+
 ## Usage
 
 After define a new Organizer, you can use it like this:
