@@ -7,6 +7,9 @@ class Organizer::Exception < Exception
     organized_item_must_be_a_hash: "_hash parameter must be a Hash",
     invalid_organized_item_attribute: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
     method_redefinition_not_allowed: "The _hash keys can't be named as pre-existent methods",
-    invalid_organizer_collection_item: "Invalid item for collection. Must be Organizer::Item instance"
+    invalid_organizer_collection_item: "Invalid item for collection. Must be Organizer::Item instance",
+    filter_definition_must_be_a_proc: "Filter definition must be a Proc",
+    filter_applied_on_organizer_items_only: "Filters can be applied on Organizer::Items only",
+    filter_definition_must_return_boolean: "Invalid filter definition result. The definition bock call must return a boolean value"
   }
 end
