@@ -60,7 +60,7 @@ end
 
 ### A Default Filter
 
-You can add conditions that will be evaluated over each collection's item in order to perform an initial filter of the whole dataset.
+Allows you to define conditions that will be evaluated, over each collection item, at the beginning of the data generation, in order to perform an initial filter of the whole dataset.
 
 ```ruby
 Organizer::Template.define("my_organizer") do
@@ -72,7 +72,20 @@ Organizer::Template.define("my_organizer") do
 end
 ```
 
-Adding this default filter will reduce the whole dataset to work with `[{ attr1: 6, attr2: "Ciao" }, { attr1: 84, attr2: "Hola" }]` only.
+### A Filter
+
+Allows you to define conditions that will not be initially evaluated but user may activate later.
+
+```ruby
+Organizer::Template.define("my_organizer") do
+  # collection definiton...
+  # default filters...
+
+  filter(:my_filter) do |item|
+    item.attr1 > 5
+  end
+end
+```
 
 ### An Operation
 
@@ -82,6 +95,7 @@ You can perform operations between item's attribute values. The result of this o
 Organizer::Template.define("my_organizer") do
   # collection definiton...
   # default filters...
+  # filters...
 
   operation(:attrs_sum) do |item|
     item.attr1 + item.attr2
@@ -105,6 +119,7 @@ You also can perform operations using the resulting attributes. For example:
 Organizer::Template.define("my_organizer") do
   # collection definiton...
   # default filters...
+  # filters...
 
   operation(:attrs_sum) do |item|
     item.attr1 + item.attr2

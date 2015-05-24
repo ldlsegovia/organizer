@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Organizer::Base do
-
   before do
     Object.send(:remove_const, :BaseChild) rescue nil
     class BaseChild < Organizer::Base; end
@@ -41,97 +40,68 @@ describe Organizer::Base do
       expect(collection).to be_a(Organizer::Collection)
       expect(collection.count).to eq(2)
     end
+  end
 
+  shared_examples :definitions_collection do |_definition_method, _definition_collection, _error_class|
+    it "adds new object with definition to collection" do
+      expect(BaseChild.send(_definition_collection).size).to eq(0)
+      BaseChild.send(_definition_method, :name) do
+        # content is no important right here.
+      end
+      expect(BaseChild.send(_definition_collection).size).to eq(1)
+      BaseChild.send(_definition_method, :name) do
+        # content is no important right here.
+      end
+      expect(BaseChild.send(_definition_collection).size).to eq(2)
+    end
+
+    it "raises error without block" do
+      expect { BaseChild.send(_definition_method, :name) }.to(
+        raise_organizer_error(_error_class, :definition_must_be_a_proc))
+    end
+
+    context "with another child class" do
+      before do
+        Object.send(:remove_const, :AhotherChild) rescue nil
+        class AhotherChild < Organizer::Base; end
+      end
+
+      it "adds object with definition to each class collections " do
+        expect(BaseChild.send(_definition_collection).size).to eq(0)
+        expect(AhotherChild.send(_definition_collection).size).to eq(0)
+        BaseChild.send(_definition_method, :name) do
+          # content is no important right here.
+        end
+        expect(BaseChild.send(_definition_collection).size).to eq(1)
+        expect(AhotherChild.send(_definition_collection).size).to eq(0)
+        AhotherChild.send(_definition_method, :name) do
+          # content is no important right here.
+        end
+        expect(BaseChild.send(_definition_collection).size).to eq(1)
+        expect(AhotherChild.send(_definition_collection).size).to eq(1)
+      end
+    end
   end
 
   describe "#default_filter" do
+    it_should_behave_like(:definitions_collection,
+      :default_filter, :default_filters, Organizer::FilterException)
 
-    it "adds new filters to filters collection" do
-      expect(BaseChild.default_filters.size).to eq(0)
+    it "adds default filter without a name" do
       BaseChild.default_filter do
         # content is no important right here.
       end
       expect(BaseChild.default_filters.size).to eq(1)
-      BaseChild.default_filter do
-        # content is no important right here.
-      end
-      expect(BaseChild.default_filters.size).to eq(2)
     end
+  end
 
-    it "raises error without block" do
-      expect { BaseChild.default_filter() }.to(
-        raise_organizer_error(Organizer::FilterException, :definition_must_be_a_proc))
-    end
-
-    context "with another Child class" do
-
-      before do
-        Object.send(:remove_const, :AhotherChild) rescue nil
-        class AhotherChild < Organizer::Base; end
-      end
-
-      it "defines default filters for each class" do
-        expect(BaseChild.default_filters.size).to eq(0)
-        expect(AhotherChild.default_filters.size).to eq(0)
-        BaseChild.default_filter do
-          # content is no important right here.
-        end
-        expect(BaseChild.default_filters.size).to eq(1)
-        expect(AhotherChild.default_filters.size).to eq(0)
-        AhotherChild.default_filter do
-          # content is no important right here.
-        end
-        expect(BaseChild.default_filters.size).to eq(1)
-        expect(AhotherChild.default_filters.size).to eq(1)
-      end
-
-    end
-
+  describe "#filter" do
+    it_should_behave_like(:definitions_collection,
+      :filter, :filters, Organizer::FilterException)
   end
 
   describe "#operation" do
-
-    it "adds new operations to operations collection" do
-      expect(BaseChild.operations.size).to eq(0)
-      BaseChild.operation :my_operation do
-        # content is no important right here.
-      end
-      expect(BaseChild.operations.size).to eq(1)
-      BaseChild.operation :other_operation do
-        # content is no important right here.
-      end
-      expect(BaseChild.operations.size).to eq(2)
-    end
-
-    it "raises error without block" do
-      expect { BaseChild.operation(:my_operation) }.to(
-        raise_organizer_error(Organizer::OperationException, :definition_must_be_a_proc))
-    end
-
-    context "with another Child class" do
-
-      before do
-        Object.send(:remove_const, :AhotherChild) rescue nil
-        class AhotherChild < Organizer::Base; end
-      end
-
-      it "defines default operations for each class" do
-        expect(BaseChild.operations.size).to eq(0)
-        expect(AhotherChild.operations.size).to eq(0)
-        BaseChild.operation(:my_operation) do
-          # content is no important right here.
-        end
-        expect(BaseChild.operations.size).to eq(1)
-        expect(AhotherChild.operations.size).to eq(0)
-        AhotherChild.operation(:my_operation) do
-          # content is no important right here.
-        end
-        expect(BaseChild.operations.size).to eq(1)
-        expect(AhotherChild.operations.size).to eq(1)
-      end
-
-    end
-
+    it_should_behave_like(:definitions_collection,
+      :operation, :operations, Organizer::OperationException)
   end
-
 end

@@ -24,6 +24,10 @@ module Organizer::Template
   #       organizer_item.attr1 > 5
   #     end
   #
+  #     filter do |organizer_item|
+  #       organizer_item.attr3 > 15
+  #     end
+  #
   #     operation do |organizer_item|
   #       organizer_item.attr1 + organizer_item.attr3
   #     end
