@@ -7,6 +7,8 @@ require "organizer/collection"
 require "organizer/item"
 require "organizer/filter"
 require "organizer/filters_collection"
+require "organizer/operation"
+require "organizer/operations_collection"
 
 require "active_support/all"
 

@@ -8,12 +8,12 @@ class Organizer::Base
   end
 
   module ChildClassMethods
-    # Defines a private instance method named "collection" into an inherited Organizer::Base class.
+    # Defines a private instance method named "collection" into an inherited {Organizer::Base} class.
     # After execute MyInheritedClass.collection(){...}, if you execute MyInheritedClass.new.send(:collection)
-    # you will get an Organizer::Collection instance containing many Organizer::Item instances as Hash items were
+    # you will get a {Organizer::Collection} instance containing many {Organizer::Item} instances as Hash items were
     # passed into the block param.
     # It's no intended to use this method directly. This method will be used inside {Organizer::Template.define} block
-    # and executed in a new Organizer::Base inherited class later.
+    # and executed in a new {Organizer::Base} inherited class later.
     #
     # @yield it must return an Array containing Hash items.
     # @raise [Organizer::Exception] :undefined_collection_method, :invalid_collection_structure and
@@ -67,6 +67,34 @@ class Organizer::Base
     # @return [Organizer::FiltersCollection]
     def default_filters
       @default_filters
+    end
+
+    # Creates an {Organizer::Operation} based on block param and adds this new operation to operations collection.
+    # It's no intended to use this method directly. This method will be used inside {Organizer::Template.define} block
+    #
+    # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
+    #
+    # @yield you can use the {Organizer::Item} instance param values to build the new attribute value
+    # @yieldparam organizer_item [Organizer::Item]
+    # @raise [Organizer::Exception] :filter_definition_must_be_a_proc and :blank_operation_name
+    #
+    # @example
+    #   class MyInheritedClass < Organizer::Base; end
+    #
+    #   MyInheritedClass.operation do |organizer_item|
+    #     organizer_item.attr1 + organizer_item.attr2
+    #   end
+    def operation(_name, &block)
+      organizer_operation = Organizer::Operation.new(block, _name)
+      @operations ||= Organizer::OperationsCollection.new
+      @operations << organizer_operation
+    end
+
+    # Returns operations collection added using {Organizer::Base::ChildClassMethods#operation} method.
+    #
+    # @return [Organizer::OperationsCollection]
+    def operations
+      @operations
     end
   end
 

@@ -30,6 +30,12 @@ describe Organizer::Filter do
         raise_organizer_error(:filter_definition_must_be_a_proc))
     end
 
+    it "sets filter name" do
+      proc = Proc.new {}
+      filter = Organizer::Filter.new(proc, :filter_name)
+      expect(filter.name).to eq(:filter_name)
+    end
+
   end
 
   describe "#apply" do
@@ -74,12 +80,6 @@ describe Organizer::Filter do
       end
 
       expect(Organizer::Filter.new(proc2).apply(item)).to be_falsy
-    end
-
-    it "sets filter name" do
-      proc = Proc.new {}
-      filter = Organizer::Filter.new(proc, :filter_name)
-      expect(filter.name).to eq(:filter_name)
     end
 
   end

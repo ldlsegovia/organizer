@@ -49,11 +49,11 @@ describe Organizer::Base do
     it "adds new filters to filters collection" do
       expect(BaseChild.default_filters).to be_nil
       BaseChild.default_filter do
-        # content is no important right now...
+        # content is no important right here.
       end
       expect(BaseChild.default_filters.size).to eq(1)
       BaseChild.default_filter do
-        # content is no important right now...
+        # content is no important right here.
       end
       expect(BaseChild.default_filters.size).to eq(2)
     end
@@ -74,15 +74,60 @@ describe Organizer::Base do
         expect(BaseChild.default_filters).to be_nil
         expect(AhotherChild.default_filters).to be_nil
         BaseChild.default_filter do
-          # content is no important right now...
+          # content is no important right here.
         end
         expect(BaseChild.default_filters.size).to eq(1)
         expect(AhotherChild.default_filters).to be_nil
         AhotherChild.default_filter do
-          # content is no important right now...
+          # content is no important right here.
         end
         expect(BaseChild.default_filters.size).to eq(1)
         expect(AhotherChild.default_filters.size).to eq(1)
+      end
+
+    end
+
+  end
+
+  describe "#operation" do
+
+    it "adds new operations to operations collection" do
+      expect(BaseChild.operations).to be_nil
+      BaseChild.operation :my_operation do
+        # content is no important right here.
+      end
+      expect(BaseChild.operations.size).to eq(1)
+      BaseChild.operation :other_operation do
+        # content is no important right here.
+      end
+      expect(BaseChild.operations.size).to eq(2)
+    end
+
+    it "raises error without block" do
+      expect { BaseChild.operation(:my_operation) }.to(
+        raise_organizer_error(:operation_definition_must_be_a_proc))
+    end
+
+    context "with another Child class" do
+
+      before do
+        Object.send(:remove_const, :AhotherChild) rescue nil
+        class AhotherChild < Organizer::Base; end
+      end
+
+      it "defines default operations for each class" do
+        expect(BaseChild.operations).to be_nil
+        expect(AhotherChild.operations).to be_nil
+        BaseChild.operation(:my_operation) do
+          # content is no important right here.
+        end
+        expect(BaseChild.operations.size).to eq(1)
+        expect(AhotherChild.operations).to be_nil
+        AhotherChild.operation(:my_operation) do
+          # content is no important right here.
+        end
+        expect(BaseChild.operations.size).to eq(1)
+        expect(AhotherChild.operations.size).to eq(1)
       end
 
     end

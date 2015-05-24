@@ -6,9 +6,7 @@ class Organizer::Filter
   # @param _definition [Proc] contains logic to decide if filter must be applied or not
   # @param _name [Symbol] symbol to identify this particular filter
   def initialize(_definition, _name = nil)
-    if !_definition.is_a?(Proc)
-      raise_error(:filter_definition_must_be_a_proc)
-    end
+    raise_error(:filter_definition_must_be_a_proc) if !_definition.is_a?(Proc)
     @definition = _definition
     @name = _name
   end
@@ -35,16 +33,9 @@ class Organizer::Filter
   #   Organizer::Filter.new(proc).apply(item)
   #   #=> true
   def apply(_item)
-    if !_item.is_a?(Organizer::Item)
-      raise_error(:filter_applied_on_organizer_items_only)
-    end
-
+    raise_error(:filter_applied_on_organizer_items_only) if !_item.is_a?(Organizer::Item)
     result = definition.call(_item)
-
-    if !!result != result
-      raise_error(:filter_definition_must_return_boolean)
-    end
-
+    raise_error(:filter_definition_must_return_boolean) if !!result != result
     result
   end
 end
