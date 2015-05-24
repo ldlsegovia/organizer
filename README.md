@@ -120,9 +120,9 @@ The resulting collection will be something like this:
 
 ```ruby
 [
-  { attr1: 4, attr2: "Hi", attr3: 6, attrs_sum: 10, newer_attribute: 100 },
-  { attr1: 6, attr2: "Ciao", attr3: 4, attrs_sum: 10, newer_attribute: 100 },
-  { attr1: 84, attr2: "Hola", attr3: 16, attrs_sum: 100, newer_attribute: 10000 }
+  { attr1: 4, attr2: "Hi", attr3: 6, attrs_sum: 10, newer_attribute: 20 },
+  { attr1: 6, attr2: "Ciao", attr3: 4, attrs_sum: 10, newer_attribute: 20 },
+  { attr1: 84, attr2: "Hola", attr3: 16, attrs_sum: 100, newer_attribute: 200 }
 ]
 ```
 
