@@ -56,8 +56,8 @@ class Organizer::Base
     #   MyInheritedClass.default_filter do |organizer_item|
     #     organizer_item.attr1 == organizer_item.attr2
     #   end
-    def default_filter(&block)
-      filter = Organizer::Filter.new(block)
+    def default_filter(_name = nil, &block)
+      filter = Organizer::Filter.new(block, _name)
       default_filters << filter
     end
 
@@ -66,6 +66,34 @@ class Organizer::Base
     # @return [Organizer::FiltersCollection]
     def default_filters
       @default_filters ||= Organizer::FiltersCollection.new
+    end
+
+    # Creates a {Organizer::Filter} based on block param and adds this new filter to filters collection.
+    # It's no intended to use this method directly. This method will be used inside {Organizer::Template.define} block
+    #
+    # @param _name [Symbol]
+    #
+    # @yield you can use the {Organizer::Item} instance param to evaluate a condition and return a Boolean value.
+    # @yieldparam organizer_item [Organizer::Item]
+    # @yieldreturn [Boolean]
+    # @raise [Organizer::FilterException] :definition_must_be_a_proc
+    #
+    # @example
+    #   class MyInheritedClass < Organizer::Base; end
+    #
+    #   MyInheritedClass.filter(:my_filter) do |organizer_item|
+    #     organizer_item.attr1 == organizer_item.attr2
+    #   end
+    def filter(_name, &block)
+      filter = Organizer::Filter.new(block, _name)
+      filters << filter
+    end
+
+    # Returns filters collection added using {Organizer::Base::ChildClassMethods#filter} method.
+    #
+    # @return [Organizer::FiltersCollection]
+    def filters
+      @filters ||= Organizer::FiltersCollection.new
     end
 
     # Creates an {Organizer::Operation} based on block param and adds this new operation to operations collection.
