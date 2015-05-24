@@ -8,7 +8,7 @@ module Organizer::Template
   # @yield you can pass methods that will be executed in the new {Organizer::Base} child class context.
   #   These methods are: {Organizer::Base.collection}
   # @return [void]
-  # @raise [Organizer::Exception] :invalid_organizer_name
+  # @raise [Organizer::TemplateException] :invalid_organizer_name
   #
   # @example Passing a collection
   #   Organizer::Template.define("my_organizer") do

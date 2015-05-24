@@ -10,7 +10,9 @@ module Organizer::Error
 
   module ClassMethods
     def raise_error(_key)
-      raise Organizer::Exception.new(Organizer::Exception::ERRORS[_key])
+      error_class = eval("#{self}Exception") rescue nil
+      error_class = Organizer::Exception unless error_class
+      raise error_class.new(error_class::ERRORS[_key])
     end
   end
 

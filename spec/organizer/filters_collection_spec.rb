@@ -6,7 +6,7 @@ describe Organizer::FiltersCollection do
 
     it "raises error trying to add non organizer filters to collection" do
       expect { subject << "not an organizer filter" }.to(
-        raise_organizer_error(:invalid_filter_collection_item))
+        raise_organizer_error(Organizer::FiltersCollectionException, :invalid_item))
     end
 
     it "adds Organizer::Filter to collection" do

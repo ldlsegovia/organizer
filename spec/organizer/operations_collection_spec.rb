@@ -6,7 +6,7 @@ describe Organizer::OperationsCollection do
 
     it "raises error trying to add non organizer operations to collection" do
       expect { subject << "not an organizer operation" }.to(
-        raise_organizer_error(:invalid_operations_collection_item))
+        raise_organizer_error(Organizer::OperationsCollectionException, :invalid_item))
     end
 
     it "adds Organizer::Operation to collection" do

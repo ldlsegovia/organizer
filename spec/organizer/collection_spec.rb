@@ -6,7 +6,7 @@ describe Organizer::Collection do
 
     it "raises error trying to add non organizer items to collection" do
       expect { subject << "not an organizer item" }.to(
-        raise_organizer_error(:invalid_organizer_collection_item))
+        raise_organizer_error(Organizer::CollectionException, :invalid_item))
     end
 
     it "adds Organizer::Item to collection" do

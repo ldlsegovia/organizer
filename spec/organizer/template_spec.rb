@@ -16,12 +16,12 @@ describe Organizer::Template do
 
     it "raises error with invalid organizer name" do
       expect { subject.define("invalid*class<name") }.to(
-        raise_organizer_error(:invalid_organizer_name))
+        raise_organizer_error(Organizer::TemplateException, :invalid_organizer_name))
     end
 
     it "raises error with nil organizer name" do
       expect { subject.define(nil) }.to(
-        raise_organizer_error(:invalid_organizer_name))
+        raise_organizer_error(Organizer::TemplateException, :invalid_organizer_name))
     end
 
     describe "collection method" do

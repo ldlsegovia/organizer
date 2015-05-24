@@ -6,8 +6,8 @@ class Organizer::Operation
   # @param _definition [Proc] contains logic to generate the value for this operation
   # @param _name [Symbol] symbol to identify this particular operation
   def initialize(_definition, _name)
-    raise_error(:operation_definition_must_be_a_proc) if !_definition.is_a?(Proc)
-    raise_error(:blank_operation_name) if !_name
+    raise_error(:definition_must_be_a_proc) if !_definition.is_a?(Proc)
+    raise_error(:blank_name) if !_name
     @definition = _definition
     @name = _name
   end
@@ -17,7 +17,7 @@ class Organizer::Operation
   # @param _item [Organizer::Item]
   # @return [Organizer::Item] with the new attribute added
   #
-  # @raise [Organizer::Exception] :operations_over_organizer_items_only and
+  # @raise [Organizer::OperationException] :execute_over_organizer_items_only and
   #   :method_redefinition_not_allowed
   #
   # @example
@@ -33,7 +33,7 @@ class Organizer::Operation
   #   item.attrs_sum
   #   #=> 666
   def execute(_item)
-    raise_error(:operations_over_organizer_items_only) if !_item.is_a?(Organizer::Item)
+    raise_error(:execute_over_organizer_items_only) if !_item.is_a?(Organizer::Item)
     result = definition.call(_item)
     _item.define_attribute(self.name, result)
   end

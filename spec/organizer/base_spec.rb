@@ -20,19 +20,19 @@ describe Organizer::Base do
 
     it "raises error with undefined collection" do
       expect { BaseChild.new.send(:collection) }.to(
-        raise_organizer_error(:undefined_collection_method))
+        raise_organizer_error(Organizer::Exception, :undefined_collection_method))
     end
 
     it "raises error when collection method does not return an Array" do
       BaseChild.collection { "I'm not an array" }
       expect { BaseChild.new.send(:collection) }.to(
-        raise_organizer_error(:invalid_collection_structure))
+        raise_organizer_error(Organizer::Exception, :invalid_collection_structure))
     end
 
     it "raises error with collection method not returning a Array of Hashes" do
       BaseChild.collection { ["I'm not a hash"] }
       expect { BaseChild.new.send(:collection) }.to(
-        raise_organizer_error(:invalid_collection_item_structure))
+        raise_organizer_error(Organizer::Exception, :invalid_collection_item_structure))
     end
 
     it "returns an Organizer::Collection instance" do
@@ -60,7 +60,7 @@ describe Organizer::Base do
 
     it "raises error without block" do
       expect { BaseChild.default_filter() }.to(
-        raise_organizer_error(:filter_definition_must_be_a_proc))
+        raise_organizer_error(Organizer::FilterException, :definition_must_be_a_proc))
     end
 
     context "with another Child class" do
@@ -105,7 +105,7 @@ describe Organizer::Base do
 
     it "raises error without block" do
       expect { BaseChild.operation(:my_operation) }.to(
-        raise_organizer_error(:operation_definition_must_be_a_proc))
+        raise_organizer_error(Organizer::OperationException, :definition_must_be_a_proc))
     end
 
     context "with another Child class" do

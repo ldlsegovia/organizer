@@ -6,7 +6,7 @@ class Organizer::Filter
   # @param _definition [Proc] contains logic to decide if filter must be applied or not
   # @param _name [Symbol] symbol to identify this particular filter
   def initialize(_definition, _name = nil)
-    raise_error(:filter_definition_must_be_a_proc) if !_definition.is_a?(Proc)
+    raise_error(:definition_must_be_a_proc) if !_definition.is_a?(Proc)
     @definition = _definition
     @name = _name
   end
@@ -17,8 +17,8 @@ class Organizer::Filter
   # @param _item [Organizer::Item]
   # @return [Boolean]
   #
-  # @raise [Organizer::Exception] :filter_applied_on_organizer_items_only and
-  #   :filter_definition_must_return_boolean
+  # @raise [Organizer::FilterException] :apply_on_organizer_items_only and
+  #   :definition_must_return_boolean
   #
   # @example
   #   hash = { attr1: 400, attr2: 266 }
@@ -33,9 +33,9 @@ class Organizer::Filter
   #   Organizer::Filter.new(proc).apply(item)
   #   #=> true
   def apply(_item)
-    raise_error(:filter_applied_on_organizer_items_only) if !_item.is_a?(Organizer::Item)
+    raise_error(:apply_on_organizer_items_only) if !_item.is_a?(Organizer::Item)
     result = definition.call(_item)
-    raise_error(:filter_definition_must_return_boolean) if !!result != result
+    raise_error(:definition_must_return_boolean) if !!result != result
     result
   end
 end

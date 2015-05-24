@@ -27,7 +27,7 @@ describe Organizer::Filter do
 
     it "raise exception if _definition is not a Proc" do
       expect { Organizer::Filter.new("not a proc") }.to(
-        raise_organizer_error(:filter_definition_must_be_a_proc))
+        raise_organizer_error(Organizer::FilterException, :definition_must_be_a_proc))
     end
 
     it "sets filter name" do
@@ -43,13 +43,13 @@ describe Organizer::Filter do
     it "raise exception if _item is not an Organizer::Item" do
       proc = Proc.new {}
       expect { Organizer::Filter.new(proc).apply("not an item") }.to(
-        raise_organizer_error(:filter_applied_on_organizer_items_only))
+        raise_organizer_error(Organizer::FilterException, :apply_on_organizer_items_only))
     end
 
     it "raise exception if filter's definition does not return a boolean value" do
       proc = Proc.new { "not a boolean" }
       expect { Organizer::Filter.new(proc).apply(Organizer::Item.new) }.to(
-        raise_organizer_error(:filter_definition_must_return_boolean))
+        raise_organizer_error(Organizer::FilterException, :definition_must_return_boolean))
     end
 
     it "returns false when definiton block call resolves false" do

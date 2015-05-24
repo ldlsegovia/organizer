@@ -15,7 +15,7 @@ describe Organizer::Item do
     it "returns error with invalid hash param" do
       [nil, ["value1", "value2"], "some string", 1].each do |invalid_hash|
         expect { subject.define_attributes(invalid_hash) }.to(
-          raise_organizer_error(:organized_item_must_be_a_hash))
+          raise_organizer_error(Organizer::ItemException, :must_be_a_hash))
       end
     end
 
@@ -61,13 +61,13 @@ describe Organizer::Item do
 
       invalid_hashes.each do |invalid_hash|
         expect { subject.define_attributes(invalid_hash) }.to(
-          raise_organizer_error(:invalid_organized_item_attribute))
+          raise_organizer_error(Organizer::ItemException, :invalid_attribute_key))
       end
     end
 
     it "returns error trying to redefine pre-existent methods" do
       expect { subject.define_attributes({to_s: "I'm a pre-existent method"}) }.to(
-        raise_organizer_error(:method_redefinition_not_allowed))
+        raise_organizer_error(Organizer::ItemException, :method_redefinition_not_allowed))
     end
 
     it "preserves attribute's data types" do

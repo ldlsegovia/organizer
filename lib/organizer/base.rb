@@ -48,7 +48,7 @@ class Organizer::Base
     # @yield you can use the {Organizer::Item} instance param to evaluate a condition and return a Boolean value.
     # @yieldparam organizer_item [Organizer::Item]
     # @yieldreturn [Boolean]
-    # @raise [Organizer::Exception] :filter_definition_must_be_a_proc
+    # @raise [Organizer::FilterException] :definition_must_be_a_proc
     #
     # @example
     #   class MyInheritedClass < Organizer::Base; end
@@ -76,7 +76,7 @@ class Organizer::Base
     #
     # @yield you can use the {Organizer::Item} instance param values to build the new attribute value
     # @yieldparam organizer_item [Organizer::Item]
-    # @raise [Organizer::Exception] :filter_definition_must_be_a_proc and :blank_operation_name
+    # @raise [Organizer::OperationException] :definition_must_be_a_proc and :blank_name
     #
     # @example
     #   class MyInheritedClass < Organizer::Base; end

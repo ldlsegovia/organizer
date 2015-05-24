@@ -13,13 +13,13 @@ describe Organizer::Operation do
 
     it "raise exception if _definition is not a Proc" do
       expect { Organizer::Operation.new("not a proc", :my_operation) }.to(
-        raise_organizer_error(:operation_definition_must_be_a_proc))
+        raise_organizer_error(Organizer::OperationException, :definition_must_be_a_proc))
     end
 
     it "raise exception if _name is not defined" do
       proc = Proc.new {}
       expect { Organizer::Operation.new(proc, nil) }.to(
-        raise_organizer_error(:blank_operation_name))
+        raise_organizer_error(Organizer::OperationException, :blank_name))
     end
 
   end
@@ -29,7 +29,7 @@ describe Organizer::Operation do
     it "raise exception if _item is not an Organizer::Item" do
       proc = Proc.new {}
       expect { Organizer::Operation.new(proc, :my_operation).execute("not an item") }.to(
-        raise_organizer_error(:operations_over_organizer_items_only))
+        raise_organizer_error(Organizer::OperationException, :execute_over_organizer_items_only))
     end
 
     it "sets operation result as new attribute into item param" do
@@ -54,7 +54,7 @@ describe Organizer::Operation do
       end
 
       expect { Organizer::Operation.new(proc, :attr1).execute(item) }.to(
-        raise_organizer_error(:method_redefinition_not_allowed))
+        raise_organizer_error(Organizer::ItemException, :method_redefinition_not_allowed))
     end
 
   end
