@@ -31,12 +31,13 @@ class Organizer::Item
   #   i.num3r1c_ch4r4ct3rs #=> true
   def define_attributes(_hash)
     raise_error(:organized_item_must_be_a_hash) unless _hash.is_a?(Hash)
+    _hash.each { |attr_name, value| define_attribute(attr_name, value) }
+    self
+  end
 
-    _hash.each do |attr_name, value|
-      method_name = method_name_from_string(attr_name)
-      define_attr_reader(method_name, value)
-    end
-
+  def define_attribute(_attr_name, _value)
+    method_name = method_name_from_string(_attr_name)
+    define_attr_reader(method_name, _value)
     self
   end
 
