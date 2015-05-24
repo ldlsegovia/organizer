@@ -58,15 +58,14 @@ class Organizer::Base
     #   end
     def default_filter(&block)
       filter = Organizer::Filter.new(block)
-      @default_filters ||= Organizer::FiltersCollection.new
-      @default_filters << filter
+      default_filters << filter
     end
 
     # Returns default filters collection added using {Organizer::Base::ChildClassMethods#default_filter} method.
     #
     # @return [Organizer::FiltersCollection]
     def default_filters
-      @default_filters
+      @default_filters ||= Organizer::FiltersCollection.new
     end
 
     # Creates an {Organizer::Operation} based on block param and adds this new operation to operations collection.
@@ -86,15 +85,14 @@ class Organizer::Base
     #   end
     def operation(_name, &block)
       organizer_operation = Organizer::Operation.new(block, _name)
-      @operations ||= Organizer::OperationsCollection.new
-      @operations << organizer_operation
+      operations << organizer_operation
     end
 
     # Returns operations collection added using {Organizer::Base::ChildClassMethods#operation} method.
     #
     # @return [Organizer::OperationsCollection]
     def operations
-      @operations
+      @operations ||= Organizer::OperationsCollection.new
     end
   end
 
