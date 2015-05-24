@@ -1,11 +1,11 @@
 module Organizer::Template
   include Organizer::Error
 
-  # Creates a class that inherits from Organizer::Base and executes the methods inside block.
+  # Creates a class that inherits from {Organizer::Base} and executes the methods inside block.
   # If you pass :my_organizer as _organizer_name param, you will get a MyOrganizer < Organizer::Base class
   #
-  # @param _organizer_name [String] the name of the new Organizer::Base child class
-  # @yield you can pass methods that will be executed in the new Organizer::Base child class context.
+  # @param _organizer_name [String] the name of the new {Organizer::Base} child class
+  # @yield you can pass methods that will be executed in the new {Organizer::Base} child class context.
   #   These methods are: {Organizer::Base.collection}
   # @return [void]
   # @raise [Organizer::Exception] :invalid_organizer_name

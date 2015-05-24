@@ -8,12 +8,12 @@ class Organizer::Base
   end
 
   module ChildClassMethods
-    # Defines a private instance method named "collection" into an inherited Organizer::Base class.
+    # Defines a private instance method named "collection" into an inherited {Organizer::Base} class.
     # After execute MyInheritedClass.collection(){...}, if you execute MyInheritedClass.new.send(:collection)
-    # you will get an Organizer::Collection instance containing many Organizer::Item instances as Hash items were
+    # you will get a {Organizer::Collection} instance containing many {Organizer::Item} instances as Hash items were
     # passed into the block param.
     # It's no intended to use this method directly. This method will be used inside {Organizer::Template.define} block
-    # and executed in a new Organizer::Base inherited class later.
+    # and executed in a new {Organizer::Base} inherited class later.
     #
     # @yield it must return an Array containing Hash items.
     # @raise [Organizer::Exception] :undefined_collection_method, :invalid_collection_structure and

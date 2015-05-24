@@ -43,16 +43,9 @@ class Organizer::Item
   private
 
   def method_name_from_string(_string)
-    if !_string.match(/^[A-z0-9\-\s]+$/)
-      raise_error(:invalid_organized_item_attribute)
-    end
-
+    raise_error(:invalid_organized_item_attribute) if !_string.match(/^[A-z0-9\-\s]+$/)
     method_name = _string.to_s.underscore.gsub(" ", "_")
-
-    if self.respond_to?(method_name)
-      raise_error(:method_redefinition_not_allowed)
-    end
-
+    raise_error(:method_redefinition_not_allowed) if self.respond_to?(method_name)
     method_name
   end
 
