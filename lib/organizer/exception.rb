@@ -14,6 +14,7 @@ class Organizer::Exception < Exception
     invalid_filter_collection_item: "Invalid filter collection item. Must be Organizer:Filter only",
     invalid_operations_collection_item: "Invalid operations collection item. Must be Organizer:Operation only",
     blank_operation_name: "Operation name param is mandatory",
-    operations_over_organizer_items_only: "Operations can be executed on Organizer::Items only"
+    operations_over_organizer_items_only: "Operations can be executed on Organizer::Items only",
+    operation_definition_must_be_a_proc: "Operation definition must be a Proc",
   }
 end

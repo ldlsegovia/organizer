@@ -42,9 +42,9 @@ This method takes a block containing a denormalized collection. The block's cont
 Organizer::Template.define("my_organizer") do
   collection do
     [
-      { attr1: 4, attr2: "Hi" },
-      { attr1: 6, attr2: "Ciao" },
-      { attr1: 84, attr2: "Hola" }
+      { attr1: 4, attr2: "Hi", attr3: 6 },
+      { attr1: 6, attr2: "Ciao", attr3: 4 },
+      { attr1: 84, attr2: "Hola", attr3: 16 }
     ]
   end
 end
@@ -73,6 +73,58 @@ end
 ```
 
 Adding this default filter will reduce the whole dataset to work with `[{ attr1: 6, attr2: "Ciao" }, { attr1: 84, attr2: "Hola" }]` only.
+
+### An Operation
+
+You can perform operations between item's attribute values. The result of this operations will be added, as new attributes, to each collection item with the operation's name. For example:
+
+```ruby
+Organizer::Template.define("my_organizer") do
+  # collection definiton...
+  # default filters...
+
+  operation(:attrs_sum) do |item|
+    item.attr1 + item.attr2
+  end
+end
+```
+
+The resulting collection will be something like this:
+
+```ruby
+[
+  { attr1: 4, attr2: "Hi", attr3: 6, attrs_sum: 10 },
+  { attr1: 6, attr2: "Ciao", attr3: 4, attrs_sum: 10 },
+  { attr1: 84, attr2: "Hola", attr3: 16, attrs_sum: 100 }
+]
+```
+
+You also can perform operations using the resulting attributes. For example:
+
+```ruby
+Organizer::Template.define("my_organizer") do
+  # collection definiton...
+  # default filters...
+
+  operation(:attrs_sum) do |item|
+    item.attr1 + item.attr2
+  end
+
+  operation(:newer_attribute) do |item|
+    item.attrs_sum * 2
+  end
+end
+```
+
+The resulting collection will be something like this:
+
+```ruby
+[
+  { attr1: 4, attr2: "Hi", attr3: 6, attrs_sum: 10, newer_attribute: 100 },
+  { attr1: 6, attr2: "Ciao", attr3: 4, attrs_sum: 10, newer_attribute: 100 },
+  { attr1: 84, attr2: "Hola", attr3: 16, attrs_sum: 100, newer_attribute: 10000 }
+]
+```
 
 ## Usage
 

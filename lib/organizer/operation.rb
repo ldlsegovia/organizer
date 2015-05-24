@@ -6,7 +6,7 @@ class Organizer::Operation
   # @param _definition [Proc] contains logic to generate the value for this operation
   # @param _name [Symbol] symbol to identify this particular operation
   def initialize(_definition, _name)
-    raise_error(:filter_definition_must_be_a_proc) if !_definition.is_a?(Proc)
+    raise_error(:operation_definition_must_be_a_proc) if !_definition.is_a?(Proc)
     raise_error(:blank_operation_name) if !_name
     @definition = _definition
     @name = _name

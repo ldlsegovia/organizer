@@ -23,6 +23,10 @@ module Organizer::Template
   #     default_filter do |organizer_item|
   #       organizer_item.attr1 > 5
   #     end
+  #
+  #     operation do |organizer_item|
+  #       organizer_item.attr1 + organizer_item.attr3
+  #     end
   #   end
   #
   #   MyOrganizer

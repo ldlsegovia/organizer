@@ -12,8 +12,8 @@ describe Organizer::Operation do
     end
 
     it "raise exception if _definition is not a Proc" do
-      expect { Organizer::Filter.new("not a proc") }.to(
-        raise_organizer_error(:filter_definition_must_be_a_proc))
+      expect { Organizer::Operation.new("not a proc", :my_operation) }.to(
+        raise_organizer_error(:operation_definition_must_be_a_proc))
     end
 
     it "raise exception if _name is not defined" do
