@@ -8,8 +8,8 @@ class Organizer::Base
   end
 
   module ChildClassMethods
-    # Defines a private instance method named "collection" into an inherited {Organizer::Base} class.
-    # After execute MyInheritedClass.collection(){...}, if you execute MyInheritedClass.new.send(:collection)
+    # Defines an instance method named "collection" into an inherited {Organizer::Base} class.
+    # After execute MyInheritedClass.collection(){...}, if you execute MyInheritedClass.new.collection
     # you will get a {Organizer::Collection} instance containing many {Organizer::Item} instances as Hash items were
     # passed into the block param.
     # It's no intended to use this method directly. This method will be used inside {Organizer::Template.define} block
@@ -30,7 +30,7 @@ class Organizer::Base
     #    ]
     #   end
     #
-    #   MyInheritedClass.new.send(:collection)
+    #   MyInheritedClass.new.collection
     #   #=> [#<Organizer::Item:0x007fe6a09b2010 @attr1=4, @attr2="Hi">, #<Organizer::Item...
     def collection(&block)
       define_method :collection do
@@ -38,8 +38,6 @@ class Organizer::Base
         validate_raw_collection(raw_collection)
         get_organized_items(raw_collection)
       end
-
-      private :collection
     end
 
     # Creates a {Organizer::Filter} based on block param and adds this new filter to default_filters collection.
@@ -125,11 +123,81 @@ class Organizer::Base
   end
 
   module ChildInstanceMethods
+
+    # Applies default_filters, filters and operations to defined collection.
+    # Default filters will be applied automatically.
+    # To apply a normal filter, need to pass filter names inside array in _options like this: { filters: [my_filter] }.
+    # Operations will be calculated and added as attributes on each collection item.
+    #
+    # @example
+    #   class MyInheritedClass < Organizer::Base; end
+    #
+    #   MyInheritedClass.organize(filters: [:my_filter, :other_filter])
+    #
+    # @param _options [Hash]
+    # @return [Organizer::Collection]
+    def organize(_options = {})
+      result = collection
+      result = apply_default_fitlers(result)
+      result = apply_normal_filters(_options, result)
+      result = execute_operations(result)
+      result
+    end
+
     def method_missing(_m, *args, &block)
       raise_error(:undefined_collection_method) if _m == :collection
     end
 
     private
+
+    def execute_operations(_collection)
+      return _collection if operations.count <= 0
+      _collection.each do |item|
+        operations.each do |operation|
+          operation.execute(item)
+        end
+      end
+    end
+
+    def apply_default_fitlers(_collection)
+      apply_filters(default_filters, _collection)
+    end
+
+    def apply_normal_filters(_options, _collection)
+      filter_names = _options.fetch(:filters, [])
+      selected_filters = select_filters(filter_names)
+      apply_filters(selected_filters, _collection)
+    end
+
+    def apply_filters(_filters, _collection)
+      return _collection if _filters.count <= 0
+      _collection.reject do |item|
+        reject_item = false
+        _filters.each do |filter|
+          if !filter.apply(item)
+            reject_item = true
+            break
+          end
+        end
+        reject_item
+      end
+    end
+
+    def default_filters
+      self.class.default_filters
+    end
+
+    def filters
+      self.class.filters
+    end
+
+    def operations
+      self.class.operations
+    end
+
+    def select_filters(_filter_names)
+      filters.select { |filter| _filter_names.include?(filter.name) }
+    end
 
     def validate_raw_collection(_raw_collection)
       raise_error(:invalid_collection_structure) unless _raw_collection.is_a?(Array)
