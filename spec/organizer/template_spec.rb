@@ -32,23 +32,21 @@ describe Organizer::Template do
 
     describe "default_filter method" do
       it "executes default_filter class method on generated MyOrganizer class" do
-        subject.define("my_organizer") { default_filter { true } }
-        collection = MyOrganizer.default_filters
-        expect(collection).to be_a(Organizer::FiltersCollection)
-        expect(collection.count).to eq(1)
+        subject.define("my_organizer") { default_filter {} }
+        expect(MyOrganizer.filters_manager.send(:default_filters).count).to eq(1)
       end
     end
 
     describe "filter method" do
       it "executes filter class method on generated MyOrganizer class" do
-        subject.define("my_organizer") { filter(:my_filter) { true } }
-        expect(MyOrganizer.filters.count).to eq(1)
+        subject.define("my_organizer") { filter(:my_filter) {} }
+        expect(MyOrganizer.filters_manager.send(:normal_filters).count).to eq(1)
       end
     end
 
     describe "operation method" do
       it "executes operation class method on generated MyOrganizer class" do
-        subject.define("my_organizer") { operation(:my_operation) { true } }
+        subject.define("my_organizer") { operation(:my_operation) {} }
         expect(MyOrganizer.operations.count).to eq(1)
       end
     end

@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe Organizer::Filter do
-
   describe "#initialize" do
-
     it "creates filter with definition" do
       proc = Proc.new {}
       f = Organizer::Filter.new(proc)
@@ -39,7 +37,6 @@ describe Organizer::Filter do
   end
 
   describe "#apply" do
-
     it "raise exception if _item is not an Organizer::Item" do
       proc = Proc.new {}
       expect { Organizer::Filter.new(proc).apply("not an item") }.to(
@@ -81,7 +78,5 @@ describe Organizer::Filter do
 
       expect(Organizer::Filter.new(proc2).apply(item)).to be_falsy
     end
-
   end
-
 end

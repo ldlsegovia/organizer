@@ -1,13 +1,7 @@
 require 'spec_helper'
 
 describe Organizer::Base do
-  let(:valid_raw_collection) do
-    [
-      { attr1: 4, attr2: "Hi", attr3: 6 },
-      { attr1: 6, attr2: "Ciao", attr3: 4 },
-      { attr1: 84, attr2: "Hola", attr3: 16 }
-    ]
-  end
+  let_raw_collection(:valid_raw_collection)
 
   before do
     Object.send(:remove_const, :BaseChild) rescue nil
@@ -38,7 +32,6 @@ describe Organizer::Base do
 
         it "returns filtered collection" do
           expect(BaseChild.new.organize.size).to eq(1)
-          expect(BaseChild.new.organize.first.attr1).to eq(valid_raw_collection.second[:attr1])
         end
       end
 
@@ -49,10 +42,7 @@ describe Organizer::Base do
         end
 
         it "applies filters" do
-          base = BaseChild.new
-          expect(base.organize.size).to eq(3)
-          expect(base.organize(filters: [:filter1]).size).to eq(2)
-          expect(base.organize(filters: [:filter1, :filter2]).size).to eq(1)
+          expect(BaseChild.new.organize(filters: [:filter1, :filter2]).size).to eq(1)
         end
       end
 
@@ -104,22 +94,10 @@ describe Organizer::Base do
     end
   end
 
-  shared_examples :definitions_collection do |_definition_method, _definition_collection, _error_class|
-    it "adds new object with definition to collection" do
-      expect(BaseChild.send(_definition_collection).size).to eq(0)
-      BaseChild.send(_definition_method, :name) do
-        # content is no important right here.
-      end
-      expect(BaseChild.send(_definition_collection).size).to eq(1)
-      BaseChild.send(_definition_method, :name) do
-        # content is no important right here.
-      end
-      expect(BaseChild.send(_definition_collection).size).to eq(2)
-    end
-
-    it "raises error without block" do
-      expect { BaseChild.send(_definition_method, :name) }.to(
-        raise_organizer_error(_error_class, :definition_must_be_a_proc))
+  describe "#default_filter" do
+    it "adds new filter" do
+      obj = BaseChild.default_filter(:my_filter) {}
+      expect(obj).to be_a(Organizer::Filter)
     end
 
     context "with another child class" do
@@ -128,42 +106,48 @@ describe Organizer::Base do
         class AhotherChild < Organizer::Base; end
       end
 
-      it "adds object with definition to each class collections " do
-        expect(BaseChild.send(_definition_collection).size).to eq(0)
-        expect(AhotherChild.send(_definition_collection).size).to eq(0)
-        BaseChild.send(_definition_method, :name) do
-          # content is no important right here.
-        end
-        expect(BaseChild.send(_definition_collection).size).to eq(1)
-        expect(AhotherChild.send(_definition_collection).size).to eq(0)
-        AhotherChild.send(_definition_method, :name) do
-          # content is no important right here.
-        end
-        expect(BaseChild.send(_definition_collection).size).to eq(1)
-        expect(AhotherChild.send(_definition_collection).size).to eq(1)
+      it "adds filter to each class" do
+        expect(BaseChild.default_filter(:my_filter) {}).to be_a(Organizer::Filter)
+        expect(AhotherChild.default_filter(:my_filter) {}).to be_a(Organizer::Filter)
       end
-    end
-  end
-
-  describe "#default_filter" do
-    it_should_behave_like(:definitions_collection,
-      :default_filter, :default_filters, Organizer::FilterException)
-
-    it "adds default filter without a name" do
-      BaseChild.default_filter do
-        # content is no important right here.
-      end
-      expect(BaseChild.default_filters.size).to eq(1)
     end
   end
 
   describe "#filter" do
-    it_should_behave_like(:definitions_collection,
-      :filter, :filters, Organizer::FilterException)
+    it "adds new filter" do
+      obj = BaseChild.filter(:my_filter) {}
+      expect(obj).to be_a(Organizer::Filter)
+    end
+
+    context "with another child class" do
+      before do
+        Object.send(:remove_const, :AhotherChild) rescue nil
+        class AhotherChild < Organizer::Base; end
+      end
+
+      it "adds filter to each class" do
+        expect(BaseChild.filter(:my_filter) {}).to be_a(Organizer::Filter)
+        expect(AhotherChild.filter(:my_filter) {}).to be_a(Organizer::Filter)
+      end
+    end
   end
 
   describe "#operation" do
-    it_should_behave_like(:definitions_collection,
-      :operation, :operations, Organizer::OperationException)
+    it "adds new operation" do
+      obj = BaseChild.operation(:my_operation) {}
+      expect(obj).to be_a(Organizer::Operation)
+    end
+
+    context "with another child class" do
+      before do
+        Object.send(:remove_const, :AhotherChild) rescue nil
+        class AhotherChild < Organizer::Base; end
+      end
+
+      it "adds filter to each class" do
+        expect(BaseChild.operation(:my_operation) {}).to be_a(Organizer::Operation)
+        expect(AhotherChild.operation(:my_operation) {}).to be_a(Organizer::Operation)
+      end
+    end
   end
 end

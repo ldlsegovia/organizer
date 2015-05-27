@@ -11,7 +11,6 @@ describe Organizer::Item do
   end
 
   describe "#define_attributes" do
-
     it "returns error with invalid hash param" do
       [nil, ["value1", "value2"], "some string", 1].each do |invalid_hash|
         expect { subject.define_attributes(invalid_hash) }.to(
@@ -88,7 +87,5 @@ describe Organizer::Item do
       expect(item2).not_to respond_to(:method_for_item1)
       expect(item2).to respond_to(:method_for_item2)
     end
-
   end
-
 end
