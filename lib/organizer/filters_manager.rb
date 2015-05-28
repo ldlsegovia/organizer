@@ -3,6 +3,9 @@ class Organizer::FiltersManager
 
   # Creates a new {Organizer::Filter} and adds to default filters collection.
   #
+  # @param _name [Symbol] filter's name. Not mandatory for default filters.
+  # @return [Organizer::Filter]
+  #
   # @yield you can use the {Organizer::Item} instance param to evaluate a condition and return a Boolean value.
   # @yieldparam organizer_item [Organizer::Item]
   # @yieldreturn [Boolean]
@@ -12,6 +15,9 @@ class Organizer::FiltersManager
   end
 
   # Creates a new {Organizer::Filter} and adds to normal filters collection.
+  #
+  # @param _name [Symbol] filter's name.
+  # @return [Organizer::Filter]
   #
   # @yield you can use the {Organizer::Item} instance param to evaluate a condition and return a Boolean value.
   # @yieldparam organizer_item [Organizer::Item]

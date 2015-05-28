@@ -47,7 +47,7 @@ describe Organizer::Template do
     describe "operation method" do
       it "executes operation class method on generated MyOrganizer class" do
         subject.define("my_organizer") { operation(:my_operation) {} }
-        expect(MyOrganizer.operations.count).to eq(1)
+        expect(MyOrganizer.operations_manager.send(:operations).count).to eq(1)
       end
     end
   end

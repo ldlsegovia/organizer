@@ -52,14 +52,7 @@ class Organizer::Base
       filters_manager.add_normal_filter(_name, &block)
     end
 
-    # Returns manager to handle default and normal filters
-    #
-    # @return [Organizer::FiltersManager]
-    def filters_manager
-      @filters_manager ||= Organizer::FiltersManager.new
-    end
-
-    # Creates an {Organizer::Operation} based on block param and adds this new operation to operations collection.
+    # Adds a new {Organizer::Operation} to operations collection.
     # It's no intended to use this method directly. This method will be used inside {Organizer::Template.define} block
     #
     # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
@@ -68,15 +61,21 @@ class Organizer::Base
     # @yield you can use the {Organizer::Item} instance param values to build the new attribute value
     # @yieldparam organizer_item [Organizer::Item]
     def operation(_name, &block)
-      operations << Organizer::Operation.new(block, _name)
-      operations.last
+      operations_manager.add_operation(_name, &block)
     end
 
-    # Returns operations collection added using {Organizer::Base::ChildClassMethods#operation} method.
+    # Returns manager to handle default and normal filters
     #
-    # @return [Organizer::OperationsCollection]
-    def operations
-      @operations ||= Organizer::OperationsCollection.new
+    # @return [Organizer::FiltersManager]
+    def filters_manager
+      @filters_manager ||= Organizer::FiltersManager.new
+    end
+
+    # Returns manager to handle operations
+    #
+    # @return [Organizer::OperationsManager]
+    def operations_manager
+      @operations_manager ||= Organizer::OperationsManager.new
     end
   end
 
@@ -94,7 +93,7 @@ class Organizer::Base
     #   MyInheritedClass.organize(filters: [:my_filter, :other_filter])
     def organize(_options = {})
       result = filters_manager.apply(collection, _options)
-      execute_operations(result)
+      operations_manager.execute(result)
     end
 
     def method_missing(_m, *args, &block)
@@ -103,21 +102,12 @@ class Organizer::Base
 
     private
 
-    def execute_operations(_collection)
-      return _collection if operations.count <= 0
-      _collection.each do |item|
-        operations.each do |operation|
-          operation.execute(item)
-        end
-      end
-    end
-
     def filters_manager
       self.class.filters_manager
     end
 
-    def operations
-      self.class.operations
+    def operations_manager
+      self.class.operations_manager
     end
 
     def validate_raw_collection(_raw_collection)
