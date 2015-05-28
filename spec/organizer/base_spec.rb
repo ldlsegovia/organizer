@@ -42,7 +42,7 @@ describe Organizer::Base do
         end
 
         it "applies filters" do
-          expect(BaseChild.new.organize(filters: [:filter1, :filter2]).size).to eq(1)
+          expect(BaseChild.new.organize(enabled_filters: [:filter1, :filter2]).size).to eq(1)
         end
       end
 

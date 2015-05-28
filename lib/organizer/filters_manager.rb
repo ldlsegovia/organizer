@@ -28,7 +28,7 @@ class Organizer::FiltersManager
   end
 
   # Applies default and normal filters to give collection.
-  # To apply a normal filter, need to pass filter names inside array in _options like this: { filters: [my_filter] }.
+  # To apply a normal filter, need to pass filter names inside array in _options like this: { enabled_filters: [my_filter] }.
   #
   # @param _options [Hash]
   # @param _collection [Organizer::Collection] the whole collection
@@ -53,7 +53,7 @@ class Organizer::FiltersManager
   end
 
   def apply_normal_filters(_options, _collection)
-    filter_names = _options.fetch(:filters, [])
+    filter_names = _options.fetch(:enabled_filters, [])
     selected_filters = select_filters(filter_names)
     apply_filters(selected_filters, _collection)
   end

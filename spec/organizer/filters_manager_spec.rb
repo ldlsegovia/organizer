@@ -60,9 +60,9 @@ describe Organizer::FiltersManager do
       it "applies filters" do
         result = subject.apply(organizer_collection)
         expect(result.size).to eq(3)
-        result = subject.apply(organizer_collection, filters: [:filter1])
+        result = subject.apply(organizer_collection, enabled_filters: [:filter1])
         expect(result.size).to eq(2)
-        result = subject.apply(organizer_collection, filters: [:filter1, :filter2])
+        result = subject.apply(organizer_collection, enabled_filters: [:filter1, :filter2])
         expect(result.size).to eq(1)
       end
     end

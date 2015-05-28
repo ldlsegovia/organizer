@@ -79,7 +79,7 @@ class Organizer::Base
   module ChildInstanceMethods
     # Applies default_filters, filters and operations to defined collection.
     # Default filters will be applied automatically.
-    # To apply a normal filter, need to pass filter names inside array in _options like this: { filters: [my_filter] }.
+    # To apply a normal filter, need to pass filter names inside array in _options like this: { enabled_filters: [my_filter] }.
     # Operations will be calculated and added as attributes on each collection item.
     #
     # @param _options [Hash]
