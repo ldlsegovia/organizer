@@ -80,6 +80,8 @@ class Organizer::Base
     # Applies default_filters, filters and operations to defined collection.
     # Default filters will be applied automatically.
     # To apply a normal filter, need to pass filter names inside array in _options like this: { enabled_filters: [my_filter] }.
+    # To skip a default filter, need to pass default filter names inside array in _options like this: { skip_default_filters: [my_filter] }.
+    # If you want to skip all default filters: { skip_default_filters: :all }.
     # Operations will be calculated and added as attributes on each collection item.
     #
     # @param _options [Hash]
@@ -87,7 +89,9 @@ class Organizer::Base
     #
     # @example
     #   class MyInheritedClass < Organizer::Base; end
-    #   MyInheritedClass.organize(filters: [:my_filter, :other_filter])
+    #   MyInheritedClass.organize(enabled_filters: [:my_filter, :other_filter])
+    #   MyInheritedClass.organize(skip_default_filters: [:my_filter])
+    #   MyInheritedClass.organize(skip_default_filters: :all)
     def organize(_options = {})
       result = filters_manager.apply(collection, _options)
       operations_manager.execute(result)

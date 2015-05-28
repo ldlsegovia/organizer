@@ -49,6 +49,16 @@ describe Organizer::FiltersManager do
         expect(result.size).to eq(1)
         expect(result.first.attr1).to eq(organizer_collection.second.attr1)
       end
+
+      it "skips default filter passing filter to skip_default_filter option" do
+        result = subject.apply(organizer_collection, { skip_default_filters: [:my_filter] })
+        expect(result.size).to eq(2)
+      end
+
+      it "skips all default filters :all key to skip_default_filter option" do
+        result = subject.apply(organizer_collection, { skip_default_filters: :all })
+        expect(result.size).to eq(3)
+      end
     end
 
     context "with normal filters" do

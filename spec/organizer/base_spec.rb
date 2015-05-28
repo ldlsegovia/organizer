@@ -27,11 +27,16 @@ describe Organizer::Base do
       context "with default filters" do
         before do
           BaseChild.default_filter { |item| item.attr1 > 4 }
-          BaseChild.default_filter { |item| item.attr1 < 80 }
+          BaseChild.default_filter(:my_filter) { |item| item.attr1 < 80 }
         end
 
         it "returns filtered collection" do
           expect(BaseChild.new.organize.size).to eq(1)
+        end
+
+        it "skips default filter passing filter to skip_default_filter option" do
+          result = BaseChild.new.organize({ skip_default_filters: [:my_filter] })
+          expect(result.size).to eq(2)
         end
       end
 

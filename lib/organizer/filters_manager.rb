@@ -29,13 +29,15 @@ class Organizer::FiltersManager
 
   # Applies default and normal filters to give collection.
   # To apply a normal filter, need to pass filter names inside array in _options like this: { enabled_filters: [my_filter] }.
+  # To skip a default filter, need to pass default filter names inside array in _options like this: { skip_default_filters: [my_filter] }.
+  # If you want to skip all default filters: { skip_default_filters: :all }.
   #
   # @param _options [Hash]
   # @param _collection [Organizer::Collection] the whole collection
   # @return [Organizer::Collection] a filtered collection
   def apply(_collection, _options = {})
-    result = apply_default_fitlers(_collection)
-    apply_normal_filters(_options, result)
+    result = apply_default_fitlers(_collection, _options)
+    apply_normal_filters(result, _options)
   end
 
   private
@@ -48,18 +50,24 @@ class Organizer::FiltersManager
     @normal_filters ||= Organizer::FiltersCollection.new
   end
 
-  def apply_default_fitlers(_collection)
-    apply_filters(default_filters, _collection)
-  end
-
-  def apply_normal_filters(_options, _collection)
-    filter_names = _options.fetch(:enabled_filters, [])
-    selected_filters = select_filters(filter_names)
+  def apply_default_fitlers(_collection, _options = {})
+    filter_by = _options.fetch(:skip_default_filters, [])
+    selected_filters = (filter_by == :all) ? [] : reject_filters(default_filters, filter_by)
     apply_filters(selected_filters, _collection)
   end
 
-  def select_filters(_filter_names)
-    normal_filters.select { |filter| _filter_names.include?(filter.name) }
+  def apply_normal_filters(_collection, _options = {})
+    filter_names = _options.fetch(:enabled_filters, [])
+    selected_filters = select_filters(normal_filters, filter_names)
+    apply_filters(selected_filters, _collection)
+  end
+
+  def select_filters(_filters, _filter_names)
+    _filters.select { |filter| _filter_names.include?(filter.name) }
+  end
+
+  def reject_filters(_filters, _filter_names)
+    _filters.reject { |filter| _filter_names.include?(filter.name) }
   end
 
   def apply_filters(_filters, _collection)
