@@ -74,18 +74,6 @@ describe Organizer::Base do
         raise_organizer_error(Organizer::Exception, :undefined_collection_method))
     end
 
-    it "raises error when collection method does not return an Array" do
-      BaseChild.collection { "I'm not an array" }
-      expect { BaseChild.new.collection }.to(
-        raise_organizer_error(Organizer::Exception, :invalid_collection_structure))
-    end
-
-    it "raises error with collection method not returning a Array of Hashes" do
-      BaseChild.collection { ["I'm not a hash"] }
-      expect { BaseChild.new.collection }.to(
-        raise_organizer_error(Organizer::Exception, :invalid_collection_item_structure))
-    end
-
     it "returns an Organizer::Collection instance" do
       BaseChild.collection { valid_raw_collection }
       collection = BaseChild.new.collection

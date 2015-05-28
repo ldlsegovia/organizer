@@ -16,13 +16,10 @@ class Organizer::Base
     # and executed in a new {Organizer::Base} inherited class later.
     #
     # @yield it must return an Array containing Hash items.
-    # @raise [Organizer::Exception] :undefined_collection_method, :invalid_collection_structure and
-    #   :invalid_collection_item_structure
+    # @raise [Organizer::Exception] :undefined_collection_method
     def collection(&block)
       define_method :collection do
-        raw_collection = block.call
-        validate_raw_collection(raw_collection)
-        get_organized_items(raw_collection)
+        Organizer::Collection.new.fill(block.call)
       end
     end
 
@@ -109,25 +106,5 @@ class Organizer::Base
     def operations_manager
       self.class.operations_manager
     end
-
-    def validate_raw_collection(_raw_collection)
-      raise_error(:invalid_collection_structure) unless _raw_collection.is_a?(Array)
-
-      if _raw_collection.count > 0 && !_raw_collection.first.is_a?(Hash)
-        raise_error(:invalid_collection_item_structure)
-      end
-    end
-
-    def get_organized_items(_raw_collection)
-      _raw_collection.inject(Organizer::Collection.new) do |items, raw_item|
-        items << build_organized_item(raw_item)
-      end
-    end
-
-    def build_organized_item(_raw_item)
-      item = Organizer::Item.new
-      item.define_attributes(_raw_item)
-    end
   end
-
 end
