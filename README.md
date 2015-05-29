@@ -22,7 +22,7 @@ Or install it yourself as:
 $ gem install organizer
 ```
 
-## Organizer Definition
+## Organizer Definition and Usage
 
 First, you need to define an organizer like this:
 
@@ -32,11 +32,19 @@ Organizer::Template.define("my_organizer") do
 end
 ```
 
+To use it, you need to do:
+
+```ruby
+organizer = MyOrganizer.new
+```
+
 Inside define's method block, you can pass:
 
 ### A Collection
 
 This method takes a block containing a denormalized collection. The block's content will be executed later. So, you can pass anything that produces a collection.
+
+#### Definition Example
 
 ```ruby
 Organizer::Template.define("my_organizer") do
@@ -58,9 +66,21 @@ Organizer::Template.define("my_organizer") do
 end
 ```
 
+#### Usage Example
+
+```ruby
+# with defined collection
+MyOrganizer.new.organize
+#<Organizer::Item:0x007f8eaac429b8 @attr1=4, @attr2="Hi", @attr3=6>,
+#<Organizer::Item:0x007f8eaac423c8 @attr1=6, @attr2="Ciao", @attr3=4>,
+#<Organizer::Item:0x007f8eaac41478 @attr1=84, @attr2="Hola", @attr3=16>
+```
+
 ### A Default Filter
 
 Allows you to define conditions that will be evaluated, over each collection item, at the beginning of the data generation, in order to perform an initial filter of the whole dataset.
+
+#### Definition Example
 
 ```ruby
 Organizer::Template.define("my_organizer") do
@@ -69,27 +89,82 @@ Organizer::Template.define("my_organizer") do
   default_filter do |item|
     item.attr1 > 5
   end
+
+  default_filter(:named_default_filter) do |item|
+    item.attr1 < 200
+  end
 end
+```
+
+#### Usage Example
+
+```ruby
+# with default filters
+MyOrganizer.new.organize
+#<Organizer::Item:0x007fb6aac190e0 @attr1=6, @attr2="Ciao", @attr3=4>,
+#<Organizer::Item:0x007fb6aac23c20 @attr1=84, @attr2="Hola", @attr3=16>
+
+# skiping all default filters
+MyOrganizer.new.organize(skip_default_filters: :all)
+#<Organizer::Item:0x007f8eaac429b8 @attr1=4, @attr2="Hi", @attr3=6>,
+#<Organizer::Item:0x007f8eaac423c8 @attr1=6, @attr2="Ciao", @attr3=4>,
+#<Organizer::Item:0x007f8eaac41478 @attr1=84, @attr2="Hola", @attr3=16>
+
+# skiping default filters by name
+MyOrganizer.new.organize(skip_default_filters: [:named_default_filter])
+#<Organizer::Item:0x007f8eaac429b8 @attr1=4, @attr2="Hi", @attr3=6>,
+#<Organizer::Item:0x007f8eaac423c8 @attr1=6, @attr2="Ciao", @attr3=4>,
+#<Organizer::Item:0x007f8eaac41478 @attr1=84, @attr2="Hola", @attr3=16>
 ```
 
 ### A Filter
 
 Allows you to define conditions that will not be initially evaluated but user may activate later.
 
+#### Definition Example
+
 ```ruby
 Organizer::Template.define("my_organizer") do
   # collection definiton...
   # default filters...
 
-  filter(:my_filter) do |item|
+  filter(:filter1) do |item|
     item.attr1 > 5
   end
 end
+```
+You can define filters that will accept user params like this:
+
+```ruby
+Organizer::Template.define("my_organizer") do
+  # collection definiton...
+  # default filters...
+
+  filter(:filter2, true) do |item, value|
+    item.attr1 > value
+  end
+end
+```
+
+#### Usage Example
+
+```ruby
+# enabling filters
+MyOrganizer.new.organize(enabled_filters: [:filter1])
+#<Organizer::Item:0x007fb020ca23d0 @attr1=6, @attr2="Ciao", @attr3=4>,
+#<Organizer::Item:0x007fb020ca1520 @attr1=84, @attr2="Hola", @attr3=16>
+
+# passing values to filters
+MyOrganizer.new.organize(filters: { filter2: 5 })
+#<Organizer::Item:0x007fb020ca23d0 @attr1=6, @attr2="Ciao", @attr3=4>,
+#<Organizer::Item:0x007fb020ca1520 @attr1=84, @attr2="Hola", @attr3=16>
 ```
 
 ### An Operation
 
 You can perform operations between item's attribute values. The result of this operations will be added, as new attributes, to each collection item with the operation's name. For example:
+
+#### Definition Example
 
 ```ruby
 Organizer::Template.define("my_organizer") do
@@ -98,19 +173,9 @@ Organizer::Template.define("my_organizer") do
   # filters...
 
   operation(:attrs_sum) do |item|
-    item.attr1 + item.attr2
+    item.attr1 + item.attr3
   end
 end
-```
-
-The resulting collection will be something like this:
-
-```ruby
-[
-  { attr1: 4, attr2: "Hi", attr3: 6, attrs_sum: 10 },
-  { attr1: 6, attr2: "Ciao", attr3: 4, attrs_sum: 10 },
-  { attr1: 84, attr2: "Hola", attr3: 16, attrs_sum: 100 }
-]
 ```
 
 You also can perform operations using the resulting attributes. For example:
@@ -122,7 +187,7 @@ Organizer::Template.define("my_organizer") do
   # filters...
 
   operation(:attrs_sum) do |item|
-    item.attr1 + item.attr2
+    item.attr1 + item.attr3
   end
 
   operation(:newer_attribute) do |item|
@@ -131,22 +196,14 @@ Organizer::Template.define("my_organizer") do
 end
 ```
 
-The resulting collection will be something like this:
+#### Example Usage
 
 ```ruby
-[
-  { attr1: 4, attr2: "Hi", attr3: 6, attrs_sum: 10, newer_attribute: 20 },
-  { attr1: 6, attr2: "Ciao", attr3: 4, attrs_sum: 10, newer_attribute: 20 },
-  { attr1: 84, attr2: "Hola", attr3: 16, attrs_sum: 100, newer_attribute: 200 }
-]
-```
-
-## Usage
-
-After define a new Organizer, you can use it like this:
-
-```ruby
-organizer = MyOrganizer.new
+# with operations
+MyOrganizer.new.organize
+#<Organizer::Item:0x007fd49a4bbc90 @attr1=4, @attr2="Hi", @attr3=6, @attrs_sum=10>,
+#<Organizer::Item:0x007fd49a4bb3a8 @attr1=6, @attr2="Ciao", @attr3=4, @attrs_sum=10>
+#<Organizer::Item:0x007fd49a4baa20 @attr1=84, @attr2="Hola", @attr3=16, @attrs_sum=100>
 ```
 
 ## Docs

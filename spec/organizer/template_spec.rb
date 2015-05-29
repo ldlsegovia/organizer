@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe Organizer::Template do
-
   describe "#define" do
-
     before do
       Object.send(:remove_const, :MyOrganizer) rescue nil
     end
@@ -25,21 +23,37 @@ describe Organizer::Template do
     end
 
     describe "collection method" do
-
       it "creates the collection instance method on the generated MyOrganizer class" do
         valid_collection = [{ attr1: "value1" }, { attr1: "value2" }]
-
-        subject.define("my_organizer") do
-          collection { valid_collection }
-        end
-
-        collection = MyOrganizer.new.send(:collection)
-        expect(collection).to be_a(Organizer::Collection)
-        expect(collection.count).to eq(2)
+        subject.define("my_organizer") { collection { valid_collection } }
+        expect(MyOrganizer.new.collection.count).to eq(2)
       end
-
     end
 
-  end
+    describe "default_filter method" do
+      it "executes default_filter class method on generated MyOrganizer class" do
+        subject.define("my_organizer") { default_filter {} }
+        expect(MyOrganizer.filters_manager.send(:default_filters).count).to eq(1)
+      end
+    end
 
+    describe "filter method" do
+      it "executes filter class method on generated MyOrganizer class" do
+        subject.define("my_organizer") { filter(:my_filter) {} }
+        expect(MyOrganizer.filters_manager.send(:normal_filters).count).to eq(1)
+      end
+
+      it "executes filter (with true accepted value) on generated MyOrganizer class" do
+        subject.define("my_organizer") { filter(:my_filter, true) {} }
+        expect(MyOrganizer.filters_manager.send(:filters_with_values).count).to eq(1)
+      end
+    end
+
+    describe "operation method" do
+      it "executes operation class method on generated MyOrganizer class" do
+        subject.define("my_organizer") { operation(:my_operation) {} }
+        expect(MyOrganizer.operations_manager.send(:operations).count).to eq(1)
+      end
+    end
+  end
 end

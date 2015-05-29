@@ -17,8 +17,7 @@ class Organizer::Operation
   # @param _item [Organizer::Item]
   # @return [Organizer::Item] with the new attribute added
   #
-  # @raise [Organizer::OperationException] :execute_over_organizer_items_only and
-  #   :method_redefinition_not_allowed
+  # @raise [Organizer::OperationException] :execute_over_organizer_items_only
   #
   # @example
   #   hash = { attr1: 400, attr2: 266 }

@@ -24,8 +24,12 @@ module Organizer::Template
   #       organizer_item.attr1 > 5
   #     end
   #
-  #     filter do |organizer_item|
+  #     filter(:my_filter) do |organizer_item|
   #       organizer_item.attr3 > 15
+  #     end
+  #
+  #     filter(:other_filter, true) do |organizer_item, value|
+  #       organizer_item.attr1 > value
   #     end
   #
   #     operation do |organizer_item|

@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe Organizer::OperationsCollection do
-
   describe "#<<" do
-
     it "raises error trying to add non organizer operations to collection" do
       expect { subject << "not an organizer operation" }.to(
         raise_organizer_error(Organizer::OperationsCollectionException, :invalid_item))
@@ -16,7 +14,5 @@ describe Organizer::OperationsCollection do
       expect(subject.size).to eq(1)
       expect(subject.first).to be_a(Organizer::Operation)
     end
-
   end
-
 end
