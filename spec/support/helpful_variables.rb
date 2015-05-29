@@ -1,4 +1,11 @@
 module HelpfulVariables
+  def let_item(_name)
+    let(_name) do
+      item = Organizer::Item.new
+      item.define_attributes({ attr1: 400, attr2: 266 })
+    end
+  end
+
   def let_raw_collection(_name)
     let(_name) do
       [
