@@ -42,6 +42,11 @@ describe Organizer::Template do
         subject.define("my_organizer") { filter(:my_filter) {} }
         expect(MyOrganizer.filters_manager.send(:normal_filters).count).to eq(1)
       end
+
+      it "executes filter (with true accepted value) on generated MyOrganizer class" do
+        subject.define("my_organizer") { filter(:my_filter, true) {} }
+        expect(MyOrganizer.filters_manager.send(:filters_with_values).count).to eq(1)
+      end
     end
 
     describe "operation method" do

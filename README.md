@@ -69,6 +69,10 @@ Organizer::Template.define("my_organizer") do
   default_filter do |item|
     item.attr1 > 5
   end
+
+  default_filter(:named_default_filter) do |item|
+    item.attr1 < 200
+  end
 end
 ```
 
@@ -81,8 +85,20 @@ Organizer::Template.define("my_organizer") do
   # collection definiton...
   # default filters...
 
-  filter(:my_filter) do |item|
+  filter(:filter1) do |item|
     item.attr1 > 5
+  end
+end
+```
+You can define filters that will accept user params like this:
+
+```ruby
+Organizer::Template.define("my_organizer") do
+  # collection definiton...
+  # default filters...
+
+  filter(:filter2, true) do |item, value|
+    item.attr1 > value
   end
 end
 ```
@@ -130,19 +146,42 @@ organizer = MyOrganizer.new
 
 # with defined collection
 organizer.organize
-#=> [#<Organizer::Item:0x007f8eaac429b8 @attr1=4, @attr2="Hi", @attr3=6>, #<Organizer::Item:0x007f8eaac423c8 @attr1=6, @attr2="Ciao", @attr3=4>, #<Organizer::Item:0x007f8eaac41478 @attr1=84, @attr2="Hola", @attr3=16>]
+#<Organizer::Item:0x007f8eaac429b8 @attr1=4, @attr2="Hi", @attr3=6>,
+#<Organizer::Item:0x007f8eaac423c8 @attr1=6, @attr2="Ciao", @attr3=4>,
+#<Organizer::Item:0x007f8eaac41478 @attr1=84, @attr2="Hola", @attr3=16>
 
 # with default filters
 organizer.organize
-#=> [#<Organizer::Item:0x007fb6aac190e0 @attr1=6, @attr2="Ciao", @attr3=4>, #<Organizer::Item:0x007fb6aac23c20 @attr1=84, @attr2="Hola", @attr3=16>]
+#<Organizer::Item:0x007fb6aac190e0 @attr1=6, @attr2="Ciao", @attr3=4>,
+#<Organizer::Item:0x007fb6aac23c20 @attr1=84, @attr2="Hola", @attr3=16>
 
-# passing filters
-organizer.organize(filters: [:my_filter])
-#=> [#<Organizer::Item:0x007fb020ca23d0 @attr1=6, @attr2="Ciao", @attr3=4>, #<Organizer::Item:0x007fb020ca1520 @attr1=84, @attr2="Hola", @attr3=16>]
+# skiping all default filters
+organizer.organize(skip_default_filters: :all)
+#<Organizer::Item:0x007f8eaac429b8 @attr1=4, @attr2="Hi", @attr3=6>,
+#<Organizer::Item:0x007f8eaac423c8 @attr1=6, @attr2="Ciao", @attr3=4>,
+#<Organizer::Item:0x007f8eaac41478 @attr1=84, @attr2="Hola", @attr3=16>
+
+# skiping default filters by name
+organizer.organize(skip_default_filters: [:named_default_filter])
+#<Organizer::Item:0x007f8eaac429b8 @attr1=4, @attr2="Hi", @attr3=6>,
+#<Organizer::Item:0x007f8eaac423c8 @attr1=6, @attr2="Ciao", @attr3=4>,
+#<Organizer::Item:0x007f8eaac41478 @attr1=84, @attr2="Hola", @attr3=16>
+
+# enabling filters
+organizer.organize(enabled_filters: [:filter1])
+#<Organizer::Item:0x007fb020ca23d0 @attr1=6, @attr2="Ciao", @attr3=4>,
+#<Organizer::Item:0x007fb020ca1520 @attr1=84, @attr2="Hola", @attr3=16>
+
+# passing values to filters
+organizer.organize(filters: { filter2: 5 })
+#<Organizer::Item:0x007fb020ca23d0 @attr1=6, @attr2="Ciao", @attr3=4>,
+#<Organizer::Item:0x007fb020ca1520 @attr1=84, @attr2="Hola", @attr3=16>
 
 # with operations
 organizer.organize
-#=> [#<Organizer::Item:0x007fd49a4bbc90 @attr1=4, @attr2="Hi", @attr3=6, @attrs_sum=10>, #<Organizer::Item:0x007fd49a4bb3a8 @attr1=6, @attr2="Ciao", @attr3=4, @attrs_sum=10>, #<Organizer::Item:0x007fd49a4baa20 @attr1=84, @attr2="Hola", @attr3=16, @attrs_sum=100>]
+#<Organizer::Item:0x007fd49a4bbc90 @attr1=4, @attr2="Hi", @attr3=6, @attrs_sum=10>,
+#<Organizer::Item:0x007fd49a4bb3a8 @attr1=6, @attr2="Ciao", @attr3=4, @attrs_sum=10>
+#<Organizer::Item:0x007fd49a4baa20 @attr1=84, @attr2="Hola", @attr3=16, @attrs_sum=100>
 
 ```
 

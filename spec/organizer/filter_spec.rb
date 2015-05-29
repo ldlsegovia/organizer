@@ -13,7 +13,7 @@ describe Organizer::Filter do
     end
 
     it "creates filter with value" do
-      expect(Organizer::Filter.new(Proc.new {}, nil, "value").value).to eq("value")
+      expect(Organizer::Filter.new(Proc.new {}, nil, "any true value will work").accept_value).to be_truthy
     end
 
     it "ensures name, value and definition read only" do
@@ -63,7 +63,7 @@ describe Organizer::Filter do
         (organizer_item.attr1 + organizer_item.attr2) == value
       end
 
-      expect(Organizer::Filter.new(proc, :my_filter, 666).apply(item)).to be_truthy
+      expect(Organizer::Filter.new(proc, :my_filter, true).apply(item, 666)).to be_truthy
     end
   end
 end

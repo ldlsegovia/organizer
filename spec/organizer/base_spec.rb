@@ -51,6 +51,17 @@ describe Organizer::Base do
         end
       end
 
+      context "with filters with values" do
+        before do
+          BaseChild.filter(:filter1, true) { |item, value| item.attr1 > value }
+          BaseChild.filter(:filter2, true) { |item, value| item.attr1 < value }
+        end
+
+        it "applies filters" do
+          expect(BaseChild.new.organize(filters: { filter1: 4, filter2: 80 }).size).to eq(1)
+        end
+      end
+
       context "with operations" do
         before do
           BaseChild.operation(:new_attr) { |item| item.attr1 * 2 }

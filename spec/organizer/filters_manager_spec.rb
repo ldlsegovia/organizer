@@ -67,13 +67,23 @@ describe Organizer::FiltersManager do
         subject.add_normal_filter(:filter2) { |item| item.attr1 < 80 }
       end
 
-      it "applies filters" do
-        result = subject.apply(organizer_collection)
-        expect(result.size).to eq(3)
-        result = subject.apply(organizer_collection, enabled_filters: [:filter1])
-        expect(result.size).to eq(2)
-        result = subject.apply(organizer_collection, enabled_filters: [:filter1, :filter2])
-        expect(result.size).to eq(1)
+      it "returns filtered collection" do
+        expect(subject.apply(organizer_collection).size).to eq(3)
+        expect(subject.apply(organizer_collection, enabled_filters: [:filter1]).size).to eq(2)
+        expect(subject.apply(organizer_collection, enabled_filters: [:filter1, :filter2]).size).to eq(1)
+      end
+    end
+
+    context "with filters with value" do
+      before do
+        subject.add_filter_with_value(:filter1) { |item, value| item.attr1 > value }
+        subject.add_filter_with_value(:filter2) { |item, value| item.attr1 < value }
+      end
+
+      it "returns filtered collection" do
+        expect(subject.apply(organizer_collection).size).to eq(3)
+        expect(subject.apply(organizer_collection, filters: { filter1: 4 }).size).to eq(2)
+        expect(subject.apply(organizer_collection, filters: { filter1: 4, filter2: 80 }).size).to eq(1)
       end
     end
   end

@@ -27,7 +27,7 @@ class Organizer::Base
     # It's no intended to use this method directly. This method will be used inside {Organizer::Template.define} block
     #
     # @param _name [Symbol]
-    # @return _name [Organizer::Filter]
+    # @return [Organizer::Filter]
     #
     # @yield you can use the {Organizer::Item} instance param to evaluate a condition and return a Boolean value.
     # @yieldparam organizer_item [Organizer::Item]
@@ -40,13 +40,19 @@ class Organizer::Base
     # It's no intended to use this method directly. This method will be used inside {Organizer::Template.define} block
     #
     # @param _name [Symbol]
-    # @return _name [Organizer::Filter]
+    # @param _accept_value [Symbol] sets true if you want to filter using params
+    # @return [Organizer::Filter]
     #
     # @yield you can use the {Organizer::Item} instance param to evaluate a condition and return a Boolean value.
     # @yieldparam organizer_item [Organizer::Item]
+    # @yieldparam value [Object] with true _accept_value
     # @yieldreturn [Boolean]
-    def filter(_name, &block)
-      filters_manager.add_normal_filter(_name, &block)
+    def filter(_name, _accept_value = false, &block)
+      if !!_accept_value
+        filters_manager.add_filter_with_value(_name, &block)
+      else
+        filters_manager.add_normal_filter(_name, &block)
+      end
     end
 
     # Adds a new {Organizer::Operation} to operations collection.
@@ -82,6 +88,7 @@ class Organizer::Base
     # To apply a normal filter, need to pass filter names inside array in _options like this: { enabled_filters: [my_filter] }.
     # To skip a default filter, need to pass default filter names inside array in _options like this: { skip_default_filters: [my_filter] }.
     # If you want to skip all default filters: { skip_default_filters: :all }.
+    # To apply filters with values, need to pass filter_key filter_value pairs in _options like this: { my_filter: 4, other_filter: 6 }.
     # Operations will be calculated and added as attributes on each collection item.
     #
     # @param _options [Hash]
@@ -92,6 +99,7 @@ class Organizer::Base
     #   MyInheritedClass.organize(enabled_filters: [:my_filter, :other_filter])
     #   MyInheritedClass.organize(skip_default_filters: [:my_filter])
     #   MyInheritedClass.organize(skip_default_filters: :all)
+    #   MyInheritedClass.organize(filters: {filter1: 4, filter2: 6})
     def organize(_options = {})
       result = filters_manager.apply(collection, _options)
       operations_manager.execute(result)
