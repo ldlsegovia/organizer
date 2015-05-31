@@ -2,50 +2,53 @@ class Organizer::FiltersManager
   include Organizer::Error
 
   # Creates a new {Organizer::Filter} and adds to default filters collection.
+  #   Default filters intend to be applied by default. You won't need to call this filters explicitly.
   #
-  # @param _name [Symbol] filter's name. Not mandatory for default filters.
-  # @return [Organizer::Filter]
-  #
-  # @yield you can use the {Organizer::Item} instance param to evaluate a condition and return a Boolean value.
-  # @yieldparam organizer_item [Organizer::Item]
+  # @param _name [optional, Symbol] filter's name. Not mandatory for default filters.
+  # @yield code that must return a Boolean value.
+  # @yieldparam organizer_item [Organizer::Item] you can use item's attributes in your conditions.
   # @yieldreturn [Boolean]
+  # @return [Organizer::Filter]
   def add_default_filter(_name = nil, &block)
     default_filters << Organizer::Filter.new(block, _name)
     default_filters.last
   end
 
   # Creates a new {Organizer::Filter} and adds to normal filters collection.
+  #   This kind of filters need to be called explicitly using filter's name.
   #
   # @param _name [Symbol] filter's name.
-  # @return [Organizer::Filter]
-  #
-  # @yield you can use the {Organizer::Item} instance param to evaluate a condition and return a Boolean value.
-  # @yieldparam organizer_item [Organizer::Item]
+  # @yield code that must return a Boolean value.
+  # @yieldparam organizer_item [Organizer::Item] you can use item's attributes in your conditions.
   # @yieldreturn [Boolean]
+  # @return [Organizer::Filter]
   def add_normal_filter(_name, &block)
     normal_filters << Organizer::Filter.new(block, _name)
     normal_filters.last
   end
 
   # Creates a new {Organizer::Filter} (with true accept_value) and adds to filters with values collection.
+  #   This kind of filters need to be called explicitly using filter's name and expect a value param.
   #
   # @param _name [Symbol] filter's name.
-  # @return [Organizer::Filter]
-  #
-  # @yield you can use the {Organizer::Item} instance param to evaluate a condition and return a Boolean value.
-  # @yieldparam organizer_item [Organizer::Item]
-  # @yieldparam value [Object]
+  # @yield  code that must return a Boolean value.
+  # @yieldparam organizer_item [Organizer::Item] you can use item's attributes in your conditions.
+  # @yieldparam value [Object] you can use this value in your conditions. Can be anything.
   # @yieldreturn [Boolean]
+  # @return [Organizer::Filter]
   def add_filter_with_value(_name, &block)
     filters_with_values << Organizer::Filter.new(block, _name, true)
     filters_with_values.last
   end
 
   # Applies default and normal filters to give collection.
-  # To apply a normal filter, need to pass filter names inside array in _options like this: { enabled_filters: [my_filter] }.
-  # To skip a default filter, need to pass default filter names inside array in _options like this: { skip_default_filters: [my_filter] }.
-  # If you want to skip all default filters: { skip_default_filters: :all }.
-  # To apply filters with values, need to pass filter_key filter_value pairs in _options like this: { my_filter: 4, other_filter: 6 }.
+  #   To apply a normal filter, need to pass filter names inside array in _options like this:
+  #   { enabled_filters: [my_filter] }.
+  #   To skip a default filter, need to pass default filter names inside array in _options like this:
+  #   { skip_default_filters: [my_filter] }.
+  #   If you want to skip all default filters: { skip_default_filters: :all }.
+  #   To apply filters with values, need to pass filter_key filter_value pairs in _options like this:
+  #   { my_filter: 4, other_filter: 6 }.
   #
   # @param _options [Hash]
   # @param _collection [Organizer::Collection] the whole collection

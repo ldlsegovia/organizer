@@ -3,9 +3,9 @@ class Organizer::Filter
 
   attr_reader :definition, :name, :accept_value
 
-  # @param _definition [Proc] contains logic to decide if filter must be applied or not
-  # @param _name [Symbol] symbol to identify this particular filter
-  # @param _accept_value sets true if you want to pass params to definition call
+  # @param _definition [Proc] contains logic to decide if filter must be applied or not.
+  # @param _name [Symbol] symbol to identify this particular filter.
+  # @param _accept_value sets true if you want to pass params to definition call.
   def initialize(_definition, _name = nil, _accept_value = false)
     raise_error(:definition_must_be_a_proc) if !_definition.is_a?(Proc)
     @definition = _definition
@@ -13,8 +13,7 @@ class Organizer::Filter
     @accept_value = !!_accept_value
   end
 
-  # Evaluates _item param against definition proc to know if item
-  # must be filtered or not.
+  # Evaluates _item param against definition proc to know if item must be filtered or not.
   #
   # @param _item [Organizer::Item]
   # @return [Boolean]

@@ -9,44 +9,37 @@ class Organizer::Base
 
   module ChildClassMethods
     # Defines an instance method named "collection" into an inherited {Organizer::Base} class.
-    # After execute MyInheritedClass.collection(){...}, if you execute MyInheritedClass.new.collection
-    # you will get a {Organizer::Collection} instance containing many {Organizer::Item} instances as Hash items were
-    # passed into the block param.
-    # It's no intended to use this method directly. This method will be used inside {Organizer::Template.define} block
-    # and executed in a new {Organizer::Base} inherited class later.
+    #   After execute MyInheritedClass.collection(){...}, if you execute MyInheritedClass.new.collection
+    #   you will get a {Organizer::Collection} instance.
     #
-    # @yield it must return an Array containing Hash items.
-    # @raise [Organizer::Exception] :undefined_collection_method
+    # @yield array containing Hash items.
+    # @yieldreturn [Array] containing Hash items.
+    # @return [void]
     def collection(&block)
-      define_method :collection do
-        Organizer::Collection.new.fill(block.call)
-      end
+      define_method(:collection) { Organizer::Collection.new.fill(block.call) }
+      return
     end
 
-    # Adds a new {Organizer::Filter} to default filters collection handled by {Organizer::Filtersmanager}
-    # It's no intended to use this method directly. This method will be used inside {Organizer::Template.define} block
+    # Adds a default {Organizer::Filter} to {Organizer::FiltersManager}
     #
-    # @param _name [Symbol]
-    # @return [Organizer::Filter]
-    #
-    # @yield you can use the {Organizer::Item} instance param to evaluate a condition and return a Boolean value.
+    # @param _name [optional, Symbol] filter's name.
+    # @yield code that must return a Boolean value.
     # @yieldparam organizer_item [Organizer::Item]
     # @yieldreturn [Boolean]
+    # @return [Organizer::Filter]
     def default_filter(_name = nil, &block)
       filters_manager.add_default_filter(_name, &block)
     end
 
-    # Adds a new {Organizer::Filter} to normal filters collection handled by {Organizer::Filtersmanager}
-    # It's no intended to use this method directly. This method will be used inside {Organizer::Template.define} block
+    # Adds a normal {Organizer::Filter} to {Organizer::FiltersManager}
     #
-    # @param _name [Symbol]
-    # @param _accept_value [Symbol] sets true if you want to filter using params
-    # @return [Organizer::Filter]
-    #
-    # @yield you can use the {Organizer::Item} instance param to evaluate a condition and return a Boolean value.
+    # @param _name [Symbol] filter's name.
+    # @param _accept_value [Symbol] sets true if you want to filter using params.
+    # @yield code that must return a Boolean value.
     # @yieldparam organizer_item [Organizer::Item]
-    # @yieldparam value [Object] with true _accept_value
+    # @yieldparam value [Object] if _accept_value is true
     # @yieldreturn [Boolean]
+    # @return [Organizer::Filter]
     def filter(_name, _accept_value = false, &block)
       if !!_accept_value
         filters_manager.add_filter_with_value(_name, &block)
@@ -55,26 +48,24 @@ class Organizer::Base
       end
     end
 
-    # Adds a new {Organizer::Operation} to operations collection.
-    # It's no intended to use this method directly. This method will be used inside {Organizer::Template.define} block
+    # Adds a new {Organizer::Operation} to {Organizer::OperationsManager}
     #
     # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
-    # @return [Organizer::Operation]
-    #
-    # @yield you can use the {Organizer::Item} instance param values to build the new attribute value
+    # @yield code that will return the operation's result
     # @yieldparam organizer_item [Organizer::Item]
+    # @return [Organizer::Operation]
     def operation(_name, &block)
       operations_manager.add_operation(_name, &block)
     end
 
-    # Returns manager to handle default and normal filters
+    # Returns manager to handle filter issues.
     #
     # @return [Organizer::FiltersManager]
     def filters_manager
       @filters_manager ||= Organizer::FiltersManager.new
     end
 
-    # Returns manager to handle operations
+    # Returns manager to handle operation issues.
     #
     # @return [Organizer::OperationsManager]
     def operations_manager
@@ -83,13 +74,16 @@ class Organizer::Base
   end
 
   module ChildInstanceMethods
-    # Applies default_filters, filters and operations to defined collection.
-    # Default filters will be applied automatically.
-    # To apply a normal filter, need to pass filter names inside array in _options like this: { enabled_filters: [my_filter] }.
-    # To skip a default filter, need to pass default filter names inside array in _options like this: { skip_default_filters: [my_filter] }.
-    # If you want to skip all default filters: { skip_default_filters: :all }.
-    # To apply filters with values, need to pass filter_key filter_value pairs in _options like this: { my_filter: 4, other_filter: 6 }.
-    # Operations will be calculated and added as attributes on each collection item.
+    # Applies default_filters, filters and operations to the defined collection.
+    #   Default filters will be applied automatically.
+    #   To apply a normal filter, need to pass filter names inside array in _options like this:
+    #   { enabled_filters: [my_filter] }.
+    #   To skip a default filter, need to pass default filter names inside array in _options like this:
+    #   { skip_default_filters: [my_filter] }.
+    #   If you want to skip all default filters: { skip_default_filters: :all }.
+    #   To apply filters with params, need to pass filter_key filter_value pairs in _options like this:
+    #   { my_filter: 4, other_filter: 6 }.
+    #   Operations will be calculated and added as attributes on each collection item.
     #
     # @param _options [Hash]
     # @return [Organizer::Collection]

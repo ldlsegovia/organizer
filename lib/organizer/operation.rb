@@ -12,9 +12,9 @@ class Organizer::Operation
     @name = _name
   end
 
-  # Uses _item param attributes to build a new attributes based on operation given on definition block.
+  # Evaluates definition proc to build a new attribute. This attribute will be added to _item param.
   #
-  # @param _item [Organizer::Item]
+  # @param _item [Organizer::Item] you can use item's attributes to build the new attribute
   # @return [Organizer::Item] with the new attribute added
   #
   # @raise [Organizer::OperationException] :execute_over_organizer_items_only

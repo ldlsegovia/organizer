@@ -1,13 +1,15 @@
 module Organizer::Template
   include Organizer::Error
 
-  # Creates a class that inherits from {Organizer::Base} and executes the methods inside block.
-  # If you pass :my_organizer as _organizer_name param, you will get a MyOrganizer < Organizer::Base class
+  # Creates a class that inherits from {Organizer::Base} and executes the methods inside the block,
+  #  in the inherited class context, in order to customize the new Organizer class behaviour.
   #
-  # @param _organizer_name [String] the name of the new {Organizer::Base} child class
+  # @param _organizer_name [String] the name of the new {Organizer::Base} inherited class.
   # @yield you can pass methods that will be executed in the new {Organizer::Base} child class context.
-  #   These methods are: {Organizer::Base.collection}
+  #   These methods are: {Organizer::Base.collection}, {Organizer::Base.default_filter},
+  #   {Organizer::Base.filter} and {Organizer::Base.operation}
   # @return [void]
+  #
   # @raise [Organizer::TemplateException] :invalid_organizer_name
   #
   # @example Passing a collection
@@ -32,7 +34,7 @@ module Organizer::Template
   #       organizer_item.attr1 > value
   #     end
   #
-  #     operation do |organizer_item|
+  #     operation(:sum_attr) do |organizer_item|
   #       organizer_item.attr1 + organizer_item.attr3
   #     end
   #   end
