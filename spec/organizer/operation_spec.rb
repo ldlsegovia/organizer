@@ -15,16 +15,14 @@ describe Organizer::Operation do
     end
 
     it "raise exception if _name is not defined" do
-      proc = Proc.new {}
-      expect { Organizer::Operation.new(proc, nil) }.to(
+      expect { Organizer::Operation.new(Proc.new {}, nil) }.to(
         raise_organizer_error(Organizer::OperationException, :blank_name))
     end
   end
 
   describe "#execute" do
     it "raise exception if _item is not an Organizer::Item" do
-      proc = Proc.new {}
-      expect { Organizer::Operation.new(proc, :my_operation).execute("not an item") }.to(
+      expect { Organizer::Operation.new(Proc.new {}, :my_operation).execute("not an item") }.to(
         raise_organizer_error(Organizer::OperationException, :execute_over_organizer_items_only))
     end
 

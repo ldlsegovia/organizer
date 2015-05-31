@@ -52,7 +52,7 @@ describe Organizer::Filter do
 
     it "uses Organizer::Item instance on definition call" do
       proc = Proc.new do |organizer_item|
-        (organizer_item.attr1 + organizer_item.attr2) == 666
+        (organizer_item.int_attr1 + organizer_item.int_attr2) == 666
       end
 
       expect(Organizer::Filter.new(proc).apply(item)).to be_truthy
@@ -60,10 +60,20 @@ describe Organizer::Filter do
 
     it "uses filter value param on definition call" do
       proc = Proc.new do |organizer_item, value|
-        (organizer_item.attr1 + organizer_item.attr2) == value
+        (organizer_item.int_attr1 + organizer_item.int_attr2) == value
       end
 
       expect(Organizer::Filter.new(proc, :my_filter, true).apply(item, 666)).to be_truthy
+    end
+  end
+
+  describe "#has_name?" do
+    it "returns true when filter has name param" do
+      expect(Organizer::Filter.new(Proc.new {}, :my_filter).has_name?("my_filter")).to be_truthy
+    end
+
+    it "returns false when filter has not name param" do
+      expect(Organizer::Filter.new(Proc.new {}, :my_filter).has_name?("invalid")).to be_falsy
     end
   end
 end

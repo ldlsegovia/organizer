@@ -88,4 +88,12 @@ describe Organizer::Item do
       expect(item2).to respond_to(:method_for_item2)
     end
   end
+
+  describe "#attribute_names" do
+    let_item(:item)
+
+    it "returns hash keys matching attribute names exactly" do
+      expect(item.attribute_names).to match_array(item_hash_keys)
+    end
+  end
 end

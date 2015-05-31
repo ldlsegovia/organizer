@@ -1,8 +1,24 @@
 module HelpfulVariables
   def let_item(_name)
+    attributes = {
+      int_attr1: 400,
+      int_attr2: 266,
+      float_attr: 4.684,
+      string_attr: "Hi! I'm a String",
+      date_attr: "04/06/1984".to_date,
+      datetime_attr: "04/06/1984 06:06:06".to_datetime
+    }
+
     let(_name) do
-      item = Organizer::Item.new
-      item.define_attributes({ attr1: 400, attr2: 266 })
+      Organizer::Item.new.define_attributes(attributes)
+    end
+
+    let("#{_name}_hash") do
+      attributes
+    end
+
+    let("#{_name}_hash_keys") do
+      attributes.keys
     end
   end
 

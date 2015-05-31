@@ -34,6 +34,12 @@ class Organizer::FilterException < ::Exception
   }
 end
 
+class Organizer::FiltersManagerException < ::Exception
+  ERRORS = {
+    generate_over_organizer_items_only: "Can generate usual filters only based on Organizer::Items only",
+  }
+end
+
 class Organizer::FiltersCollectionException < ::Exception
   ERRORS = {
     invalid_item: "Invalid filter collection item. Must be Organizer:Filter only"
