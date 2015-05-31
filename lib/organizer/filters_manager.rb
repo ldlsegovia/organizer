@@ -59,6 +59,32 @@ class Organizer::FiltersManager
     apply_filters_with_values(filtered_collection, _options)
   end
 
+  # Generates common filters based on _item attributes. If you have an {Organizer::Item} with a single
+  #   attribute named "my_attr". After run this method you will have these filters:
+  #   * my_attr_eq: match attribute equals to...
+  #   * my_attr_not_eq: match attribute different to...
+  #   * my_attr_gt: match attribute greater than...
+  #   * my_attr_lt: match attribute lower than...
+  #   * my_attr_goet: match attribute greater or equal than...
+  #   * my_attr_loet: match attribute lower or equal than...
+  #   * my_attr_contains: match attribute containing string...
+  #   * my_attr_starts: match attribute starting with string...
+  #   * my_attr_ends: match attribute ending with string...
+  def generate_usual_filters(_item)
+    raise_error(:generate_over_organizer_items_only) unless _item.is_a? Organizer::Item
+    _item.attribute_names.each do |attribute|
+      generate_attr_filter(attribute, :eq) { |item, value| item.send(attribute) == value }
+      generate_attr_filter(attribute, :not_eq) { |item, value| item.send(attribute) != value }
+      generate_attr_filter(attribute, :gt) { |item, value| item.send(attribute) > value }
+      generate_attr_filter(attribute, :goet) { |item, value| item.send(attribute) >= value }
+      generate_attr_filter(attribute, :lt) { |item, value| item.send(attribute) < value }
+      generate_attr_filter(attribute, :loet) { |item, value| item.send(attribute) <= value }
+      generate_attr_filter(attribute, :contains) { |item, value| !!item.send(attribute).to_s[value.to_s] }
+      generate_attr_filter(attribute, :starts) { |item, value| item.send(attribute).to_s.start_with?(value.to_s) }
+      generate_attr_filter(attribute, :ends) { |item, value| item.send(attribute).to_s.end_with?(value.to_s) }
+    end
+  end
+
   private
 
   def default_filters
@@ -73,49 +99,54 @@ class Organizer::FiltersManager
     @filters_with_values ||= Organizer::FiltersCollection.new
   end
 
+  def all_filters
+    filters = Organizer::FiltersCollection.new
+    default_filters.each { |f| filters << f }
+    normal_filters.each { |f| filters << f }
+    filters_with_values.each { |f| filters << f }
+  end
+
+  def generate_attr_filter(_attr, _sufix, &proc)
+    add_filter_with_value("#{_attr}_#{_sufix}", &proc)
+  end
+
   def apply_default_fitlers(_collection, _options = {})
     filter_by = _options.fetch(:skip_default_filters, [])
-    selected_filters = (filter_by == :all) ? [] : reject_filters(default_filters, filter_by)
+    selected_filters = (filter_by == :all) ? nil : default_filters.reject_filters(filter_by)
     apply_filters(selected_filters, _collection)
   end
 
   def apply_normal_filters(_collection, _options = {})
     filter_names = _options.fetch(:enabled_filters, [])
-    selected_filters = select_filters(normal_filters, filter_names)
+    selected_filters = normal_filters.select_filters(filter_names)
     apply_filters(selected_filters, _collection)
   end
 
   def apply_filters_with_values(_collection, _options = {})
     filter_pairs = _options.fetch(:filters, {})
-    selected_filters = select_filters(filters_with_values, filter_pairs.keys)
+    selected_filters = filters_with_values.select_filters(filter_pairs.keys)
     apply_filters(selected_filters, _collection, filter_pairs)
   end
 
-  def select_filters(_filters, _filter_names)
-    _filters.select { |filter| _filter_names.include?(filter.name) }
-  end
-
-  def reject_filters(_filters, _filter_names)
-    _filters.reject { |filter| _filter_names.include?(filter.name) }
-  end
-
   def apply_filters(_filters, _collection, _filters_values = nil)
-    return _collection if _filters.count <= 0
-    _collection.reject do |item|
-      reject_item = false
+    return _collection unless _filters
+    filtered_collection = Organizer::Collection.new
+    _collection.each do |item|
+      add_item = true
       _filters.each do |filter|
         value = get_filter_value(filter, _filters_values)
         if !filter.apply(item, value)
-          reject_item = true
+          add_item = false
           break
         end
       end
-      reject_item
+      filtered_collection << item if add_item
     end
+    filtered_collection
   end
 
   def get_filter_value(_filter, _filters_values)
-    return if !_filter.accept_value || !_filters_values
-    _filters_values[_filter.name]
+    return if !_filter.accept_value || !_filters_values || !_filter.name
+    _filters_values[_filter.name] || _filters_values[_filter.name.to_sym]
   end
 end

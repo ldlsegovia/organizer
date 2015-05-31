@@ -1,6 +1,8 @@
 class Organizer::Item
   include Organizer::Error
 
+  attr_reader :attribute_names
+
   # Creates attribute readers based on _hash keys. A reader's value will be the hash value of that key.
   #
   # @param _hash [Hash]
@@ -39,6 +41,10 @@ class Organizer::Item
     self
   end
 
+  def attribute_names
+    @attribute_names ||= []
+  end
+
   private
 
   def method_name_from_string(_string)
@@ -51,5 +57,6 @@ class Organizer::Item
   def define_attr_reader(_method_name, _value)
     self.singleton_class.send(:attr_reader, _method_name)
     self.instance_variable_set("@#{_method_name}", _value)
+    attribute_names << _method_name.to_sym
   end
 end

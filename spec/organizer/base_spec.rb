@@ -20,8 +20,9 @@ describe Organizer::Base do
       before { BaseChild.collection { valid_raw_collection } }
 
       it "returns defined collection" do
-        expect(BaseChild.new.organize).to be_a(Organizer::Collection)
-        expect(BaseChild.new.organize.size).to eq(3)
+        result = BaseChild.new.organize
+        expect(result).to be_a(Organizer::Collection)
+        expect(result.size).to eq(3)
       end
 
       context "with default filters" do
@@ -31,11 +32,14 @@ describe Organizer::Base do
         end
 
         it "returns filtered collection" do
-          expect(BaseChild.new.organize.size).to eq(1)
+          result = BaseChild.new.organize
+          expect(result).to be_a(Organizer::Collection)
+          expect(result.size).to eq(1)
         end
 
         it "skips default filter passing filter to skip_default_filter option" do
           result = BaseChild.new.organize({ skip_default_filters: [:my_filter] })
+          expect(result).to be_a(Organizer::Collection)
           expect(result.size).to eq(2)
         end
       end
@@ -47,7 +51,9 @@ describe Organizer::Base do
         end
 
         it "applies filters" do
-          expect(BaseChild.new.organize(enabled_filters: [:filter1, :filter2]).size).to eq(1)
+          result = BaseChild.new.organize(enabled_filters: [:filter1, :filter2])
+          expect(result).to be_a(Organizer::Collection)
+          expect(result.size).to eq(1)
         end
       end
 
@@ -58,7 +64,9 @@ describe Organizer::Base do
         end
 
         it "applies filters" do
-          expect(BaseChild.new.organize(filters: { filter1: 4, filter2: 80 }).size).to eq(1)
+          result = BaseChild.new.organize(filters: { filter1: 4, filter2: 80 })
+          expect(result).to be_a(Organizer::Collection)
+          expect(result.size).to eq(1)
         end
       end
 
@@ -70,6 +78,7 @@ describe Organizer::Base do
         it "applies filters" do
           base = BaseChild.new
           result = base.organize
+          expect(result).to be_a(Organizer::Collection)
           expect(result.first.new_attr).to eq(8)
           expect(result.second.new_attr).to eq(12)
           expect(result.third.new_attr).to eq(168)

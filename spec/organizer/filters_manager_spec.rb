@@ -87,4 +87,69 @@ describe Organizer::FiltersManager do
       end
     end
   end
+
+  describe "#generate_usual_filters" do
+    let_item(:item)
+    let(:collection) { Organizer::Collection.new << item }
+    before do
+      subject.generate_usual_filters(item)
+      @all_filters = subject.send(:all_filters)
+    end
+
+    it "raise exception if _item is not an Organizer::Item" do
+      expect { subject.generate_usual_filters("not an item") }.to(
+        raise_organizer_error(Organizer::FiltersManagerException, :generate_over_organizer_items_only))
+    end
+
+    it "has generated filters" do
+      item_hash_keys.each do |attribute|
+        [:eq, :not_eq, :gt, :lt, :goet, :loet, :starts, :ends, :contains].each do |sufix|
+          filter_name = "#{attribute}_#{sufix}"
+          expect(@all_filters.filter_by_name(filter_name).name).to eq(filter_name)
+        end
+      end
+    end
+
+    it "executes attr_eq filters properly" do
+      item_hash_keys.each do |attribute|
+        filter_name = "#{attribute}_eq"
+        params = { filters: { filter_name => item.send(attribute) } }
+        expect(subject.apply(collection, params).count).to eq(1)
+      end
+    end
+
+    it "executes attr_not_eq filters properly", focus: true do
+      item_hash_keys.each do |attribute|
+        filter_name = "#{attribute}_not_eq"
+        expect(subject.apply(collection, { filters: { filter_name => 666 } }).count).to eq(1)
+        expect(subject.apply(collection, { filters: { filter_name => item.send(attribute) } }).count).to eq(0)
+      end
+    end
+
+    it "executes attr_gt filters properly" do
+      expect(subject.apply(collection, { filters: { int_attr1_gt: 400 } }).count).to eq(0)
+      expect(subject.apply(collection, { filters: { int_attr1_goet: 400 } }).count).to eq(1)
+      expect(subject.apply(collection, { filters: { int_attr1_gt: 399 } }).count).to eq(1)
+      expect(subject.apply(collection, { filters: { date_attr_gt: "04/06/1984".to_date } }).count).to eq(0)
+      expect(subject.apply(collection, { filters: { date_attr_goet: "04/06/1984".to_date } }).count).to eq(1)
+      expect(subject.apply(collection, { filters: { date_attr_gt: "03/06/1984".to_date } }).count).to eq(1)
+    end
+
+    it "executes attr_lt filters properly" do
+      expect(subject.apply(collection, { filters: { int_attr1_lt: 400 } }).count).to eq(0)
+      expect(subject.apply(collection, { filters: { int_attr1_loet: 400 } }).count).to eq(1)
+      expect(subject.apply(collection, { filters: { int_attr1_lt: 401 } }).count).to eq(1)
+      expect(subject.apply(collection, { filters: { date_attr_lt: "04/06/1984".to_date } }).count).to eq(0)
+      expect(subject.apply(collection, { filters: { date_attr_loet: "04/06/1984".to_date } }).count).to eq(1)
+      expect(subject.apply(collection, { filters: { date_attr_lt: "05/06/1984".to_date } }).count).to eq(1)
+    end
+
+    it "executes attr string filters properly" do
+      expect(subject.apply(collection, { filters: { string_attr_contains: "I'm a" } }).count).to eq(1)
+      expect(subject.apply(collection, { filters: { int_attr2_contains: 66 } }).count).to eq(1)
+      expect(subject.apply(collection, { filters: { string_attr_contains: "bla" } }).count).to eq(0)
+      expect(subject.apply(collection, { filters: { string_attr_starts: "Hi" } }).count).to eq(1)
+      expect(subject.apply(collection, { filters: { string_attr_ends: "String" } }).count).to eq(1)
+    end
+  end
 end

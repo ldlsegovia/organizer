@@ -37,4 +37,12 @@ class Organizer::Filter
     raise_error(:definition_must_return_boolean) if !!result != result
     result
   end
+
+  # Check if this filter has name passed in param
+  #
+  # @param _filter_name [Organizer::Item]
+  # @return [Boolean]
+  def has_name?(_filter_name)
+    !!self.name && self.name.to_sym == _filter_name.to_sym
+  end
 end
