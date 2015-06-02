@@ -54,6 +54,7 @@ class Organizer::FiltersManager
   # @param _collection [Organizer::Collection] the whole collection
   # @return [Organizer::Collection] a filtered collection
   def apply(_collection, _options = {})
+    generate_usual_filters(_collection.first)
     filtered_collection = apply_default_fitlers(_collection, _options)
     filtered_collection = apply_normal_filters(filtered_collection, _options)
     apply_filters_with_values(filtered_collection, _options)
@@ -71,6 +72,7 @@ class Organizer::FiltersManager
   #   * my_attr_starts: match attribute starting with string...
   #   * my_attr_ends: match attribute ending with string...
   def generate_usual_filters(_item)
+    return unless _item
     raise_error(:generate_over_organizer_items_only) unless _item.is_a? Organizer::Item
     _item.attribute_names.each do |attribute|
       generate_attr_filter(attribute, :eq) { |item, value| item.send(attribute) == value }
