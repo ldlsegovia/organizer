@@ -64,11 +64,6 @@ describe Organizer::Item do
       end
     end
 
-    it "returns error trying to redefine pre-existent methods" do
-      expect { subject.define_attributes({to_s: "I'm a pre-existent method"}) }.to(
-        raise_organizer_error(Organizer::ItemException, :method_redefinition_not_allowed))
-    end
-
     it "preserves attribute's data types" do
       subject.define_attributes(valid_attributes)
       expect(subject.first_name).to be_a(String)

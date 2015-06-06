@@ -8,8 +8,7 @@ class Organizer::Item
   # @param _hash [Hash]
   # @return [Organizer::Item] self
   #
-  # @raise [Organizer::ItemException] :must_be_a_hash, :invalid_attribute_key and
-  #   :method_redefinition_not_allowed
+  # @raise [Organizer::ItemException] :must_be_a_hash and :invalid_attribute_key
   #
   # @example
   #   hash = {
@@ -35,12 +34,20 @@ class Organizer::Item
     self
   end
 
+  # Creates an attribute reader containing the _value variable.
+  #
+  # @param _attr_name [Symbol] this will be the reader's mehtod name
+  # @param _value [Object] this will be the reader's return value
+  # @param _value [Organizer::Item] self
   def define_attribute(_attr_name, _value)
     method_name = method_name_from_string(_attr_name)
     define_attr_reader(method_name, _value)
     self
   end
 
+  # Returns defined attribute names for this item
+  #
+  # @return [Array]
   def attribute_names
     @attribute_names ||= []
   end
@@ -49,9 +56,7 @@ class Organizer::Item
 
   def method_name_from_string(_string)
     raise_error(:invalid_attribute_key) if !_string.match(/^[A-z0-9\-\s]+$/)
-    method_name = _string.to_s.underscore.gsub(" ", "_")
-    raise_error(:method_redefinition_not_allowed) if self.respond_to?(method_name)
-    method_name
+    _string.to_s.underscore.gsub(" ", "_")
   end
 
   def define_attr_reader(_method_name, _value)

@@ -129,7 +129,7 @@ describe Organizer::FiltersManager do
       end
     end
 
-    it "executes attr_not_eq filters properly", focus: true do
+    it "executes attr_not_eq filters properly" do
       item_hash_keys.each do |attribute|
         filter_name = "#{attribute}_not_eq"
         expect(subject.apply(collection, { filters: { filter_name => 666 } }).count).to eq(1)
