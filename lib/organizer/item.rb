@@ -8,8 +8,7 @@ class Organizer::Item
   # @param _hash [Hash]
   # @return [Organizer::Item] self
   #
-  # @raise [Organizer::ItemException] :must_be_a_hash, :invalid_attribute_key and
-  #   :method_redefinition_not_allowed
+  # @raise [Organizer::ItemException] :must_be_a_hash and :invalid_attribute_key
   #
   # @example
   #   hash = {
@@ -49,9 +48,7 @@ class Organizer::Item
 
   def method_name_from_string(_string)
     raise_error(:invalid_attribute_key) if !_string.match(/^[A-z0-9\-\s]+$/)
-    method_name = _string.to_s.underscore.gsub(" ", "_")
-    raise_error(:method_redefinition_not_allowed) if self.respond_to?(method_name)
-    method_name
+    _string.to_s.underscore.gsub(" ", "_")
   end
 
   def define_attr_reader(_method_name, _value)

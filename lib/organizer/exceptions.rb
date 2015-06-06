@@ -21,8 +21,7 @@ end
 class Organizer::ItemException < ::Exception
   ERRORS = {
     must_be_a_hash: "_hash parameter must be a Hash",
-    invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
-    method_redefinition_not_allowed: "The _hash keys can't be named as pre-existent methods"
+    invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters"
   }
 end
 
@@ -57,5 +56,11 @@ end
 class Organizer::OperationsCollectionException < ::Exception
   ERRORS = {
     invalid_item: "Invalid operations collection item. Must be Organizer:Operation only"
+  }
+end
+
+class Organizer::OperationsManagerException < ::Exception
+  ERRORS = {
+    failed_operation_execution: "Failed operation execution"
   }
 end
