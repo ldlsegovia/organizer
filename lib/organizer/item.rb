@@ -34,12 +34,20 @@ class Organizer::Item
     self
   end
 
+  # Creates an attribute reader containing the _value variable.
+  #
+  # @param _attr_name [Symbol] this will be the reader's mehtod name
+  # @param _value [Object] this will be the reader's return value
+  # @param _value [Organizer::Item] self
   def define_attribute(_attr_name, _value)
     method_name = method_name_from_string(_attr_name)
     define_attr_reader(method_name, _value)
     self
   end
 
+  # Returns defined attribute names for this item
+  #
+  # @return [Array]
   def attribute_names
     @attribute_names ||= []
   end

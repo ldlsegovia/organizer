@@ -18,9 +18,11 @@ class Organizer::OperationsManager
   #
   # @param _collection [Organizer::Collection]
   # @return [Organizer::Collection] the collection with new attributes attached.
+  #
+  # @raise [Organizer::OperationsManagerException]
   def execute(_collection)
     return _collection if operations.count <= 0
-    _collection.each { |item| execute_on_item(item, operations) }
+    _collection.each { |item| execute_on_item(item, operations.dup) }
     _collection
   end
 
@@ -30,16 +32,17 @@ class Organizer::OperationsManager
     return _item if _operations.size.zero?
 
     if _previous_operations_count == _operations.size
-      raise_error(:failed_operation_execution)
+      raise_error(_operations.get_errors)
     end
 
-    _non_executed_operations = []
+    _non_executed_operations = Organizer::OperationsCollection.new
     _previous_operations_count = _operations.size
 
     _operations.each do |operation|
       begin
         operation.execute(_item)
       rescue Exception => e
+        operation.error = e
         _non_executed_operations << operation
       end
     end

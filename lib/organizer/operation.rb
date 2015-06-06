@@ -1,6 +1,7 @@
 class Organizer::Operation
   include Organizer::Error
 
+  attr_accessor :error
   attr_reader :definition, :name
 
   # @param _definition [Proc] contains logic to generate the value for this operation
@@ -35,5 +36,12 @@ class Organizer::Operation
     raise_error(:execute_over_organizer_items_only) if !_item.is_a?(Organizer::Item)
     result = definition.call(_item)
     _item.define_attribute(self.name, result)
+  end
+
+  # Checks if this operation has error
+  #
+  # @return [Boolean]
+  def has_error?
+    !error.blank? && !error.message.blank?
   end
 end

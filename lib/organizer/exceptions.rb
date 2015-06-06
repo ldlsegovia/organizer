@@ -60,7 +60,5 @@ class Organizer::OperationsCollectionException < ::Exception
 end
 
 class Organizer::OperationsManagerException < ::Exception
-  ERRORS = {
-    failed_operation_execution: "Failed operation execution"
-  }
+  ERRORS = {}
 end

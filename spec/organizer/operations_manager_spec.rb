@@ -41,12 +41,13 @@ describe Organizer::OperationsManager do
         expect(subject.execute(organizer_collection).second.the_newest_result_attr).to eq(96)
       end
 
-      context "with invalid item attribute", focus: true do
+      context "with invalid item attribute" do
         before { subject.add_operation(:another_attr) { |item| item.invalid_attr * 2 } }
+        before { subject.add_operation(:some_attr) { |item| item.some_invalid_attr * 2 } }
 
         it "raise exception" do
           expect { subject.execute(organizer_collection) }.to(
-            raise_organizer_error(Organizer::OperationsManagerException, :failed_operation_execution))
+            raise_error(Organizer::OperationsManagerException))
         end
       end
     end
