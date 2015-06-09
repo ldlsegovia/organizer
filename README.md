@@ -58,10 +58,19 @@ Organizer::Template.define("my_organizer") do
 end
 ```
 
+Also, you can pass options (filters usually) to get a desired raw collection: `organizer = MyOrganizer.new({attr1: 84})`.
+These options will be present as the first param on collection definition like this:
+
 ```ruby
 Organizer::Template.define("my_organizer") do
-  collection do
-    SampleClass.get_collection
+  collection do |collection_options|
+    data = [
+      { attr1: 4, attr2: "Hi", attr3: 6 },
+      { attr1: 6, attr2: "Ciao", attr3: 4 },
+      { attr1: 84, attr2: "Hola", attr3: 16 }
+    ]
+
+    data.select { |item| item[:attr1] == collection_options[:attr1]}
   end
 end
 ```
@@ -69,10 +78,14 @@ end
 #### Usage Example
 
 ```ruby
-# with defined collection
+# with defined collection for the first example
 MyOrganizer.new.organize
 #<Organizer::Item:0x007f8eaac429b8 @attr1=4, @attr2="Hi", @attr3=6>,
 #<Organizer::Item:0x007f8eaac423c8 @attr1=6, @attr2="Ciao", @attr3=4>,
+#<Organizer::Item:0x007f8eaac41478 @attr1=84, @attr2="Hola", @attr3=16>
+
+# with defined collection for the second example (applying the filter)
+MyOrganizer.new.organize
 #<Organizer::Item:0x007f8eaac41478 @attr1=84, @attr2="Hola", @attr3=16>
 ```
 

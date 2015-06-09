@@ -14,7 +14,7 @@ module Organizer::Template
   #
   # @example Passing a collection
   #   Organizer::Template.define("my_organizer") do
-  #     collection do
+  #     collection do |collection_options|
   #       [
   #         { attr1: 4, attr2: "Hi", attr3: 13 },
   #         { attr1: 6, attr2: "Ciao", attr3: 2},

@@ -8,15 +8,13 @@ class Organizer::Base
   end
 
   module ChildClassMethods
-    # Defines an instance method named "collection" into an inherited {Organizer::Base} class.
-    #   After execute MyInheritedClass.collection(){...}, if you execute MyInheritedClass.new.collection
-    #   you will get a {Organizer::Collection} instance.
+    # Persist a proc that needs to return an Array of Hashes.
     #
     # @yield array containing Hash items.
     # @yieldreturn [Array] containing Hash items.
     # @return [void]
     def collection(&block)
-      define_method(:collection) { Organizer::Collection.new.fill(block.call) }
+      @collection_proc = block
       return
     end
 
@@ -71,9 +69,22 @@ class Organizer::Base
     def operations_manager
       @operations_manager ||= Organizer::OperationsManager.new
     end
+
+    # Returns a proc containing an array collection
+    #
+    # @return [Array]
+    def collection_proc
+      @collection_proc
+    end
   end
 
   module ChildInstanceMethods
+    # @param _collection_options this data will be used to get the desired raw collection. Usually,
+    #   filters will be passed here.
+    def initialize(_collection_options = {})
+      @collection_options = _collection_options
+    end
+
     # Applies default_filters, filters and operations to the defined collection.
     #   Default filters will be applied automatically.
     #   To apply a normal filter, need to pass filter names inside array in _options like this:
@@ -102,8 +113,12 @@ class Organizer::Base
       operations_manager.execute(result)
     end
 
-    def method_missing(_m, *args, &block)
-      raise_error(:undefined_collection_method) if _m == :collection
+    # It returns collection stored as proc in collection_proc var converted to {Organizer::Collection}
+    #
+    # @return [Organizer::Collection]
+    def collection
+      raise_error(:undefined_collection_method) unless collection_proc
+      Organizer::Collection.new.fill(collection_proc.call(collection_options))
     end
 
     private
@@ -114,6 +129,14 @@ class Organizer::Base
 
     def operations_manager
       self.class.operations_manager
+    end
+
+    def collection_proc
+      self.class.collection_proc
+    end
+
+    def collection_options
+      @collection_options ||= {}
     end
   end
 end

@@ -98,10 +98,12 @@ describe Organizer::Base do
   end
 
   describe "#collection" do
-    it "creates the private collection instance method" do
-      expect(BaseChild.new.respond_to?(:collection, true)).to be_falsy
-      BaseChild.collection { valid_raw_collection }
-      expect(BaseChild.new.respond_to?(:collection, true)).to be_truthy
+    it "uses filters passed as in initialize" do
+      BaseChild.collection do |options|
+        valid_raw_collection.select { |item| item[:attr1] > options[:attr1] }
+      end
+
+      expect(BaseChild.new(attr1: 6).collection.count).to eq(1)
     end
 
     it "raises error with undefined collection" do
