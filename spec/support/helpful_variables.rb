@@ -35,9 +35,9 @@ module HelpfulVariables
   def let_organizer_collection(_name)
     let(_name) do
       collection = Organizer::Collection.new
-      collection << Organizer::Item.new.define_attributes({ attr1: 4, attr2: "Hi", attr3: 6 })
-      collection << Organizer::Item.new.define_attributes({ attr1: 6, attr2: "Ciao", attr3: 4 })
-      collection << Organizer::Item.new.define_attributes({ attr1: 84, attr2: "Hola", attr3: 16 })
+      collection << Organizer::Item.new.define_attributes({ attr1: 4, attr2: "Hi", attr3: 6, store_id: 1 })
+      collection << Organizer::Item.new.define_attributes({ attr1: 6, attr2: "Ciao", attr3: 4, store_id: 1 })
+      collection << Organizer::Item.new.define_attributes({ attr1: 84, attr2: "Hola", attr3: 16, store_id: 2 })
       collection
     end
   end

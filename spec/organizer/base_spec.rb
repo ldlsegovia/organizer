@@ -98,7 +98,7 @@ describe Organizer::Base do
   end
 
   describe "#collection" do
-    it "uses filters passed as in initialize" do
+    it "uses filters passed on initialize" do
       BaseChild.add_collection do |options|
         valid_raw_collection.select { |item| item[:attr1] > options[:attr1] }
       end

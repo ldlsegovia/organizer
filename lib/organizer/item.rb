@@ -52,6 +52,14 @@ class Organizer::Item
     @attribute_names ||= []
   end
 
+  # Checks if item has attribute passed as param
+  #
+  # @param _attribute_name [Symbol]
+  # @return [Boolean]
+  def include_attribute?(_attribute_name)
+    self.attribute_names.include?(_attribute_name)
+  end
+
   private
 
   def method_name_from_string(_string)
