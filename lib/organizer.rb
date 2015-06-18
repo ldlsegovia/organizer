@@ -1,4 +1,5 @@
 require "organizer/version"
+require "organizer/attributes_handler"
 require "organizer/error"
 require "organizer/exceptions"
 require "organizer/template"

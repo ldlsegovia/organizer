@@ -69,3 +69,10 @@ class Organizer::GroupException < ::Exception
     group_by_attr_not_present_in_collection: "group_by_attr is not present in collection Organizer::Items"
   }
 end
+
+class Organizer::GroupItemException < ::Exception
+  ERRORS = {
+    must_be_a_hash: "_hash parameter must be a Hash",
+    invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters"
+  }
+end
