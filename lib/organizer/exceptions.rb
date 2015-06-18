@@ -21,7 +21,8 @@ end
 class Organizer::ItemException < ::Exception
   ERRORS = {
     must_be_a_hash: "_hash parameter must be a Hash",
-    invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters"
+    invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
+    attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
   }
 end
 
@@ -65,7 +66,7 @@ end
 
 class Organizer::GroupException < ::Exception
   ERRORS = {
-    invalid_item: "Invalid group collection item. Must be Organizer:Collection only",
+    invalid_item: "Invalid group item. Must be Organizer::GroupItem only",
     group_by_attr_not_present_in_collection: "group_by_attr is not present in collection Organizer::Items"
   }
 end
@@ -73,6 +74,7 @@ end
 class Organizer::GroupItemException < ::Exception
   ERRORS = {
     must_be_a_hash: "_hash parameter must be a Hash",
-    invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters"
+    invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
+    attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
   }
 end

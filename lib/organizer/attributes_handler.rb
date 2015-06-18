@@ -58,6 +58,22 @@ module Organizer::AttributesHandler
     self.attribute_names.include?(_attribute_name)
   end
 
+  # It copies attribute readers from _obj param
+  #
+  # @param _obj [Object] any object including Organizer::AttributesHandler module
+  # @return [void]
+  def clone_attributes(_obj)
+    if !_obj.class.included_modules.include?(Organizer::AttributesHandler)
+      raise_error(:attributes_handler_not_included)
+    end
+
+    _obj.attribute_names.each do |_attribute_name|
+      self.define_attribute(_attribute_name, _obj.send(_attribute_name))
+    end
+
+    return
+  end
+
   private
 
   def method_name_from_string(_string)

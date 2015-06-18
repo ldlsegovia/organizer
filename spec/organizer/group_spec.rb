@@ -62,6 +62,8 @@ describe Organizer::Group do
         expect(one.first).to be_a(Organizer::Item)
         expect(one.last).to be_a(Organizer::Item)
         expect(two.first).to be_a(Organizer::Item)
+        one.first.attribute_names.each { |attribute, value| expect(one).to respond_to(attribute) }
+        two.first.attribute_names.each { |attribute, value| expect(two).to respond_to(attribute) }
       end
     end
   end

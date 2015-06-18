@@ -16,7 +16,7 @@ shared_examples :attributes_handler do |klass, error_class|
       end
     end
 
-    it "converts each attribute hash into Organizer::Item instance attribute readers" do
+    it "converts each attribute hash into klass instance attribute readers" do
       subject.define_attributes(valid_attributes)
       valid_attributes.each do |attribute, value|
         expect(subject).to respond_to(attribute)
@@ -48,7 +48,7 @@ shared_examples :attributes_handler do |klass, error_class|
       expect(subject).to respond_to(:num3r1c_ch4r4ct3rs)
     end
 
-    it "it returs error with invalid hash keys" do
+    it "returns error with invalid hash keys" do
       invalid_hashes = [
         { "inv@lid_characters" => false },
         { "in\/alid_characters" => false },
@@ -71,22 +71,40 @@ shared_examples :attributes_handler do |klass, error_class|
     end
 
     it "defines attributes inside singleton class" do
-      item1 = klass.new
-      item1.define_attributes({method_for_item1: "I'm a method for item1"})
-      item2 = klass.new
-      item2.define_attributes({method_for_item2: "I'm a method for item2"})
-      expect(item1).to respond_to(:method_for_item1)
-      expect(item1).not_to respond_to(:method_for_item2)
-      expect(item2).not_to respond_to(:method_for_item1)
-      expect(item2).to respond_to(:method_for_item2)
+      obj1 = klass.new
+      obj1.define_attributes({method_for_obj1: "I'm a method for obj1"})
+      obj2 = klass.new
+      obj2.define_attributes({method_for_obj2: "I'm a method for obj2"})
+      expect(obj1).to respond_to(:method_for_obj1)
+      expect(obj1).not_to respond_to(:method_for_obj2)
+      expect(obj2).not_to respond_to(:method_for_obj1)
+      expect(obj2).to respond_to(:method_for_obj2)
     end
   end
 
   describe "#attribute_names" do
-    let_item(:item)
-
     it "returns hash keys matching attribute names exactly" do
-      expect(item.attribute_names).to match_array(item_hash_keys)
+      obj = klass.new
+      obj.define_attributes(valid_attributes)
+      expect(obj.attribute_names).to match_array(valid_attributes.keys)
+    end
+  end
+
+  describe "#clone_attributes" do
+    let_item(:obj_to_clone)
+
+    before do
+      @obj = klass.new
+      @obj.clone_attributes(obj_to_clone)
+    end
+
+    it "returns error if object to clone has not Organizer::AttributesHandler mixin" do
+      expect { @obj.clone_attributes("not a valid object") }.to(
+        raise_organizer_error(error_class, :attributes_handler_not_included))
+    end
+
+    it "copies attributes from param" do
+      obj_to_clone_hash_keys.each { |attribute, value| expect(@obj).to respond_to(attribute) }
     end
   end
 end
