@@ -6,16 +6,16 @@ class Organizer::Collection < Array
     super
   end
 
-  # Loads this collection instance with {Organizer::Item}s created from _raw_rollection param.
+  # Loads this collection instance with {Organizer::Item}s created from _raw_collection param.
   #
   # @param _raw_collection [Array] it must return an Array containing Hash items.
   # @return [Organizer::Collection]
   #
   # @raise [Organizer::CollectionException] :invalid_collection_structure and
   #   :invalid_collection_item_structure
-  def fill(_raw_rollection)
-    validate_raw_collection(_raw_rollection)
-    get_organized_items(_raw_rollection)
+  def fill(_raw_collection)
+    validate_raw_collection(_raw_collection)
+    get_organized_items(_raw_collection)
   end
 
   private

@@ -30,7 +30,7 @@ describe Organizer::Collection do
     it "returns an Organizer::Collection instance" do
       collection = Organizer::Collection.new.fill(raw_collection)
       expect(collection).to be_a(Organizer::Collection)
-      expect(collection.count).to eq(3)
+      expect(collection.count).to eq(9)
     end
   end
 end

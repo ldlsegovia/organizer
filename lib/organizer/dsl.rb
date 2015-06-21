@@ -28,7 +28,7 @@ class Organizer::DSL
   end
 
   # Adds a default filter to Organizer class.
-  #   Default filters intend to be applied by default. You won't need to call this filters explicitly.
+  # Default filters intend to be applied by default. You will not need to call this filters explicitly.
   #
   # @param _name [optional, Symbol] filter's name.
   # @yield code that must return a Boolean value.
@@ -40,7 +40,7 @@ class Organizer::DSL
   end
 
   # Adds a normal filter to to Organizer class.
-  #   This kind of filters need to be called explicitly using filter's name.
+  # This kind of filters need to be called explicitly using filters name.
   #
   # @param _name [Symbol] filter's name.
   # @yield code that must return a Boolean value.
@@ -54,7 +54,7 @@ class Organizer::DSL
   end
 
   # Adds new opertaion to Organizer class. Operations are calculations that you can perform between
-  #   collection item attributes.
+  # collection item attributes.
   #
   # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
   # @yield code that will return the operation's result

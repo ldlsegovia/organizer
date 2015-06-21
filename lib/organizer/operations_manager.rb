@@ -14,7 +14,7 @@ class Organizer::OperationsManager
   end
 
   # Each collection's items will be evaluated against all defined operations. The operation's results
-  #  will be attached to items as new attributes.
+  # will be attached to items as new attributes.
   #
   # @param _collection [Organizer::Collection]
   # @return [Organizer::Collection] the collection with new attributes attached.
@@ -22,13 +22,13 @@ class Organizer::OperationsManager
   # @raise [Organizer::OperationsManagerException]
   def execute(_collection)
     return _collection if operations.count <= 0
-    _collection.each { |item| execute_on_item(item, operations.dup) }
+    _collection.each { |item| execute_recursively(item, operations.dup) }
     _collection
   end
 
   private
 
-  def execute_on_item(_item, _operations, _previous_operations_count = 0)
+  def execute_recursively(_item, _operations, _previous_operations_count = 0)
     return _item if _operations.size.zero?
 
     if _previous_operations_count == _operations.size
@@ -48,7 +48,7 @@ class Organizer::OperationsManager
     end
 
     if _non_executed_operations.size > 0
-      execute_on_item(_item, _non_executed_operations, _previous_operations_count)
+      execute_recursively(_item, _non_executed_operations, _previous_operations_count)
     end
   end
 

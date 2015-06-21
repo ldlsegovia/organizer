@@ -18,14 +18,14 @@ describe Organizer::OperationsManager do
   end
 
   describe "#execute" do
-    before { subject.add_operation(:result_attr) { |item| item.attr1 * 2 } }
+    before { subject.add_operation(:result_attr) { |item| item.age * 2 } }
 
     it "returns the whole collection" do
-      expect(subject.execute(collection).size).to eq(3)
+      expect(subject.execute(collection).size).to eq(9)
     end
 
     it "returns collection items with new attribute" do
-      expect(subject.execute(collection).second.result_attr).to eq(12)
+      expect(subject.execute(collection).first.result_attr).to eq(44)
     end
 
     context "with nested operations" do
@@ -36,9 +36,9 @@ describe Organizer::OperationsManager do
       end
 
       it "returns collection items with new attribute" do
-        expect(subject.execute(collection).second.newer_result_attr).to eq(24)
-        expect(subject.execute(collection).second.newest_result_attr).to eq(48)
-        expect(subject.execute(collection).second.the_newest_result_attr).to eq(96)
+        expect(subject.execute(collection).first.newer_result_attr).to eq(88)
+        expect(subject.execute(collection).first.newest_result_attr).to eq(176)
+        expect(subject.execute(collection).first.the_newest_result_attr).to eq(352)
       end
 
       context "with invalid item attribute" do

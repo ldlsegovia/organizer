@@ -49,9 +49,8 @@ describe Organizer::Group do
       end
 
       it "contains group items" do
-        expect(@group.size).to eq(2)
-        expect(@group.first).to be_a(Organizer::GroupItem)
-        expect(@group.last).to be_a(Organizer::GroupItem)
+        expect(@group.size).to eq(5)
+        0.upto(4).each { |i| expect(@group[i]).to be_a(Organizer::GroupItem) }
       end
 
       it "contains items inside group items" do
