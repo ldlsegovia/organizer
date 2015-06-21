@@ -80,7 +80,7 @@ class Organizer::Base
 
   module ChildInstanceMethods
     # @param _collection_options this data will be used to get the desired raw collection. Usually,
-    #   filters will be passed here.
+    # filters will be passed here.
     def initialize(_collection_options = {})
       @collection_options = _collection_options
     end
