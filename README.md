@@ -146,14 +146,14 @@ Organizer::Template.define("my_organizer") do
   end
 end
 ```
-You can define filters that will accept user params like this:
+You can define filters that will accept user params, declaring a second block argument.
 
 ```ruby
 Organizer::Template.define("my_organizer") do
   # collection definiton...
   # default filters...
 
-  filter(:filter2, true) do |item, value|
+  filter(:filter2) do |item, value|
     item.attr1 > value
   end
 end

@@ -51,7 +51,7 @@ describe Organizer::DSL do
     end
 
     it "executes add_filter (with true accepted value) on generated MyOrganizer class" do
-      dsl.filter(:my_filter, true) {}
+      dsl.filter(:my_filter) {|organizer_item, value|}
       expect(MyOrganizer.filters_manager.send(:filters_with_values).count).to eq(1)
     end
   end

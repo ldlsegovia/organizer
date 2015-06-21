@@ -43,14 +43,14 @@ class Organizer::DSL
   #   This kind of filters need to be called explicitly using filter's name.
   #
   # @param _name [Symbol] filter's name.
-  # @param _accept_value [Symbol] sets true if you want to filter using params.
   # @yield code that must return a Boolean value.
   # @yieldparam organizer_item [Organizer::Item]
-  # @yieldparam value [Object] if _accept_value is true
+  # @yieldparam value [Object] if you want to pass paramentes
   # @yieldreturn [Boolean]
   # @return [Organizer::Filter]
-  def filter(_name, _accept_value = false, &block)
-    klass.add_filter(_name, _accept_value, &block)
+  def filter(_name, &block)
+    accept_value = (block.parameters.count == 2)
+    klass.add_filter(_name, accept_value, &block)
   end
 
   # Adds new opertaion to Organizer class. Operations are calculations that you can perform between
