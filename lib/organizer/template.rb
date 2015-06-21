@@ -1,16 +1,11 @@
 module Organizer::Template
   include Organizer::Error
 
-  # Creates a class that inherits from {Organizer::Base} and executes the methods inside the block,
-  #  in the inherited class context, in order to customize the new Organizer class behaviour.
+  # Creates a new Organizer class with behaviour defined on definition block.
   #
   # @param _organizer_name [String] the name of the new {Organizer::Base} inherited class.
-  # @yield you can pass methods that will be executed in the new {Organizer::Base} child class context.
-  #   These methods are: {Organizer::Base.collection}, {Organizer::Base.default_filter},
-  #   {Organizer::Base.filter} and {Organizer::Base.operation}
+  # @yield you need to pass {Organizer::DSL} instance methods inside the block.
   # @return [void]
-  #
-  # @raise [Organizer::TemplateException] :invalid_organizer_name
   #
   # @example Passing a collection
   #   Organizer::Template.define("my_organizer") do
@@ -44,16 +39,7 @@ module Organizer::Template
   #   MyOrganizer.superclass
   #   #=> Organizer::Base
   def self.define(_organizer_name, &block)
-    klass = create_organizer_class(_organizer_name)
-    klass.class_eval(&block)
+    Organizer::DSL.new(_organizer_name, &block)
     return
-  end
-
-  def self.create_organizer_class(_organizer_name)
-    class_name = _organizer_name.to_s.classify
-    Object.const_set(class_name, Class.new(Organizer::Base))
-
-  rescue
-    raise_error(:invalid_organizer_name)
   end
 end

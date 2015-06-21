@@ -13,7 +13,7 @@ class Organizer::Base
     # @yield array containing Hash items.
     # @yieldreturn [Array] containing Hash items.
     # @return [void]
-    def collection(&block)
+    def add_collection(&block)
       @collection_proc = block
       return
     end
@@ -25,7 +25,7 @@ class Organizer::Base
     # @yieldparam organizer_item [Organizer::Item]
     # @yieldreturn [Boolean]
     # @return [Organizer::Filter]
-    def default_filter(_name = nil, &block)
+    def add_default_filter(_name = nil, &block)
       filters_manager.add_default_filter(_name, &block)
     end
 
@@ -38,7 +38,7 @@ class Organizer::Base
     # @yieldparam value [Object] if _accept_value is true
     # @yieldreturn [Boolean]
     # @return [Organizer::Filter]
-    def filter(_name, _accept_value = false, &block)
+    def add_filter(_name, _accept_value = false, &block)
       if !!_accept_value
         filters_manager.add_filter_with_value(_name, &block)
       else
@@ -52,7 +52,7 @@ class Organizer::Base
     # @yield code that will return the operation's result
     # @yieldparam organizer_item [Organizer::Item]
     # @return [Organizer::Operation]
-    def operation(_name, &block)
+    def add_operation(_name, &block)
       operations_manager.add_operation(_name, &block)
     end
 
@@ -85,7 +85,7 @@ class Organizer::Base
       @collection_options = _collection_options
     end
 
-    # Applies default_filters, filters and operations to the defined collection.
+    # Applies default_filters, filters and operations to defined collection.
     #   Default filters will be applied automatically.
     #   To apply a normal filter, need to pass filter names inside array in _options like this:
     #   { enabled_filters: [my_filter] }.

@@ -17,7 +17,7 @@ describe Organizer::Base do
     end
 
     context "with defined collection" do
-      before { BaseChild.collection { valid_raw_collection } }
+      before { BaseChild.add_collection { valid_raw_collection } }
 
       it "returns defined collection" do
         result = BaseChild.new.organize
@@ -27,8 +27,8 @@ describe Organizer::Base do
 
       context "with default filters" do
         before do
-          BaseChild.default_filter { |item| item.attr1 > 4 }
-          BaseChild.default_filter(:my_filter) { |item| item.attr1 < 80 }
+          BaseChild.add_default_filter { |item| item.attr1 > 4 }
+          BaseChild.add_default_filter(:my_filter) { |item| item.attr1 < 80 }
         end
 
         it "returns filtered collection" do
@@ -46,8 +46,8 @@ describe Organizer::Base do
 
       context "with normal filters" do
         before do
-          BaseChild.filter(:filter1) { |item| item.attr1 > 4 }
-          BaseChild.filter(:filter2) { |item| item.attr1 < 80 }
+          BaseChild.add_filter(:filter1) { |item| item.attr1 > 4 }
+          BaseChild.add_filter(:filter2) { |item| item.attr1 < 80 }
         end
 
         it "applies filters" do
@@ -59,8 +59,8 @@ describe Organizer::Base do
 
       context "with filters with values" do
         before do
-          BaseChild.filter(:filter1, true) { |item, value| item.attr1 > value }
-          BaseChild.filter(:filter2, true) { |item, value| item.attr1 < value }
+          BaseChild.add_filter(:filter1, true) { |item, value| item.attr1 > value }
+          BaseChild.add_filter(:filter2, true) { |item, value| item.attr1 < value }
         end
 
         it "applies filters" do
@@ -82,7 +82,7 @@ describe Organizer::Base do
 
       context "with operations" do
         before do
-          BaseChild.operation(:new_attr) { |item| item.attr1 * 2 }
+          BaseChild.add_operation(:new_attr) { |item| item.attr1 * 2 }
         end
 
         it "applies filters" do
@@ -99,7 +99,7 @@ describe Organizer::Base do
 
   describe "#collection" do
     it "uses filters passed as in initialize" do
-      BaseChild.collection do |options|
+      BaseChild.add_collection do |options|
         valid_raw_collection.select { |item| item[:attr1] > options[:attr1] }
       end
 
@@ -112,7 +112,7 @@ describe Organizer::Base do
     end
 
     it "returns an Organizer::Collection instance" do
-      BaseChild.collection { valid_raw_collection }
+      BaseChild.add_collection { valid_raw_collection }
       collection = BaseChild.new.collection
       expect(collection).to be_a(Organizer::Collection)
       expect(collection.count).to eq(3)
@@ -121,7 +121,7 @@ describe Organizer::Base do
 
   describe "#default_filter" do
     it "adds new filter" do
-      obj = BaseChild.default_filter(:my_filter) {}
+      obj = BaseChild.add_default_filter(:my_filter) {}
       expect(obj).to be_a(Organizer::Filter)
     end
 
@@ -132,15 +132,15 @@ describe Organizer::Base do
       end
 
       it "adds filter to each class" do
-        expect(BaseChild.default_filter(:my_filter) {}).to be_a(Organizer::Filter)
-        expect(AhotherChild.default_filter(:my_filter) {}).to be_a(Organizer::Filter)
+        expect(BaseChild.add_default_filter(:my_filter) {}).to be_a(Organizer::Filter)
+        expect(AhotherChild.add_default_filter(:my_filter) {}).to be_a(Organizer::Filter)
       end
     end
   end
 
   describe "#filter" do
     it "adds new filter" do
-      obj = BaseChild.filter(:my_filter) {}
+      obj = BaseChild.add_filter(:my_filter) {}
       expect(obj).to be_a(Organizer::Filter)
     end
 
@@ -151,15 +151,15 @@ describe Organizer::Base do
       end
 
       it "adds filter to each class" do
-        expect(BaseChild.filter(:my_filter) {}).to be_a(Organizer::Filter)
-        expect(AhotherChild.filter(:my_filter) {}).to be_a(Organizer::Filter)
+        expect(BaseChild.add_filter(:my_filter) {}).to be_a(Organizer::Filter)
+        expect(AhotherChild.add_filter(:my_filter) {}).to be_a(Organizer::Filter)
       end
     end
   end
 
   describe "#operation" do
     it "adds new operation" do
-      obj = BaseChild.operation(:my_operation) {}
+      obj = BaseChild.add_operation(:my_operation) {}
       expect(obj).to be_a(Organizer::Operation)
     end
 
@@ -170,8 +170,8 @@ describe Organizer::Base do
       end
 
       it "adds filter to each class" do
-        expect(BaseChild.operation(:my_operation) {}).to be_a(Organizer::Operation)
-        expect(AhotherChild.operation(:my_operation) {}).to be_a(Organizer::Operation)
+        expect(BaseChild.add_operation(:my_operation) {}).to be_a(Organizer::Operation)
+        expect(AhotherChild.add_operation(:my_operation) {}).to be_a(Organizer::Operation)
       end
     end
   end
