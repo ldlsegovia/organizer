@@ -2,7 +2,6 @@ class Organizer::FiltersManager
   include Organizer::Error
 
   # Creates a new {Organizer::Filter} and adds to default filters collection.
-  #   Default filters intend to be applied by default. You won't need to call this filters explicitly.
   #
   # @param _name [optional, Symbol] filter's name. Not mandatory for default filters.
   # @yield code that must return a Boolean value.
@@ -15,7 +14,6 @@ class Organizer::FiltersManager
   end
 
   # Creates a new {Organizer::Filter} and adds to normal filters collection.
-  #   This kind of filters need to be called explicitly using filter's name.
   #
   # @param _name [Symbol] filter's name.
   # @yield code that must return a Boolean value.
@@ -28,7 +26,6 @@ class Organizer::FiltersManager
   end
 
   # Creates a new {Organizer::Filter} (with true accept_value) and adds to filters with values collection.
-  #   This kind of filters need to be called explicitly using filter's name and expect a value param.
   #
   # @param _name [Symbol] filter's name.
   # @yield  code that must return a Boolean value.
@@ -41,7 +38,7 @@ class Organizer::FiltersManager
     filters_with_values.last
   end
 
-  # Applies default and normal filters to give collection.
+  # Applies default and normal filters to given collection.
   #   To apply a normal filter, need to pass filter names inside array in _options like this:
   #   { enabled_filters: [my_filter] }.
   #   To skip a default filter, need to pass default filter names inside array in _options like this:

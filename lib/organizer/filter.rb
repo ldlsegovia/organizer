@@ -38,7 +38,7 @@ class Organizer::Filter
     result
   end
 
-  # Check if this filter has name passed in param
+  # Check if this filter has name passed as param
   #
   # @param _filter_name [Organizer::Item]
   # @return [Boolean]
