@@ -28,12 +28,12 @@ describe Organizer::Group do
   end
 
   describe "#build" do
-    let_organizer_collection(:organizer_collection)
+    let_collection(:collection)
     before { @group = Organizer::Group.new(:store_id) }
 
     it "raises error if collection items have not group_by_attr" do
       group = Organizer::Group.new(:undefined_attr)
-      expect { group.build(organizer_collection) }.to(
+      expect { group.build(collection) }.to(
         raise_organizer_error(Organizer::GroupException, :group_by_attr_not_present_in_collection))
     end
 
@@ -42,7 +42,7 @@ describe Organizer::Group do
     end
 
     context "with a built a group" do
-      before { @group.build(organizer_collection) }
+      before { @group.build(collection) }
 
       it "returns same group with valid collection" do
         expect(@group).to be(@group)

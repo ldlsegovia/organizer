@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Organizer::OperationsManager do
-  let_organizer_collection(:organizer_collection)
+  let_collection(:collection)
 
   describe "#add_operation" do
     it "adds new operation" do
@@ -21,11 +21,11 @@ describe Organizer::OperationsManager do
     before { subject.add_operation(:result_attr) { |item| item.attr1 * 2 } }
 
     it "returns the whole collection" do
-      expect(subject.execute(organizer_collection).size).to eq(3)
+      expect(subject.execute(collection).size).to eq(3)
     end
 
     it "returns collection items with new attribute" do
-      expect(subject.execute(organizer_collection).second.result_attr).to eq(12)
+      expect(subject.execute(collection).second.result_attr).to eq(12)
     end
 
     context "with nested operations" do
@@ -36,9 +36,9 @@ describe Organizer::OperationsManager do
       end
 
       it "returns collection items with new attribute" do
-        expect(subject.execute(organizer_collection).second.newer_result_attr).to eq(24)
-        expect(subject.execute(organizer_collection).second.newest_result_attr).to eq(48)
-        expect(subject.execute(organizer_collection).second.the_newest_result_attr).to eq(96)
+        expect(subject.execute(collection).second.newer_result_attr).to eq(24)
+        expect(subject.execute(collection).second.newest_result_attr).to eq(48)
+        expect(subject.execute(collection).second.the_newest_result_attr).to eq(96)
       end
 
       context "with invalid item attribute" do
@@ -46,7 +46,7 @@ describe Organizer::OperationsManager do
         before { subject.add_operation(:some_attr) { |item| item.some_invalid_attr * 2 } }
 
         it "raise exception" do
-          expect { subject.execute(organizer_collection) }.to(
+          expect { subject.execute(collection) }.to(
             raise_error(Organizer::OperationsManagerException))
         end
       end

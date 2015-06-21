@@ -22,23 +22,25 @@ module HelpfulVariables
     end
   end
 
-  def let_raw_collection(_name)
-    let(_name) do
-      [
-        { attr1: 4, attr2: "Hi", attr3: 6 },
-        { attr1: 6, attr2: "Ciao", attr3: 4 },
-        { attr1: 84, attr2: "Hola", attr3: 16 }
-      ]
-    end
-  end
+  def let_collection(_name)
+    collection = [
+      { attr1: 4, attr2: "Hi", attr3: 6, store_id: 1 },
+      { attr1: 6, attr2: "Ciao", attr3: 4, store_id: 1 },
+      { attr1: 84, attr2: "Hola", attr3: 16, store_id: 2 }
+    ]
 
-  def let_organizer_collection(_name)
-    let(_name) do
-      collection = Organizer::Collection.new
-      collection << Organizer::Item.new.define_attributes({ attr1: 4, attr2: "Hi", attr3: 6, store_id: 1 })
-      collection << Organizer::Item.new.define_attributes({ attr1: 6, attr2: "Ciao", attr3: 4, store_id: 1 })
-      collection << Organizer::Item.new.define_attributes({ attr1: 84, attr2: "Hola", attr3: 16, store_id: 2 })
+    let("raw_#{_name}") do
       collection
+    end
+
+    let(_name) do
+      organizer_collection = Organizer::Collection.new
+
+      collection.each do |item|
+        organizer_collection << Organizer::Item.new.define_attributes(item)
+      end
+
+      organizer_collection
     end
   end
 end

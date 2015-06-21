@@ -56,7 +56,7 @@ describe Organizer::DSL do
     end
   end
 
-  describe "operation method" do
+  describe "operation" do
     it "executes operation class method on generated MyOrganizer class" do
       dsl.operation(:my_operation) {}
       expect(MyOrganizer.operations_manager.send(:operations).count).to eq(1)

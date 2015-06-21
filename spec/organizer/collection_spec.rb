@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Organizer::Collection do
-  let_raw_collection(:raw_collection)
+  let_collection(:collection)
 
   describe "#<<" do
     it "raises error trying to add non organizer items to collection" do

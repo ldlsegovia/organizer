@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Organizer::Base do
-  let_raw_collection(:valid_raw_collection)
+  let_collection(:collection)
 
   before do
     Object.send(:remove_const, :BaseChild) rescue nil
@@ -17,7 +17,7 @@ describe Organizer::Base do
     end
 
     context "with defined collection" do
-      before { BaseChild.add_collection { valid_raw_collection } }
+      before { BaseChild.add_collection { raw_collection } }
 
       it "returns defined collection" do
         result = BaseChild.new.organize
@@ -100,7 +100,7 @@ describe Organizer::Base do
   describe "#collection" do
     it "uses filters passed on initialize" do
       BaseChild.add_collection do |options|
-        valid_raw_collection.select { |item| item[:attr1] > options[:attr1] }
+        raw_collection.select { |item| item[:attr1] > options[:attr1] }
       end
 
       expect(BaseChild.new(attr1: 6).collection.count).to eq(1)
@@ -112,7 +112,7 @@ describe Organizer::Base do
     end
 
     it "returns an Organizer::Collection instance" do
-      BaseChild.add_collection { valid_raw_collection }
+      BaseChild.add_collection { raw_collection }
       collection = BaseChild.new.collection
       expect(collection).to be_a(Organizer::Collection)
       expect(collection.count).to eq(3)
