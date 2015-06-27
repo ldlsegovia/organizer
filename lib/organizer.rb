@@ -13,6 +13,8 @@ require "organizer/filter"
 require "organizer/operations_manager"
 require "organizer/operations_collection"
 require "organizer/operation"
+require "organizer/groups_manager"
+require "organizer/groups_collection"
 require "organizer/group"
 require "organizer/group_item"
 

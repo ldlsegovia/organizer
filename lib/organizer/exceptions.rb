@@ -64,6 +64,12 @@ class Organizer::OperationsManagerException < ::Exception
   ERRORS = {}
 end
 
+class Organizer::GroupsCollectionException < ::Exception
+  ERRORS = {
+    invalid_item: "Invalid group collection item. Must be Organizer:Group only"
+  }
+end
+
 class Organizer::GroupException < ::Exception
   ERRORS = {
     invalid_item: "Invalid group item. Must be Organizer::GroupItem only",

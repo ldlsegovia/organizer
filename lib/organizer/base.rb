@@ -56,6 +56,15 @@ class Organizer::Base
       operations_manager.add_operation(_name, &block)
     end
 
+    # Adds a new {Organizer::Group} to {Organizer::GroupsManager}
+    #
+    # @param _name [Symbol] symbol to identify this particular group.
+    # @param _group_by_attr attribute by which the items will be grouped. If nil, _name will be used insted.
+    # @return [Organizer::Group]
+    def add_group(_name, _group_by_attr = nil)
+      groups_manager.add_group(_name, _group_by_attr)
+    end
+
     # Returns manager to handle filter issues.
     #
     # @return [Organizer::FiltersManager]
@@ -68,6 +77,13 @@ class Organizer::Base
     # @return [Organizer::OperationsManager]
     def operations_manager
       @operations_manager ||= Organizer::OperationsManager.new
+    end
+
+    # Returns manager to handle group issues.
+    #
+    # @return [Organizer::GroupsManager]
+    def groups_manager
+      @groups_manager ||= Organizer::GroupsManager.new
     end
 
     # Returns a proc containing an array collection
