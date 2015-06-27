@@ -36,4 +36,12 @@ class Organizer::Group < Array
 
     self
   end
+
+  # Check if this group has name passed as param
+  #
+  # @param _group_name [Organizer::Item]
+  # @return [Boolean]
+  def has_name?(_group_name)
+    !!self.name && self.name.to_sym == _group_name.to_sym
+  end
 end

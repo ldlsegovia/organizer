@@ -66,4 +66,14 @@ describe Organizer::Group do
       end
     end
   end
+
+  describe "#has_name?" do
+    it "returns true when group has name param" do
+      expect(Organizer::Group.new(:my_group).has_name?("my_group")).to be_truthy
+    end
+
+    it "returns false when group has not name param" do
+      expect(Organizer::Group.new(:my_group).has_name?("invalid")).to be_falsy
+    end
+  end
 end
