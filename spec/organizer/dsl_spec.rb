@@ -56,10 +56,17 @@ describe Organizer::DSL do
     end
   end
 
-  describe "operation method" do
+  describe "#operation" do
     it "executes operation class method on generated MyOrganizer class" do
       dsl.operation(:my_operation) {}
       expect(MyOrganizer.operations_manager.send(:operations).count).to eq(1)
+    end
+  end
+
+  describe "#group" do
+    it "executes add_group class method on generated MyOrganizer class" do
+      dsl.group(:store_id, :store) {}
+      expect(MyOrganizer.groups_manager.send(:groups).count).to eq(1)
     end
   end
 end

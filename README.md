@@ -50,9 +50,15 @@ This method takes a block containing a denormalized collection. The block's cont
 Organizer::Template.define("my_organizer") do
   collection do
     [
-      { attr1: 4, attr2: "Hi", attr3: 6 },
-      { attr1: 6, attr2: "Ciao", attr3: 4 },
-      { attr1: 84, attr2: "Hola", attr3: 16 }
+      { age: 22, name: "Juan Manuel", site_id: 1, store_id: 1, gender: "M", savings: 20.50 },
+      { age: 31, name: "Leandro", site_id: 1, store_id: 1, gender: "M", savings: 15.50 },
+      { age: 64, name: "Susana", site_id: 2, store_id: 2, gender: "F", savings: 30.00 },
+      { age: 65, name: "Rodolfo", site_id: 2, store_id: 2, gender: "M", savings: 50.20 },
+      { age: 33, name: "Virginia", site_id: 2, store_id: 3, gender: "F", savings: 70.10 },
+      { age: 8, name: "Francisco", site_id: 2, store_id: 3, gender: "M", savings: 2.50 },
+      { age: 31, name: "Gustavo", site_id: 3, store_id: 4, gender: "M", savings: 40.50 },
+      { age: 33, name: "Gabriela", site_id: 3, store_id: 4, gender: "F", savings: 45.50 },
+      { age: 35, name: "Javier", site_id: 3, store_id: 5, gender: "M", savings: 25.50 }
     ]
   end
 end
@@ -65,12 +71,18 @@ These options will be present as the first param on collection definition like t
 Organizer::Template.define("my_organizer") do
   collection do |collection_options|
     data = [
-      { attr1: 4, attr2: "Hi", attr3: 6 },
-      { attr1: 6, attr2: "Ciao", attr3: 4 },
-      { attr1: 84, attr2: "Hola", attr3: 16 }
+      { age: 22, name: "Juan Manuel", site_id: 1, store_id: 1, gender: "M", savings: 20.50 },
+      { age: 31, name: "Leandro", site_id: 1, store_id: 1, gender: "M", savings: 15.50 },
+      { age: 64, name: "Susana", site_id: 2, store_id: 2, gender: "F", savings: 30.00 },
+      { age: 65, name: "Rodolfo", site_id: 2, store_id: 2, gender: "M", savings: 50.20 },
+      { age: 33, name: "Virginia", site_id: 2, store_id: 3, gender: "F", savings: 70.10 },
+      { age: 8, name: "Francisco", site_id: 2, store_id: 3, gender: "M", savings: 2.50 },
+      { age: 31, name: "Gustavo", site_id: 3, store_id: 4, gender: "M", savings: 40.50 },
+      { age: 33, name: "Gabriela", site_id: 3, store_id: 4, gender: "F", savings: 45.50 },
+      { age: 35, name: "Javier", site_id: 3, store_id: 5, gender: "M", savings: 25.50 }
     ]
 
-    data.select { |item| item[:attr1] == collection_options[:attr1]}
+    data.select { |item| item[:age] == collection_options[:age]}
   end
 end
 ```
@@ -80,13 +92,19 @@ end
 ```ruby
 # with defined collection for the first example
 MyOrganizer.new.organize
-#<Organizer::Item:0x007f8eaac429b8 @attr1=4, @attr2="Hi", @attr3=6>,
-#<Organizer::Item:0x007f8eaac423c8 @attr1=6, @attr2="Ciao", @attr3=4>,
-#<Organizer::Item:0x007f8eaac41478 @attr1=84, @attr2="Hola", @attr3=16>
+#<Organizer::Item:0x007fa9646e3290 @age=22, @name="Juan Manuel", @site_id=1, @store_id=1, @gender="M", @savings=20.5>
+#<Organizer::Item:0x007fa9646e23b8 @age=31, @name="Leandro", @site_id=1, @store_id=1, @gender="M", @savings=15.5>
+#<Organizer::Item:0x007fa9646e1620 @age=64, @name="Susana", @site_id=2, @store_id=2, @gender="F", @savings=30.0>
+#<Organizer::Item:0x007fa9646e0888 @age=65, @name="Rodolfo", @site_id=2, @store_id=2, @gender="M", @savings=50.2>
+#<Organizer::Item:0x007fa964518398 @age=33, @name="Virginia", @site_id=2, @store_id=3, @gender="F", @savings=70.1>
+#<Organizer::Item:0x007fa9646f3320 @age=8, @name="Francisco", @site_id=2, @store_id=3, @gender="M", @savings=2.5>
+#<Organizer::Item:0x007fa9646f2588 @age=31, @name="Gustavo", @site_id=3, @store_id=4, @gender="M", @savings=40.5>
+#<Organizer::Item:0x007fa9646f17f0 @age=33, @name="Gabriela", @site_id=3, @store_id=4, @gender="F", @savings=45.5>
+#<Organizer::Item:0x007fa9646f0a58 @age=35, @name="Javier", @site_id=3, @store_id=5, @gender="M", @savings=25.5>
 
 # with defined collection for the second example (applying the filter)
-MyOrganizer.new.organize
-#<Organizer::Item:0x007f8eaac41478 @attr1=84, @attr2="Hola", @attr3=16>
+MyOrganizer.new(age: 8).organize
+#<Organizer::Item:0x007ffd83f7b178 @age=8, @name="Francisco", @site_id=2, @store_id=3, @gender="M", @savings=2.5>
 ```
 
 ### A Default Filter
@@ -97,14 +115,14 @@ Allows you to define conditions that will be evaluated, over each collection ite
 
 ```ruby
 Organizer::Template.define("my_organizer") do
-  # collection definiton...
+  # collection and other definitions...
 
   default_filter do |item|
-    item.attr1 > 5
+    item.age > 22
   end
 
   default_filter(:named_default_filter) do |item|
-    item.attr1 < 200
+    item.age < 60
   end
 end
 ```
@@ -114,20 +132,34 @@ end
 ```ruby
 # with default filters
 MyOrganizer.new.organize
-#<Organizer::Item:0x007fb6aac190e0 @attr1=6, @attr2="Ciao", @attr3=4>,
-#<Organizer::Item:0x007fb6aac23c20 @attr1=84, @attr2="Hola", @attr3=16>
+#<Organizer::Item:0x007fec1cd6e650 @age=31, @name="Leandro", @site_id=1, @store_id=1, @gender="M", @savings=15.5>
+#<Organizer::Item:0x007fec1cd76d78 @age=33, @name="Virginia", @site_id=2, @store_id=3, @gender="F", @savings=70.1>
+#<Organizer::Item:0x007fec1cd85878 @age=31, @name="Gustavo", @site_id=3, @store_id=4, @gender="M", @savings=40.5>
+#<Organizer::Item:0x007fec1cd8ece8 @age=33, @name="Gabriela", @site_id=3, @store_id=4, @gender="F", @savings=45.5>
+#<Organizer::Item:0x007fec1cd8d168 @age=35, @name="Javier", @site_id=3, @store_id=5, @gender="M", @savings=25.5>
 
 # skiping all default filters
 MyOrganizer.new.organize(skip_default_filters: :all)
-#<Organizer::Item:0x007f8eaac429b8 @attr1=4, @attr2="Hi", @attr3=6>,
-#<Organizer::Item:0x007f8eaac423c8 @attr1=6, @attr2="Ciao", @attr3=4>,
-#<Organizer::Item:0x007f8eaac41478 @attr1=84, @attr2="Hola", @attr3=16>
+#<Organizer::Item:0x007fb60b526fe8 @age=22, @name="Juan Manuel", @site_id=1, @store_id=1, @gender="M", @savings=20.5>
+#<Organizer::Item:0x007fb60b526110 @age=31, @name="Leandro", @site_id=1, @store_id=1, @gender="M", @savings=15.5>
+#<Organizer::Item:0x007fb60b525378 @age=64, @name="Susana", @site_id=2, @store_id=2, @gender="F", @savings=30.0>
+#<Organizer::Item:0x007fb60b5245e0 @age=65, @name="Rodolfo", @site_id=2, @store_id=2, @gender="M", @savings=50.2>
+#<Organizer::Item:0x007fb60b52fdc8 @age=33, @name="Virginia", @site_id=2, @store_id=3, @gender="F", @savings=70.1>
+#<Organizer::Item:0x007fb60b52f030 @age=8, @name="Francisco", @site_id=2, @store_id=3, @gender="M", @savings=2.5>
+#<Organizer::Item:0x007fb60b52e298 @age=31, @name="Gustavo", @site_id=3, @store_id=4, @gender="M", @savings=40.5>
+#<Organizer::Item:0x007fb60b52d500 @age=33, @name="Gabriela", @site_id=3, @store_id=4, @gender="F", @savings=45.5>
+#<Organizer::Item:0x007fb60b52c768 @age=35, @name="Javier", @site_id=3, @store_id=5, @gender="M", @savings=25.5>
 
 # skiping default filters by name
 MyOrganizer.new.organize(skip_default_filters: [:named_default_filter])
-#<Organizer::Item:0x007f8eaac429b8 @attr1=4, @attr2="Hi", @attr3=6>,
-#<Organizer::Item:0x007f8eaac423c8 @attr1=6, @attr2="Ciao", @attr3=4>,
-#<Organizer::Item:0x007f8eaac41478 @attr1=84, @attr2="Hola", @attr3=16>
+#<Organizer::Item:0x007f9b62a40df8 @age=31, @name="Leandro", @site_id=1, @store_id=1, @gender="M", @savings=15.5>
+#<Organizer::Item:0x007f9b62a42568 @age=64, @name="Susana", @site_id=2, @store_id=2, @gender="F", @savings=30.0>
+#<Organizer::Item:0x007f9b62a40e20 @age=65, @name="Rodolfo", @site_id=2, @store_id=2, @gender="M", @savings=50.2>
+#<Organizer::Item:0x007f9b62a4b438 @age=33, @name="Virginia", @site_id=2, @store_id=3, @gender="F", @savings=70.1>
+#<Organizer::Item:0x007f9b62a59ee8 @age=31, @name="Gustavo", @site_id=3, @store_id=4, @gender="M", @savings=40.5>
+#<Organizer::Item:0x007f9b62a62db8 @age=33, @name="Gabriela", @site_id=3, @store_id=4, @gender="F", @savings=45.5>
+#<Organizer::Item:0x007f9b62a61120 @age=35, @name="Javier", @site_id=3, @store_id=5, @gender="M", @savings=25.5>
+
 ```
 
 ### A Filter
@@ -138,11 +170,10 @@ Allows you to define conditions that will not be initially evaluated but user ma
 
 ```ruby
 Organizer::Template.define("my_organizer") do
-  # collection definiton...
-  # default filters...
+  # collection and other definitions...
 
   filter(:filter1) do |item|
-    item.attr1 > 5
+    item.age > 33
   end
 end
 ```
@@ -150,11 +181,10 @@ You can define filters that will accept user params, declaring a second block ar
 
 ```ruby
 Organizer::Template.define("my_organizer") do
-  # collection definiton...
-  # default filters...
+  # collection and other definitions...
 
   filter(:filter2) do |item, value|
-    item.attr1 > value
+    item.age == value
   end
 end
 ```
@@ -164,13 +194,13 @@ end
 ```ruby
 # enabling filters
 MyOrganizer.new.organize(enabled_filters: [:filter1])
-#<Organizer::Item:0x007fb020ca23d0 @attr1=6, @attr2="Ciao", @attr3=4>,
-#<Organizer::Item:0x007fb020ca1520 @attr1=84, @attr2="Hola", @attr3=16>
+#<Organizer::Item:0x007fd7952e9338 @age=64, @name="Susana", @site_id=2, @store_id=2, @gender="F", @savings=30.0>
+#<Organizer::Item:0x007fd7952e85a0 @age=65, @name="Rodolfo", @site_id=2, @store_id=2, @gender="M", @savings=50.2>
+#<Organizer::Item:0x007fd7952f4738 @age=35, @name="Javier", @site_id=3, @store_id=5, @gender="M", @savings=25.5>
 
 # passing values to filters
 MyOrganizer.new.organize(filters: { filter2: 5 })
-#<Organizer::Item:0x007fb020ca23d0 @attr1=6, @attr2="Ciao", @attr3=4>,
-#<Organizer::Item:0x007fb020ca1520 @attr1=84, @attr2="Hola", @attr3=16>
+#<Organizer::Item:0x007fa621ea6f40 @age=8, @name="Francisco", @site_id=2, @store_id=3, @gender="M", @savings=2.5>
 ```
 
 ### An Operation
@@ -181,12 +211,10 @@ You can perform operations between item's attribute values. The result of this o
 
 ```ruby
 Organizer::Template.define("my_organizer") do
-  # collection definiton...
-  # default filters...
-  # filters...
+  # collection and other definitions...
 
   operation(:attrs_sum) do |item|
-    item.attr1 + item.attr3
+    item.age * 2
   end
 end
 ```
@@ -195,13 +223,7 @@ You also can perform operations using the resulting attributes. For example:
 
 ```ruby
 Organizer::Template.define("my_organizer") do
-  # collection definiton...
-  # default filters...
-  # filters...
-
-  operation(:attrs_sum) do |item|
-    item.attr1 + item.attr3
-  end
+  # collection and other definitions...
 
   operation(:newer_attribute) do |item|
     item.attrs_sum * 2
@@ -209,14 +231,57 @@ Organizer::Template.define("my_organizer") do
 end
 ```
 
-#### Example Usage
+#### Usage Example
 
 ```ruby
 # with operations
 MyOrganizer.new.organize
-#<Organizer::Item:0x007fd49a4bbc90 @attr1=4, @attr2="Hi", @attr3=6, @attrs_sum=10>,
-#<Organizer::Item:0x007fd49a4bb3a8 @attr1=6, @attr2="Ciao", @attr3=4, @attrs_sum=10>
-#<Organizer::Item:0x007fd49a4baa20 @attr1=84, @attr2="Hola", @attr3=16, @attrs_sum=100>
+#<Organizer::Item:0x007fef3b3a2eb0 @age=22, @name="Juan Manuel", @site_id=1, @store_id=1, @gender="M", @savings=20.5, @attrs_sum=44, @newer_attribute=88>
+#<Organizer::Item:0x007fef3b3a1fd8 @age=31, @name="Leandro", @site_id=1, @store_id=1, @gender="M", @savings=15.5, @attrs_sum=62, @newer_attribute=124>
+#<Organizer::Item:0x007fef3b3a1240 @age=64, @name="Susana", @site_id=2, @store_id=2, @gender="F", @savings=30.0, @attrs_sum=128, @newer_attribute=256>
+#<Organizer::Item:0x007fef3b3a04a8 @age=65, @name="Rodolfo", @site_id=2, @store_id=2, @gender="M", @savings=50.2, @attrs_sum=130, @newer_attribute=260>
+#<Organizer::Item:0x007fef3b3abc40 @age=33, @name="Virginia", @site_id=2, @store_id=3, @gender="F", @savings=70.1, @attrs_sum=66, @newer_attribute=132>
+#<Organizer::Item:0x007fef3b3aaea8 @age=8, @name="Francisco", @site_id=2, @store_id=3, @gender="M", @savings=2.5, @attrs_sum=16, @newer_attribute=32>
+#<Organizer::Item:0x007fef3b3aa110 @age=31, @name="Gustavo", @site_id=3, @store_id=4, @gender="M", @savings=40.5, @attrs_sum=62, @newer_attribute=124>
+#<Organizer::Item:0x007fef3b3a9378 @age=33, @name="Gabriela", @site_id=3, @store_id=4, @gender="F", @savings=45.5, @attrs_sum=66, @newer_attribute=132>
+#<Organizer::Item:0x007fef3b3a85e0 @age=35, @name="Javier", @site_id=3, @store_id=5, @gender="M", @savings=25.5, @attrs_sum=70, @newer_attribute=140>
+```
+
+### A Group
+
+You can define groups. The data will be grouped by the attribute passed in params.
+
+#### Definition Example
+
+```ruby
+Organizer::Template.define("my_organizer") do
+ # collection and other definitions...
+
+  group(:site_id)
+end
+```
+
+#### Usage Example
+
+```ruby
+MyOrganizer.new.organize(group_by: :site_id)
+# [
+#   [0] [
+#       [0] #<Organizer::Item:0x007f93bd304780 @age=22, @name="Juan Manuel", @site_id=1, @store_id=1, @gender="M", @savings=20.5>,
+#       [1] #<Organizer::Item:0x007f93bd30f770 @age=31, @name="Leandro", @site_id=1, @store_id=1, @gender="M", @savings=15.5>
+#   ],
+#   [1] [
+#       [0] #<Organizer::Item:0x007f93bd30e820 @age=64, @name="Susana", @site_id=2, @store_id=2, @gender="F", @savings=30.0>,
+#       [1] #<Organizer::Item:0x007f93bd30da38 @age=65, @name="Rodolfo", @site_id=2, @store_id=2, @gender="M", @savings=50.2>,
+#       [2] #<Organizer::Item:0x007f93bd30ca20 @age=33, @name="Virginia", @site_id=2, @store_id=3, @gender="F", @savings=70.1>,
+#       [3] #<Organizer::Item:0x007f93bd3176c8 @age=8, @name="Francisco", @site_id=2, @store_id=3, @gender="M", @savings=2.5>
+#   ],
+#   [2] [
+#       [0] #<Organizer::Item:0x007f93bd316610 @age=31, @name="Gustavo", @site_id=3, @store_id=4, @gender="M", @savings=40.5>,
+#       [1] #<Organizer::Item:0x007f93bd3155f8 @age=33, @name="Gabriela", @site_id=3, @store_id=4, @gender="F", @savings=45.5>,
+#       [2] #<Organizer::Item:0x007f93bd314540 @age=35, @name="Javier", @site_id=3, @store_id=5, @gender="M", @savings=25.5>
+#   ]
+# ]
 ```
 
 ## Docs

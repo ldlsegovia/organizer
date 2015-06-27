@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Organizer::Collection do
-  let_raw_collection(:raw_collection)
+  let_collection(:collection)
 
   describe "#<<" do
     it "raises error trying to add non organizer items to collection" do
@@ -30,7 +30,7 @@ describe Organizer::Collection do
     it "returns an Organizer::Collection instance" do
       collection = Organizer::Collection.new.fill(raw_collection)
       expect(collection).to be_a(Organizer::Collection)
-      expect(collection.count).to eq(3)
+      expect(collection.count).to eq(9)
     end
   end
 end

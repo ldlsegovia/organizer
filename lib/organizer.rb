@@ -1,4 +1,5 @@
 require "organizer/version"
+require "organizer/attributes_handler"
 require "organizer/error"
 require "organizer/exceptions"
 require "organizer/template"
@@ -12,6 +13,10 @@ require "organizer/filter"
 require "organizer/operations_manager"
 require "organizer/operations_collection"
 require "organizer/operation"
+require "organizer/groups_manager"
+require "organizer/groups_collection"
+require "organizer/group"
+require "organizer/group_item"
 
 require "active_support/all"
 
