@@ -6,7 +6,8 @@ end
 
 class Organizer::DSLException < ::Exception
   ERRORS = {
-    invalid_organizer_name: "Invalid organizer name. Needs to be a constantizable string"
+    invalid_organizer_name: "Invalid organizer name. Needs to be a constantizable string",
+    forbidden_nesting: "Forbidden nesting definition detected"
   }
 end
 
