@@ -55,6 +55,12 @@ class Organizer::OperationException < ::Exception
   }
 end
 
+class Organizer::GroupOperationException < ::Exception
+  ERRORS = {
+    execute_over_organizer_group_items_only: "Operations can be executed on Organizer::GroupItems only",
+  }
+end
+
 class Organizer::OperationsCollectionException < ::Exception
   ERRORS = {
     invalid_item: "Invalid operations collection item. Must be Organizer:Operation only"
