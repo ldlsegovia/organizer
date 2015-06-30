@@ -35,22 +35,12 @@ describe Organizer::DSL do
       dsl.collection { valid_collection }
       expect(MyOrganizer.new.collection.count).to eq(2)
     end
-
-    it "raises error trying to add a collection ouside the root definition" do
-      expect { dsl.filter(:my_filter) { collection {} } }.to(
-        raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
-    end
   end
 
   describe "#default_filter" do
     it "executes add_default_filter class method on generated MyOrganizer class" do
       dsl.default_filter {}
       expect(MyOrganizer.filters_manager.send(:default_filters).count).to eq(1)
-    end
-
-    it "raises error trying to add a default_filter ouside the root definition" do
-      expect { dsl.operation(:my_operation) { default_filter {} } }.to(
-        raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
     end
   end
 
@@ -64,11 +54,6 @@ describe Organizer::DSL do
       dsl.filter(:my_filter) {|organizer_item, value|}
       expect(MyOrganizer.filters_manager.send(:filters_with_values).count).to eq(1)
     end
-
-    it "raises error trying to add a filter ouside the root definition" do
-      expect { dsl.operation(:my_operation) { filter(:my_filter) {} } }.to(
-        raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
-    end
   end
 
   describe "#operation" do
@@ -77,15 +62,9 @@ describe Organizer::DSL do
       expect(MyOrganizer.operations_manager.send(:operations).count).to eq(1)
     end
 
-    it "raises error trying to add an operation ouside the root or group definition" do
-      expect { dsl.operation(:filter) { operation(:my_operation) {} } }.to(
-        raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
-    end
-
     it "adds operations nested to group" do
       dsl.group(:store_id) do
         operation(:operation_1) {}
-        operation(:operation2)
       end
 
       skip
@@ -98,15 +77,35 @@ describe Organizer::DSL do
       expect(MyOrganizer.groups_manager.send(:groups).count).to eq(1)
     end
 
+    it "raises forbidden nesting passing a collection as definition" do
+      expect { dsl.group(:my_group) { collection {} } }.to(
+        raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
+    end
+
+    it "raises forbidden nesting passing a default filter as definition" do
+      expect { dsl.group(:my_group) { default_filter(:filter) {} } }.to(
+        raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
+    end
+
+    it "raises forbidden nesting passing a filter as definition" do
+      expect { dsl.group(:my_group) { filter(:filter) {} } }.to(
+        raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
+    end
+
     it "adds a group nested to another group" do
-      dsl.group(:site_id) do
-        group(:store_1) {}
+      dsl.group(:g1) do
+        group(:g2) {}
       end
 
       skip
     end
 
     it "raises error trying to add a two groups at the same definition level" do
+      dsl.group(:g1) do
+        group(:g2) {}
+        group(:g3) {}
+      end
+
       skip
     end
   end

@@ -1,21 +1,17 @@
 class Organizer::Context
   attr_reader :type
-  attr_reader :data
-  attr_accessor :organizer_class_proc
+  attr_accessor :data
 
   # @param _type [Symbol] can be group, operation, etc.
   # @param _data [Object] data relative to this context. Can be anything...
-  def initialize(_type, _data)
+  def initialize(_type)
     @type = _type.to_sym
-    @data = _data
-    @organizer_class_proc = nil
   end
 end
 
 class Organizer::ContextManager
   def initialize
     @ctx_collection = []
-    @definitions_count = 0
   end
 
   # Opens a new context inside the hierarchy.
@@ -25,21 +21,14 @@ class Organizer::ContextManager
   # @param _definition [Proc]
   # @return [Organizer::Context]
   def open(_dsl, _ctx_type, _definition = nil, &action)
-    ctx = Organizer::Context.new(_ctx_type, {}) #TODO: pass useful data to context.
+    ctx = Organizer::Context.new(_ctx_type)
     @ctx_collection << ctx
-    @definitions_count += 1
-    prev_definitions_count = @definitions_count
-
-    if !_definition.blank?
-      _dsl.instance_eval(&_definition) rescue nil
-      ctx.organizer_class_proc = _definition if prev_definitions_count == @definitions_count
-    end
-
-    _dsl.instance_eval(&action)
+    ctx.data = _dsl.instance_eval(&action)
+    _dsl.instance_eval(&_definition) if _definition
     close
   end
 
-  # Returns true if the current context has no parent.
+  # Returns true with no parent contexts.
   #
   # @return [Boolean]
   def root_parent?
@@ -50,7 +39,14 @@ class Organizer::ContextManager
   #
   # @return [Boolean]
   def group_parent?
-    (@ctx_collection[-2].type == :group) rescue false
+    (parent_ctx.type == :group) rescue false
+  end
+
+  # Returns parent context
+  #
+  # @return [Object]
+  def parent_ctx
+    @ctx_collection[-2]
   end
 
   private

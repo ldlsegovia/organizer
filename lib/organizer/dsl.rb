@@ -27,13 +27,7 @@ class Organizer::DSL
   #
   # @raise [Organizer::DSLException] :forbidden_nesting
   def collection(&block)
-    in_context(block) do
-      if @ctx.root_parent?
-        @organizer_class.add_collection(&block)
-      else
-        raise_error(:forbidden_nesting)
-      end
-    end
+    in_root_context { @organizer_class.add_collection(&block) }
   end
 
   # Adds a default filter to Organizer class.
@@ -47,13 +41,7 @@ class Organizer::DSL
   #
   # @raise [Organizer::DSLException] :forbidden_nesting
   def default_filter(_name = nil, &block)
-    in_context(block) do
-      if @ctx.root_parent?
-        @organizer_class.add_default_filter(_name, &block)
-      else
-        raise_error(:forbidden_nesting)
-      end
-    end
+    in_root_context { @organizer_class.add_default_filter(_name, &block) }
   end
 
   # Adds a normal filter to to Organizer class.
@@ -68,13 +56,9 @@ class Organizer::DSL
   #
   # @raise [Organizer::DSLException] :forbidden_nesting
   def filter(_name, &block)
-    in_context(block) do
-      if @ctx.root_parent?
-        accept_value = (block.parameters.count == 2)
-        @organizer_class.add_filter(_name, accept_value, &block)
-      else
-        raise_error(:forbidden_nesting)
-      end
+    in_root_context do
+      accept_value = (block.parameters.count == 2)
+      @organizer_class.add_filter(_name, accept_value, &block)
     end
   end
 
@@ -88,11 +72,12 @@ class Organizer::DSL
   #
   # @raise [Organizer::DSLException] :forbidden_nesting
   def operation(_name, &block)
-    in_context(block) do
+    in_context do
       if @ctx.root_parent?
         @organizer_class.add_operation(_name, &block)
       elsif @ctx.group_parent?
-        # TODO: support group operations
+        group_name = @ctx.parent_ctx.data.name
+        @organizer_class.add_group_operation(_name, group_name, &block)
       else
         raise_error(:forbidden_nesting)
       end
@@ -108,12 +93,12 @@ class Organizer::DSL
   # @return [void]
   #
   # @raise [Organizer::DSLException] :forbidden_nesting
-  def group(_name, _group_by_attr = nil, &block)
-    in_context(block) do
+  def group(_name, _group_by_attr = nil, &nested_definition)
+    in_context(nested_definition) do
       if @ctx.root_parent?
         @organizer_class.add_group(_name, _group_by_attr)
       elsif @ctx.group_parent?
-        # TODO: support nested groups
+        #TODO: support nested groups
       else
         raise_error(:forbidden_nesting)
       end
@@ -122,10 +107,20 @@ class Organizer::DSL
 
   private
 
-  def in_context(_definition, &action)
+  def in_context(_nested_definition = nil, &action)
     caller_method_name = caller[0][/`.*'/][1..-2]
-    @ctx.open(self, caller_method_name, _definition, &action)
+    @ctx.open(self, caller_method_name, _nested_definition, &action)
     return
+  end
+
+  def in_root_context
+    in_context do
+      if @ctx.root_parent?
+        yield
+      else
+        raise_error(:forbidden_nesting)
+      end
+    end
   end
 
   def create_organizer_class(_organizer_name)

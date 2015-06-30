@@ -56,6 +56,10 @@ class Organizer::Base
       operations_manager.add_operation(_name, &block)
     end
 
+    def add_group_operation(_name, _group_name, &block)
+      #TODO
+    end
+
     # Adds a new {Organizer::Group} to {Organizer::GroupsManager}
     #
     # @param _name [Symbol] symbol to identify this particular group.
