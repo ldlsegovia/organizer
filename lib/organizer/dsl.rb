@@ -58,7 +58,11 @@ class Organizer::DSL
   def filter(_name, &block)
     in_root_context do
       accept_value = (block.parameters.count == 2)
-      @organizer_class.add_filter(_name, accept_value, &block)
+      if accept_value
+        @organizer_class.add_filter_with_value(_name, &block)
+      else
+        @organizer_class.add_filter(_name, &block)
+      end
     end
   end
 

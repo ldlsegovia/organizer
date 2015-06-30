@@ -59,8 +59,8 @@ describe Organizer::Base do
 
       context "with filters with values" do
         before do
-          BaseChild.add_filter(:filter1, true) { |item, value| item.age > value }
-          BaseChild.add_filter(:filter2, true) { |item, value| item.age < value }
+          BaseChild.add_filter_with_value(:filter1) { |item, value| item.age > value }
+          BaseChild.add_filter_with_value(:filter2) { |item, value| item.age < value }
         end
 
         it "applies filters" do
@@ -97,7 +97,7 @@ describe Organizer::Base do
     end
   end
 
-  describe "#collection" do
+  describe "#add_collection" do
     it "uses filters passed on initialize" do
       BaseChild.add_collection do |options|
         raw_collection.select { |item| item[:age] < options[:age] }
@@ -119,7 +119,7 @@ describe Organizer::Base do
     end
   end
 
-  describe "#default_filter" do
+  describe "#add_default_filter" do
     it "adds new filter" do
       obj = BaseChild.add_default_filter(:my_filter) {}
       expect(obj).to be_a(Organizer::Filter)
@@ -138,7 +138,7 @@ describe Organizer::Base do
     end
   end
 
-  describe "#filter" do
+  describe "#add_filter" do
     it "adds new filter" do
       obj = BaseChild.add_filter(:my_filter) {}
       expect(obj).to be_a(Organizer::Filter)
@@ -157,7 +157,7 @@ describe Organizer::Base do
     end
   end
 
-  describe "#operation" do
+  describe "#add_operation" do
     it "adds new operation" do
       obj = BaseChild.add_operation(:my_operation) {}
       expect(obj).to be_a(Organizer::Operation)
@@ -172,6 +172,25 @@ describe Organizer::Base do
       it "adds filter to each class" do
         expect(BaseChild.add_operation(:my_operation) {}).to be_a(Organizer::Operation)
         expect(AhotherChild.add_operation(:my_operation) {}).to be_a(Organizer::Operation)
+      end
+    end
+  end
+
+  describe "#add_group_operation" do
+    it "adds new operation" do
+      obj = BaseChild.add_group_operation(:my_operation, :my_group) {}
+      expect(obj).to be_a(Organizer::Operation)
+    end
+
+    context "with another child class" do
+      before do
+        Object.send(:remove_const, :AhotherChild) rescue nil
+        class AhotherChild < Organizer::Base; end
+      end
+
+      it "adds filter to each class" do
+        expect(BaseChild.add_group_operation(:my_operation, :my_group) {}).to be_a(Organizer::Operation)
+        expect(AhotherChild.add_group_operation(:my_operation, :my_group) {}).to be_a(Organizer::Operation)
       end
     end
   end

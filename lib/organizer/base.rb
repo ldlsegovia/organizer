@@ -32,18 +32,24 @@ class Organizer::Base
     # Adds a normal {Organizer::Filter} to {Organizer::FiltersManager}
     #
     # @param _name [Symbol] filter's name.
-    # @param _accept_value [Symbol] sets true if you want to filter using params.
     # @yield code that must return a Boolean value.
     # @yieldparam organizer_item [Organizer::Item]
-    # @yieldparam value [Object] if _accept_value is true
     # @yieldreturn [Boolean]
     # @return [Organizer::Filter]
-    def add_filter(_name, _accept_value = false, &block)
-      if !!_accept_value
-        filters_manager.add_filter_with_value(_name, &block)
-      else
-        filters_manager.add_normal_filter(_name, &block)
-      end
+    def add_filter(_name, &block)
+      filters_manager.add_normal_filter(_name, &block)
+    end
+
+    # Adds a {Organizer::Filter} with value to {Organizer::FiltersManager}
+    #
+    # @param _name [Symbol] filter's name.
+    # @yield code that must return a Boolean value.
+    # @yieldparam organizer_item [Organizer::Item]
+    # @yieldparam value [Object]
+    # @yieldreturn [Boolean]
+    # @return [Organizer::Filter]
+    def add_filter_with_value(_name, &block)
+      filters_manager.add_filter_with_value(_name, &block)
     end
 
     # Adds a new {Organizer::Operation} to {Organizer::OperationsManager}
@@ -56,8 +62,14 @@ class Organizer::Base
       operations_manager.add_operation(_name, &block)
     end
 
+    # Adds a new {Organizer::GroupOperation} to {Organizer::OperationsManager}
+    #
+    # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
+    # @param _group_name [Symbol] to identify group related with this operation
+    # @yield code that will return the operation's result
+    # @return [Organizer::Operation]
     def add_group_operation(_name, _group_name, &block)
-      #TODO
+      operations_manager.add_group_operation(_name, _group_name, &block)
     end
 
     # Adds a new {Organizer::Group} to {Organizer::GroupsManager}

@@ -8,8 +8,18 @@ describe Organizer::OperationsManager do
       expect(subject.send(:operations).count).to eq(0)
       subject.add_operation(:result_attr) {}
       expect(subject.send(:operations).count).to eq(1)
-      subject.add_operation(:another_attr) {}
-      expect(subject.send(:operations).count).to eq(2)
+    end
+
+    it "raises error with repeated operation name" do
+      skip
+    end
+  end
+
+  describe "#add_group_operation" do
+    it "adds new group operation" do
+      expect(subject.send(:group_operations).count).to eq(0)
+      subject.add_group_operation(:result_attr, :my_group) {}
+      expect(subject.send(:group_operations).count).to eq(1)
     end
 
     it "raises error with repeated operation name" do

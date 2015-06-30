@@ -5,12 +5,22 @@ class Organizer::OperationsManager
   #
   # @param _name [Symbol] operation's name
   # @yield contains logic to generate the result for this particular operation.
-  # @yieldparam organizer_item [Organizer::Item] you can use item's attributes to get
-  #   the desired operation result.
+  # @yieldparam organizer_item [Organizer::Item] you can use item's attributes to get the desired operation result.
   # @return [Organizer::Operation]
-  def add_operation(_name = nil, &block)
+  def add_operation(_name, &block)
     operations << Organizer::Operation.new(block, _name)
     operations.last
+  end
+
+  # Creates a new {Organizer::GroupOperation} and adds to group operations collection.
+  #
+  # @param _name [Symbol] operation's name
+  # @param _group_name [Symbol] to identify group related with this operation
+  # @yield contains logic to generate the result for this particular operation.
+  # @return [Organizer::Operation]
+  def add_group_operation(_name, _group_name, &block)
+    group_operations << Organizer::GroupOperation.new(block, _name, _group_name)
+    group_operations.last
   end
 
   # Each collection's items will be evaluated against all defined operations. The operation's results
@@ -54,5 +64,9 @@ class Organizer::OperationsManager
 
   def operations
     @operations ||= Organizer::OperationsCollection.new
+  end
+
+  def group_operations
+    @group_operations ||= Organizer::OperationsCollection.new
   end
 end
