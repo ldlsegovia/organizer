@@ -36,10 +36,14 @@ module Organizer::AttributesHandler
   #
   # @param _attr_name [Symbol] this will be the reader's mehtod name
   # @param _value [Object] this will be the reader's return value
+  # @param read_only [Boolean]
   # @return self
-  def define_attribute(_attr_name, _value)
+  def define_attribute(_attr_name, _value, read_only = true)
     method_name = method_name_from_string(_attr_name)
-    define_attr_reader(method_name, _value)
+    accessor_type = !!read_only ? :attr_reader : :attr_accessor
+    self.singleton_class.send(accessor_type, method_name)
+    self.instance_variable_set("@#{method_name}", _value)
+    attribute_names << method_name.to_sym
     self
   end
 
@@ -79,11 +83,5 @@ module Organizer::AttributesHandler
   def method_name_from_string(_string)
     raise_error(:invalid_attribute_key) if !_string.match(/^[A-z0-9\-\s]+$/)
     _string.to_s.underscore.gsub(" ", "_")
-  end
-
-  def define_attr_reader(_method_name, _value)
-    self.singleton_class.send(:attr_reader, _method_name)
-    self.instance_variable_set("@#{_method_name}", _value)
-    attribute_names << _method_name.to_sym
   end
 end

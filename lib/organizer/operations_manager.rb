@@ -26,13 +26,14 @@ class Organizer::OperationsManager
   # Each collection's items will be evaluated against all defined operations. The operation's results
   # will be attached to items as new attributes.
   #
-  # @param _collection [Organizer::Collection]
-  # @return [Organizer::Collection] the collection with new attributes attached.
+  # @param _collection [Organizer::Collection] or [Organizer::Group]
+  # @return [Organizer::Collection] or [Organizer::Group] the collection with new attributes attached.
   #
   # @raise [Organizer::OperationsManagerException]
   def execute(_collection)
-    return _collection if operations.count <= 0
-    _collection.each { |item| execute_recursively(item, operations.dup) }
+    current_operations = _collection.is_a?(Organizer::Group) ? group_operations : operations
+    return _collection if current_operations.count <= 0
+    _collection.each { |item| execute_recursively(item, current_operations.dup) }
     _collection
   end
 
