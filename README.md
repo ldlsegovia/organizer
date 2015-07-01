@@ -64,7 +64,7 @@ Organizer::Template.define("my_organizer") do
 end
 ```
 
-Also, you can pass options (filters usually) to get a desired raw collection: `organizer = MyOrganizer.new({attr1: 84})`.
+Also, you can pass options (filters usually) to get a desired raw collection: `organizer = MyOrganizer.new({ age: 33 })`.
 These options will be present as the first param on collection definition like this:
 
 ```ruby
