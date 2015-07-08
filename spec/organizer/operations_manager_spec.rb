@@ -11,10 +11,6 @@ describe Organizer::OperationsManager do
       operation = subject.add_operation(:result_attr) {}
       expect(operation).to be_a(Organizer::Operation)
     end
-
-    it "raises error with repeated operation name" do
-      skip
-    end
   end
 
   describe "#add_group_operation" do
@@ -26,10 +22,6 @@ describe Organizer::OperationsManager do
     it "returns a new group operation" do
       operation = subject.add_group_operation(:result_attr, :my_group) {}
       expect(operation).to be_a(Organizer::GroupOperation)
-    end
-
-    it "raises error with repeated operation name" do
-      skip
     end
   end
 

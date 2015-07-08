@@ -14,5 +14,9 @@ describe Organizer::OperationsCollection do
       expect(subject.size).to eq(1)
       expect(subject.first).to be_a(Organizer::Operation)
     end
+
+    it "raises error with repeated operation name" do
+      skip
+    end
   end
 end

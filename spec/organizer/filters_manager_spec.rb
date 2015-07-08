@@ -3,26 +3,16 @@ require 'spec_helper'
 describe Organizer::FiltersManager do
   let_collection(:collection)
 
-  shared_examples :filters_collection do |_filter_method, _filters_collection, _error_class|
-    it "adds new object with definition to collection" do
-      proc = Proc.new {}
-      expect(subject.send(_filters_collection).size).to eq(0)
-      filter_one = subject.send(_filter_method, :filter_one, &proc)
-      expect(filter_one.name).to eq(:filter_one)
-      expect(subject.send(_filters_collection).size).to eq(1)
-      filter_two = subject.send(_filter_method, :filter_two, &proc)
-      expect(filter_two.name).to eq(:filter_two)
-      expect(subject.send(_filters_collection).size).to eq(2)
-    end
-
-    it "raises error with repeated name for filter" do
-      skip
-    end
-  end
-
   describe "#add_default_filter" do
-    it_should_behave_like(:filters_collection,
-      :add_default_filter, :default_filters, Organizer::FilterException)
+    it "adds a new default filter" do
+      expect { subject.add_default_filter(:my_filter) {} }.to change {
+        subject.send(:default_filters).count }.from(0).to(1)
+    end
+
+    it "returns a new default filter" do
+      filter = subject.add_default_filter(:my_filter) {}
+      expect(filter).to be_a(Organizer::Filter)
+    end
 
     it "adds default filter without a name" do
       proc = Proc.new {}
@@ -33,8 +23,15 @@ describe Organizer::FiltersManager do
   end
 
   describe "#add_normal_filter" do
-    it_should_behave_like(:filters_collection,
-      :add_normal_filter, :normal_filters, Organizer::FilterException)
+    it "adds a new default filter" do
+      expect { subject.add_normal_filter(:my_filter) {} }.to change {
+        subject.send(:normal_filters).count }.from(0).to(1)
+    end
+
+    it "returns a new default filter" do
+      filter = subject.add_normal_filter(:my_filter) {}
+      expect(filter).to be_a(Organizer::Filter)
+    end
   end
 
   describe "#apply" do
