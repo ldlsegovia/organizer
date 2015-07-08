@@ -3,9 +3,13 @@ require 'spec_helper'
 describe Organizer::OperationsManager do
   describe "#add_operation" do
     it "adds new operation" do
-      expect(subject.send(:operations).count).to eq(0)
-      subject.add_operation(:result_attr) {}
-      expect(subject.send(:operations).count).to eq(1)
+      expect { subject.add_operation(:result_attr) {} }.to change {
+        subject.send(:operations).count }.from(0).to(1)
+    end
+
+    it "returns a new operation" do
+      operation = subject.add_operation(:result_attr) {}
+      expect(operation).to be_a(Organizer::Operation)
     end
 
     it "raises error with repeated operation name" do
@@ -15,9 +19,13 @@ describe Organizer::OperationsManager do
 
   describe "#add_group_operation" do
     it "adds new group operation" do
-      expect(subject.send(:group_operations).count).to eq(0)
-      subject.add_group_operation(:result_attr, :my_group) {}
-      expect(subject.send(:group_operations).count).to eq(1)
+      expect { subject.add_group_operation(:result_attr, :my_group) {} }.to change {
+        subject.send(:group_operations).count }.from(0).to(1)
+    end
+
+    it "returns a new group operation" do
+      operation = subject.add_group_operation(:result_attr, :my_group) {}
+      expect(operation).to be_a(Organizer::GroupOperation)
     end
 
     it "raises error with repeated operation name" do
