@@ -17,14 +17,14 @@ module Organizer
 
       # Evaluates definition proc to build a new attribute. This attribute will be added to _item param.
       #
-      # @param _item [Organizer::Item] you can use item's attributes to build the new attribute
-      # @return [Organizer::Item] with the new attribute added
+      # @param _item [Organizer::Source::Item] you can use item's attributes to build the new attribute
+      # @return [Organizer::Source::Item] with the new attribute added
       #
       # @raise [Organizer::Operation::ItemException] :execute_over_organizer_items_only
       #
       # @example
       #   hash = { attr1: 400, attr2: 266 }
-      #   item = Organizer::Item.new
+      #   item = Organizer::Source::Item.new
       #   item.define_attributes(hash)
       #
       #   proc = Proc.new do |organizer_item|
@@ -35,7 +35,7 @@ module Organizer
       #   item.attrs_sum
       #   #=> 666
       def execute(_item)
-        raise_error(:execute_over_organizer_items_only) if !_item.is_a?(Organizer::Item)
+        raise_error(:execute_over_organizer_items_only) if !_item.is_a?(Organizer::Source::Item)
         result = definition.call(_item)
         _item.define_attribute(self.name, result)
       end

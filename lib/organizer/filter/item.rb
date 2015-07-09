@@ -17,14 +17,14 @@ module Organizer
 
       # Evaluates _item param against definition proc to know if item must be filtered or not.
       #
-      # @param _item [Organizer::Item]
+      # @param _item [Organizer::Source::Item]
       # @return [Boolean]
       #
       # @raise [Organizer::Filter::ItemException] :apply_on_organizer_items_only and
       #   :definition_must_return_boolean
       #
       # @example
-      #   item = Organizer::Item.new
+      #   item = Organizer::Source::Item.new
       #   item.define_attributes({ attr1: 400, attr2: 266 })
       #
       #   proc = Proc.new do |organizer_item, value|
@@ -34,7 +34,7 @@ module Organizer
       #   Organizer::Filter::Item.new(proc, :my_filter, true).apply(item, 666)
       #   #=> true
       def apply(_item, _value = nil)
-        raise_error(:apply_on_organizer_items_only) if !_item.is_a?(Organizer::Item)
+        raise_error(:apply_on_organizer_items_only) if !_item.is_a?(Organizer::Source::Item)
         result = !!accept_value ? definition.call(_item, _value) : definition.call(_item)
         raise_error(:definition_must_return_boolean) if !!result != result
         result
@@ -42,7 +42,7 @@ module Organizer
 
       # Check if this filter has name passed as param
       #
-      # @param _filter_name [Organizer::Item]
+      # @param _filter_name [Organizer::Source::Item]
       # @return [Boolean]
       def has_name?(_filter_name)
         !!self.name && self.name.to_sym == _filter_name.to_sym

@@ -7,7 +7,7 @@ module Organizer
       #
       # @param _name [optional, Symbol] filter's name. Not mandatory for default filters.
       # @yield code that must return a Boolean value.
-      # @yieldparam organizer_item [Organizer::Item] you can use item's attributes in your conditions.
+      # @yieldparam organizer_item [Organizer::Source::Item] you can use item's attributes in your conditions.
       # @yieldreturn [Boolean]
       # @return [Organizer::Filter::Item]
       def add_default_filter(_name = nil, &block)
@@ -19,7 +19,7 @@ module Organizer
       #
       # @param _name [Symbol] filter's name.
       # @yield code that must return a Boolean value.
-      # @yieldparam organizer_item [Organizer::Item] you can use item's attributes in your conditions.
+      # @yieldparam organizer_item [Organizer::Source::Item] you can use item's attributes in your conditions.
       # @yieldreturn [Boolean]
       # @return [Organizer::Filter::Item]
       def add_normal_filter(_name, &block)
@@ -31,7 +31,7 @@ module Organizer
       #
       # @param _name [Symbol] filter's name.
       # @yield  code that must return a Boolean value.
-      # @yieldparam organizer_item [Organizer::Item] you can use item's attributes in your conditions.
+      # @yieldparam organizer_item [Organizer::Source::Item] you can use item's attributes in your conditions.
       # @yieldparam value [Object] you can use this value in your conditions. Can be anything.
       # @yieldreturn [Boolean]
       # @return [Organizer::Filter::Item]
@@ -50,8 +50,8 @@ module Organizer
       #   { my_filter: 4, other_filter: 6 }.
       #
       # @param _options [Hash]
-      # @param _collection [Organizer::Collection] the whole collection
-      # @return [Organizer::Collection] a filtered collection
+      # @param _collection [Organizer::Source::Collection] the whole collection
+      # @return [Organizer::Source::Collection] a filtered collection
       def apply(_collection, _options = {})
         generate_usual_filters(_collection.first)
         filtered_collection = apply_default_fitlers(_collection, _options)
@@ -59,7 +59,7 @@ module Organizer
         apply_filters_with_values(filtered_collection, _options)
       end
 
-      # Generates common filters based on _item attributes. If you have an {Organizer::Item} with a single
+      # Generates common filters based on _item attributes. If you have an {Organizer::Source::Item} with a single
       #   attribute named "my_attr". After run this method you will have these filters:
       #   * my_attr_eq: match attribute equals to...
       #   * my_attr_not_eq: match attribute different to...
@@ -72,7 +72,7 @@ module Organizer
       #   * my_attr_ends: match attribute ending with string...
       def generate_usual_filters(_item)
         return unless _item
-        raise_error(:generate_over_organizer_items_only) unless _item.is_a? Organizer::Item
+        raise_error(:generate_over_organizer_items_only) unless _item.is_a? Organizer::Source::Item
         _item.attribute_names.each do |attribute|
           generate_attr_filter(attribute, :eq) { |item, value| item.send(attribute) == value }
           generate_attr_filter(attribute, :not_eq) { |item, value| item.send(attribute) != value }
@@ -131,7 +131,7 @@ module Organizer
 
       def apply_filters(_filters, _collection, _filters_values = nil)
         return _collection unless _filters
-        filtered_collection = Organizer::Collection.new
+        filtered_collection = Organizer::Source::Collection.new
         _collection.each do |item|
           add_item = true
           _filters.each do |filter|

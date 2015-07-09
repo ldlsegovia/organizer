@@ -35,7 +35,7 @@ class Organizer::DSL
   #
   # @param _name [optional, Symbol] filter's name.
   # @yield code that must return a Boolean value.
-  # @yieldparam organizer_item [Organizer::Item]
+  # @yieldparam organizer_item [Organizer::Source::Item]
   # @yieldreturn [Boolean]
   # @return [Organizer::Filter::Item]
   #
@@ -49,7 +49,7 @@ class Organizer::DSL
   #
   # @param _name [Symbol] filter's name.
   # @yield code that must return a Boolean value.
-  # @yieldparam organizer_item [Organizer::Item]
+  # @yieldparam organizer_item [Organizer::Source::Item]
   # @yieldparam value [Object] if you want to pass paramentes
   # @yieldreturn [Boolean]
   # @return [void]
@@ -72,7 +72,7 @@ class Organizer::DSL
   # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
   # @param _initial_value [Object]
   # @yield code that will return the operation's result.
-  # @yieldparam organizer_item [Organizer::Item]
+  # @yieldparam organizer_item [Organizer::Source::Item]
   # @return [void]
   #
   # @raise [Organizer::DSLException] :forbidden_nesting

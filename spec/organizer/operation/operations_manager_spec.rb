@@ -32,7 +32,7 @@ describe Organizer::Operation::Manager do
 
       it "returns the whole collection" do
         expect(subject.execute(collection).size).to eq(9)
-        expect(subject.execute(collection)).to be_a(Organizer::Collection)
+        expect(subject.execute(collection)).to be_a(Organizer::Source::Collection)
       end
 
       it "returns collection items with new attribute" do

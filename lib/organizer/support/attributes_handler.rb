@@ -6,7 +6,7 @@ module Organizer::AttributesHandler
   # @param _hash [Hash]
   # @return self
   #
-  # @raise [Organizer::ItemException] :must_be_a_hash and :invalid_attribute_key
+  # @raise [Organizer::Source::ItemException] :must_be_a_hash and :invalid_attribute_key
   #
   # @example
   #   hash = {

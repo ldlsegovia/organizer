@@ -38,7 +38,7 @@ describe Organizer::Group::Item do
     end
 
     it "returns same group with empty collection" do
-      expect(@group.build(Organizer::Collection.new)).to be(@group)
+      expect(@group.build(Organizer::Source::Collection.new)).to be(@group)
     end
 
     context "with a built a group" do
@@ -58,9 +58,9 @@ describe Organizer::Group::Item do
         two = @group.last
         expect(one.size).to eq(2)
         expect(two.size).to eq(1)
-        expect(one.first).to be_a(Organizer::Item)
-        expect(one.last).to be_a(Organizer::Item)
-        expect(two.first).to be_a(Organizer::Item)
+        expect(one.first).to be_a(Organizer::Source::Item)
+        expect(one.last).to be_a(Organizer::Source::Item)
+        expect(two.first).to be_a(Organizer::Source::Item)
         one.first.attribute_names.each { |attribute, value| expect(one).to respond_to(attribute) }
         two.first.attribute_names.each { |attribute, value| expect(two).to respond_to(attribute) }
       end

@@ -22,7 +22,7 @@ class Organizer::Base
     #
     # @param _name [optional, Symbol] filter's name.
     # @yield code that must return a Boolean value.
-    # @yieldparam organizer_item [Organizer::Item]
+    # @yieldparam organizer_item [Organizer::Source::Item]
     # @yieldreturn [Boolean]
     # @return [Organizer::Filter::Item]
     def add_default_filter(_name = nil, &block)
@@ -33,7 +33,7 @@ class Organizer::Base
     #
     # @param _name [Symbol] filter's name.
     # @yield code that must return a Boolean value.
-    # @yieldparam organizer_item [Organizer::Item]
+    # @yieldparam organizer_item [Organizer::Source::Item]
     # @yieldreturn [Boolean]
     # @return [Organizer::Filter::Item]
     def add_filter(_name, &block)
@@ -44,7 +44,7 @@ class Organizer::Base
     #
     # @param _name [Symbol] filter's name.
     # @yield code that must return a Boolean value.
-    # @yieldparam organizer_item [Organizer::Item]
+    # @yieldparam organizer_item [Organizer::Source::Item]
     # @yieldparam value [Object]
     # @yieldreturn [Boolean]
     # @return [Organizer::Filter::Item]
@@ -56,7 +56,7 @@ class Organizer::Base
     #
     # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
     # @yield code that will return the operation's result
-    # @yieldparam organizer_item [Organizer::Item]
+    # @yieldparam organizer_item [Organizer::Source::Item]
     # @return [Organizer::Operation::Item]
     def add_operation(_name, &block)
       operations_manager.add_operation(_name, &block)
@@ -121,7 +121,7 @@ class Organizer::Base
     # Applies filters, operations, groups, etc. to defined collection.
     #
     # @param _options [Hash]
-    # @return [Organizer::Collection]
+    # @return [Organizer::Source::Collection]
     def organize(_options = {})
       result = filters_manager.apply(collection, _options)
       result = operations_manager.execute(result)
@@ -129,12 +129,12 @@ class Organizer::Base
       operations_manager.execute(result)
     end
 
-    # It returns collection stored as proc in collection_proc var converted to {Organizer::Collection}
+    # It returns collection stored as proc in collection_proc var converted to {Organizer::Source::Collection}
     #
-    # @return [Organizer::Collection] or [Organizer::Group::Item]
+    # @return [Organizer::Source::Collection] or [Organizer::Group::Item]
     def collection
       raise_error(:undefined_collection_method) unless collection_proc
-      Organizer::Collection.new.fill(collection_proc.call(collection_options))
+      Organizer::Source::Collection.new.fill(collection_proc.call(collection_options))
     end
 
     private

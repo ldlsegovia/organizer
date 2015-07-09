@@ -9,7 +9,7 @@ module HelpfulVariables
       datetime_attr: "04/06/1984 06:06:06".to_datetime
     }
 
-    let(_name) { Organizer::Item.new.define_attributes(attributes) }
+    let(_name) { Organizer::Source::Item.new.define_attributes(attributes) }
     let("#{_name}_hash") { attributes }
     let("#{_name}_hash_keys") { attributes.keys }
   end
@@ -30,8 +30,8 @@ module HelpfulVariables
     let("raw_#{_name}") { collection }
 
     let(_name) do
-      collection.inject(Organizer::Collection.new) do |organizer_collection, item|
-        organizer_collection << Organizer::Item.new.define_attributes(item)
+      collection.inject(Organizer::Source::Collection.new) do |organizer_collection, item|
+        organizer_collection << Organizer::Source::Item.new.define_attributes(item)
       end
     end
   end

@@ -21,14 +21,14 @@ describe Organizer::Operation::Item do
   end
 
   describe "#execute" do
-    it "raise exception if _item is not an Organizer::Item" do
+    it "raise exception if _item is not an Organizer::Source::Item" do
       expect { Organizer::Operation::Item.new(Proc.new {}, :my_operation).execute("not an item") }.to(
         raise_organizer_error(Organizer::Operation::ItemException, :execute_over_organizer_items_only))
     end
 
     it "sets operation result as new attribute into item param" do
       hash = { attr1: 400, attr2: 266 }
-      item = Organizer::Item.new
+      item = Organizer::Source::Item.new
       item.define_attributes(hash)
 
       proc = Proc.new do |organizer_item|

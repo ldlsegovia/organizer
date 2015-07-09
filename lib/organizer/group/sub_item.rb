@@ -4,7 +4,7 @@ module Organizer
       include Organizer::Error
       include Organizer::AttributesHandler
 
-      # @param _items [Array] containing Organizer::Item
+      # @param _items [Array] containing Organizer::Source::Item
       def initialize(_items = nil)
         if !_items.blank?
           self.clone_attributes(_items.first)

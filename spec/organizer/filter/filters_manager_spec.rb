@@ -90,20 +90,20 @@ describe Organizer::Filter::Manager do
       end
 
       it "avoids filters generation with empty collection" do
-         expect(subject.apply(Organizer::Collection.new, filters: { attr1_eq: 4 }).size).to eq(0)
+         expect(subject.apply(Organizer::Source::Collection.new, filters: { attr1_eq: 4 }).size).to eq(0)
       end
     end
   end
 
   describe "#generate_usual_filters" do
     let_item(:item)
-    let(:collection) { Organizer::Collection.new << item }
+    let(:collection) { Organizer::Source::Collection.new << item }
     before do
       subject.generate_usual_filters(item)
       @all_filters = subject.send(:all_filters)
     end
 
-    it "raise exception if _item is not an Organizer::Item" do
+    it "raise exception if _item is not an Organizer::Source::Item" do
       expect { subject.generate_usual_filters("not an item") }.to(
         raise_organizer_error(Organizer::Filter::ManagerException, :generate_over_organizer_items_only))
     end

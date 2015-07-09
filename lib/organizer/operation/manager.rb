@@ -7,7 +7,7 @@ module Organizer
       #
       # @param _name [Symbol] operation's name
       # @yield contains logic to generate the result for this particular operation.
-      # @yieldparam organizer_item [Organizer::Item] you can use item's attributes to get the desired operation result.
+      # @yieldparam organizer_item [Organizer::Source::Item] you can use item's attributes to get the desired operation result.
       # @return [Organizer::Operation::Item]
       def add_operation(_name, &block)
         operations << Organizer::Operation::Item.new(block, _name)
@@ -29,8 +29,8 @@ module Organizer
       # Each collection's items will be evaluated against all defined operations. The operation's results
       # will be attached to items as new attributes.
       #
-      # @param _collection [Organizer::Collection] or [Organizer::Group::Item]
-      # @return [Organizer::Collection] or [Organizer::Group::Item] the collection with new attributes attached.
+      # @param _collection [Organizer::Source::Collection] or [Organizer::Group::Item]
+      # @return [Organizer::Source::Collection] or [Organizer::Group::Item] the collection with new attributes attached.
       #
       # @raise [Organizer::Operation::ManagerException]
       def execute(_collection)

@@ -11,20 +11,24 @@ class Organizer::DSLException < ::Exception
   }
 end
 
-class Organizer::CollectionException < ::Exception
-  ERRORS = {
-    invalid_item: "Invalid item for collection. Must be Organizer::Item instance",
-    invalid_collection_structure: "Invalid collection structure. Must be Array",
-    invalid_collection_item_structure: "Invalid collection item structure. Must be a Hash"
-  }
-end
+module Organizer
+  module Source
+    class CollectionException < ::Exception
+      ERRORS = {
+        invalid_item: "Invalid item for collection. Must be Organizer::Source::Item instance",
+        invalid_collection_structure: "Invalid collection structure. Must be Array",
+        invalid_collection_item_structure: "Invalid collection item structure. Must be a Hash"
+      }
+    end
 
-class Organizer::ItemException < ::Exception
-  ERRORS = {
-    must_be_a_hash: "_hash parameter must be a Hash",
-    invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
-    attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
-  }
+    class ItemException < ::Exception
+      ERRORS = {
+        must_be_a_hash: "_hash parameter must be a Hash",
+        invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
+        attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
+      }
+    end
+  end
 end
 
 module Organizer
@@ -32,14 +36,14 @@ module Organizer
     class ItemException < ::Exception
       ERRORS = {
         definition_must_be_a_proc: "Filter definition must be a Proc",
-        apply_on_organizer_items_only: "Filters can be applied on Organizer::Items only",
+        apply_on_organizer_items_only: "Filters can be applied on Organizer::Source::Items only",
         definition_must_return_boolean: "Invalid filter definition result. The definition bock call must return a boolean value"
       }
     end
 
     class ManagerException < ::Exception
       ERRORS = {
-        generate_over_organizer_items_only: "Can generate usual filters only based on Organizer::Items only",
+        generate_over_organizer_items_only: "Can generate usual filters only based on Organizer::Source::Items only",
       }
     end
 
@@ -56,7 +60,7 @@ module Organizer
     class ItemException < ::Exception
       ERRORS = {
         blank_name: "Operation name param is mandatory",
-        execute_over_organizer_items_only: "Operations can be executed on Organizer::Items only",
+        execute_over_organizer_items_only: "Operations can be executed on Organizer::Source::Items only",
         definition_must_be_a_proc: "Operation definition must be a Proc"
       }
     end
@@ -90,7 +94,7 @@ module Organizer
     class ItemException < ::Exception
       ERRORS = {
         invalid_item: "Invalid group item. Must be Organizer::Group::SubItem only",
-        group_by_attr_not_present_in_collection: "group_by_attr is not present in collection Organizer::Items"
+        group_by_attr_not_present_in_collection: "group_by_attr is not present in collection Organizer::Source::Items"
       }
     end
 

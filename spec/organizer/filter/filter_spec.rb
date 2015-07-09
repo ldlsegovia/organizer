@@ -32,7 +32,7 @@ describe Organizer::Filter::Item do
   describe "#apply" do
     let_item(:item)
 
-    it "raise exception if _item is not an Organizer::Item" do
+    it "raise exception if _item is not an Organizer::Source::Item" do
       expect { Organizer::Filter::Item.new(Proc.new {}).apply("not an item") }.to(
         raise_organizer_error(Organizer::Filter::ItemException, :apply_on_organizer_items_only))
     end
@@ -50,7 +50,7 @@ describe Organizer::Filter::Item do
       expect(Organizer::Filter::Item.new(Proc.new { 1 == 1 }).apply(item)).to be_truthy
     end
 
-    it "uses Organizer::Item instance on definition call" do
+    it "uses Organizer::Source::Item instance on definition call" do
       proc = Proc.new do |organizer_item|
         (organizer_item.int_attr1 + organizer_item.int_attr2) == 666
       end

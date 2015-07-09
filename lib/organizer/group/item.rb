@@ -21,7 +21,7 @@ module Organizer
 
       # Splits given collection into {Organizer::Group::SubItem}s based on group_by_attr
       #
-      # @param _collection [Organizer::Collection]
+      # @param _collection [Organizer::Source::Collection]
       # @return [Organizer::Group::Item] self
       def build(_collection)
         return self if _collection.size.zero?
@@ -41,7 +41,7 @@ module Organizer
 
       # Check if this group has name passed as param
       #
-      # @param _group_name [Organizer::Item]
+      # @param _group_name [Organizer::Source::Item]
       # @return [Boolean]
       def has_name?(_group_name)
         !!self.name && self.name.to_sym == _group_name.to_sym
