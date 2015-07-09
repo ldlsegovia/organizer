@@ -14,9 +14,9 @@ describe Organizer::GroupOperation do
 
   describe "#execute" do
     let_collection(:collection)
-    before { @group_item = Organizer::GroupItem.new(collection) }
+    before { @group_item = Organizer::Group::SubItem.new(collection) }
 
-    it "raise exception if _item is not an Organizer::GroupItem" do
+    it "raise exception if _item is not an Organizer::Group::SubItem" do
       expect { Organizer::GroupOperation.new(Proc.new {}, :my_operation, :my_group).execute("not a group item") }.to(
         raise_organizer_error(Organizer::GroupOperationException, :execute_over_organizer_group_items_only))
     end

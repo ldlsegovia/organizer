@@ -73,11 +73,11 @@ class Organizer::Base
       operations_manager.add_group_operation(_name, _group_name, _initial_value, &block)
     end
 
-    # Adds a new {Organizer::Group} to {Organizer::GroupsManager}
+    # Adds a new {Organizer::Group::Item} to {Organizer::Group::Manager}
     #
     # @param _name [Symbol] symbol to identify this particular group.
     # @param _group_by_attr attribute by which the items will be grouped. If nil, _name will be used insted.
-    # @return [Organizer::Group]
+    # @return [Organizer::Group::Item]
     def add_group(_name, _group_by_attr = nil)
       groups_manager.add_group(_name, _group_by_attr)
     end
@@ -98,9 +98,9 @@ class Organizer::Base
 
     # Returns manager to handle group issues.
     #
-    # @return [Organizer::GroupsManager]
+    # @return [Organizer::Group::Manager]
     def groups_manager
-      @groups_manager ||= Organizer::GroupsManager.new
+      @groups_manager ||= Organizer::Group::Manager.new
     end
 
     # Returns a proc containing an array collection
@@ -131,7 +131,7 @@ class Organizer::Base
 
     # It returns collection stored as proc in collection_proc var converted to {Organizer::Collection}
     #
-    # @return [Organizer::Collection] or [Organizer::Group]
+    # @return [Organizer::Collection] or [Organizer::Group::Item]
     def collection
       raise_error(:undefined_collection_method) unless collection_proc
       Organizer::Collection.new.fill(collection_proc.call(collection_options))

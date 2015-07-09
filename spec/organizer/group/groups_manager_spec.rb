@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Organizer::GroupsManager do
+describe Organizer::Group::Manager do
   let_collection(:collection)
 
   describe "#add_group" do
@@ -33,8 +33,8 @@ describe Organizer::GroupsManager do
     context "with a valid group name" do
       before { @group = subject.build(collection, { group_by: :store }) }
       it { expect(@group.size).to eq(5) }
-      it { expect(@group).to be_a(Organizer::Group) }
-      it { @group.each { |group| expect(group).to be_a(Organizer::GroupItem) } }
+      it { expect(@group).to be_a(Organizer::Group::Item) }
+      it { @group.each { |group| expect(group).to be_a(Organizer::Group::SubItem) } }
     end
 
     it "returns collection when group no found" do

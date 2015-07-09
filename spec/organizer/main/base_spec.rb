@@ -99,7 +99,7 @@ describe Organizer::Base do
         it "groups collection items" do
           base = BaseChild.new
           result = base.organize(group_by: :site_id)
-          expect(result).to be_a(Organizer::Group)
+          expect(result).to be_a(Organizer::Group::Item)
           expect(result.size).to eq(3)
         end
 

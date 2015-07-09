@@ -1,23 +1,23 @@
 require 'spec_helper'
 
-describe Organizer::GroupsCollection do
+describe Organizer::Group::Collection do
   describe "#<<" do
     it "raises error trying to add non organizer groups to collection" do
       expect { subject << "not an organizer group" }.to(
-        raise_organizer_error(Organizer::GroupsCollectionException, :invalid_item))
+        raise_organizer_error(Organizer::Group::CollectionException, :invalid_item))
     end
 
-    it "adds Organizer::Group to collection" do
-      subject << Organizer::Group.new(Proc.new {})
+    it "adds Organizer::Group::Item to collection" do
+      subject << Organizer::Group::Item.new(Proc.new {})
       expect(subject.size).to eq(1)
-      expect(subject.first).to be_a(Organizer::Group)
+      expect(subject.first).to be_a(Organizer::Group::Item)
     end
   end
 
   describe "#group_by_name" do
     before do
-      subject << Organizer::Group.new(:group1)
-      subject << Organizer::Group.new(:group2)
+      subject << Organizer::Group::Item.new(:group1)
+      subject << Organizer::Group::Item.new(:group2)
     end
 
     it "returns existent group" do

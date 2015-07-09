@@ -1,4 +1,4 @@
-require_relative "group/groups_manager"
-require_relative "group/groups_collection"
-require_relative "group/group"
-require_relative "group/group_item"
+require_relative "group/manager"
+require_relative "group/collection"
+require_relative "group/item"
+require_relative "group/sub_item"

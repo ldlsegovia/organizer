@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe Organizer::GroupItem do
-  it_should_behave_like(:attributes_handler, Organizer::GroupItem, Organizer::GroupItemException)
+describe Organizer::Group::SubItem do
+  it_should_behave_like(:attributes_handler, Organizer::Group::SubItem, Organizer::Group::SubItemException)
 
   describe "#initialize" do
     let_collection(:collection)
-    before { @group_item = Organizer::GroupItem.new(collection) }
+    before { @group_item = Organizer::Group::SubItem.new(collection) }
 
     it "copies attributes from first collection item" do
       item = collection.first

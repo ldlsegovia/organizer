@@ -74,7 +74,7 @@ describe Organizer::OperationsManager do
 
       it "returns a group" do
         expect(subject.execute(group).size).to eq(2)
-        expect(subject.execute(group)).to be_a(Organizer::Group)
+        expect(subject.execute(group)).to be_a(Organizer::Group::Item)
       end
 
       it "returns group items with new attribute" do
