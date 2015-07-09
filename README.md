@@ -271,6 +271,10 @@ Organizer::Template.define("my_organizer") do
     operation(:age_sum) do |group_item, item|
       group_item.age_sum += item.age
     end
+
+    operation(:age_sum_with_initial_value, 10) do |group_item, item|
+      group_item.age_sum_with_initial_value += item.age
+    end
   end
 end
 ```
@@ -305,12 +309,15 @@ Using group operations...
 ```ruby
 MyOrganizer.new.organize(group_by: :site_id).each do |group_item|
   p group_item.age_sum
+  p group_item.age_sum_with_initial_value
 end
 
 # 53 (22+31)
+# 63 (10+22+31)
 # 170 (64+65+33+8)
+# 180 (10+64+65+33+8)
 # 99 (31+33+35)
-
+# 109 (10+31+33+35)
 ```
 
 ## Docs

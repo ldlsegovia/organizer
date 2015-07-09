@@ -105,7 +105,7 @@ describe Organizer::Base do
 
         context "with operations" do
           before do
-            BaseChild.add_group_operation(:attrs_sum, :site_id) do |group_item, item|
+            BaseChild.add_group_operation(:attrs_sum, :site_id, 10) do |group_item, item|
               group_item.attrs_sum += item.age
             end
           end
@@ -114,7 +114,7 @@ describe Organizer::Base do
             base = BaseChild.new
             result = base.organize(group_by: :site_id)
             expect(result.first.size).to eq(2)
-            expect(result.first.attrs_sum).to eq(result.first.age + result.last.age)
+            expect(result.first.attrs_sum).to eq(10 + result.first.age + result.last.age)
           end
         end
       end

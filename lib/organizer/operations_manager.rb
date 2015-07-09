@@ -16,10 +16,11 @@ class Organizer::OperationsManager
   #
   # @param _name [Symbol] operation's name
   # @param _group_name [Symbol] to identify group related with this operation
+  # @param _initial_value [Object]
   # @yield contains logic to generate the result for this particular operation.
   # @return [Organizer::Operation]
-  def add_group_operation(_name, _group_name, &block)
-    group_operations << Organizer::GroupOperation.new(block, _name, _group_name)
+  def add_group_operation(_name, _group_name, _initial_value = 0, &block)
+    group_operations << Organizer::GroupOperation.new(block, _name, _group_name, _initial_value)
     group_operations.last
   end
 

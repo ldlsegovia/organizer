@@ -66,10 +66,11 @@ class Organizer::Base
     #
     # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
     # @param _group_name [Symbol] to identify group related with this operation
+    # @param _initial_value [Object]
     # @yield code that will return the operation's result
     # @return [Organizer::Operation]
-    def add_group_operation(_name, _group_name, &block)
-      operations_manager.add_group_operation(_name, _group_name, &block)
+    def add_group_operation(_name, _group_name, _initial_value = 0, &block)
+      operations_manager.add_group_operation(_name, _group_name, _initial_value, &block)
     end
 
     # Adds a new {Organizer::Group} to {Organizer::GroupsManager}

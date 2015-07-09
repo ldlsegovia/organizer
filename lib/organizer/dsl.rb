@@ -70,18 +70,19 @@ class Organizer::DSL
   # Operations are calculations that you can perform between collection item attributes.
   #
   # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
+  # @param _initial_value [Object]
   # @yield code that will return the operation's result.
   # @yieldparam organizer_item [Organizer::Item]
   # @return [void]
   #
   # @raise [Organizer::DSLException] :forbidden_nesting
-  def operation(_name, &block)
+  def operation(_name, _initial_value = 0, &block)
     in_context do
       if @ctx.root_parent?
         @organizer_class.add_operation(_name, &block)
       elsif @ctx.group_parent?
         group_name = @ctx.parent_ctx.data.name
-        @organizer_class.add_group_operation(_name, group_name, &block)
+        @organizer_class.add_group_operation(_name, group_name, _initial_value, &block)
       else
         raise_error(:forbidden_nesting)
       end
