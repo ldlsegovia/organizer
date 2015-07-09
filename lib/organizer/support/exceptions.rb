@@ -1,17 +1,17 @@
-class Organizer::Exception < ::Exception
-  ERRORS = {
-    undefined_collection_method: "Undefined collection method. You need to add collection(){} into Organizer::Template.define block"
-  }
-end
-
-class Organizer::DSLException < ::Exception
-  ERRORS = {
-    invalid_organizer_name: "Invalid organizer name. Needs to be a constantizable string",
-    forbidden_nesting: "Forbidden nesting definition detected"
-  }
-end
-
 module Organizer
+  class DSLException < ::Exception
+    ERRORS = {
+      invalid_organizer_name: "Invalid organizer name. Needs to be a constantizable string",
+      forbidden_nesting: "Forbidden nesting definition detected"
+    }
+  end
+
+  class Exception < ::Exception
+    ERRORS = {
+      undefined_collection_method: "Undefined collection method. You need to add collection(){} into Organizer::Template.define block"
+    }
+  end
+
   module Source
     class CollectionException < ::Exception
       ERRORS = {
@@ -29,9 +29,7 @@ module Organizer
       }
     end
   end
-end
 
-module Organizer
   module Filter
     class ItemException < ::Exception
       ERRORS = {
@@ -53,9 +51,7 @@ module Organizer
       }
     end
   end
-end
 
-module Organizer
   module Operation
     class ItemException < ::Exception
       ERRORS = {
@@ -81,9 +77,7 @@ module Organizer
       ERRORS = {}
     end
   end
-end
 
-module Organizer
   module Group
     class CollectionException < ::Exception
       ERRORS = {
