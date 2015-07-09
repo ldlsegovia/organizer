@@ -37,7 +37,7 @@ class Organizer::DSL
   # @yield code that must return a Boolean value.
   # @yieldparam organizer_item [Organizer::Item]
   # @yieldreturn [Boolean]
-  # @return [Organizer::Filter]
+  # @return [Organizer::Filter::Item]
   #
   # @raise [Organizer::DSLException] :forbidden_nesting
   def default_filter(_name = nil, &block)

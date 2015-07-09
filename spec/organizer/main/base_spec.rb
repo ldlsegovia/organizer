@@ -146,7 +146,7 @@ describe Organizer::Base do
   describe "#add_default_filter" do
     it "adds new filter" do
       obj = BaseChild.add_default_filter(:my_filter) {}
-      expect(obj).to be_a(Organizer::Filter)
+      expect(obj).to be_a(Organizer::Filter::Item)
     end
 
     context "with another child class" do
@@ -156,8 +156,8 @@ describe Organizer::Base do
       end
 
       it "adds filter to each class" do
-        expect(BaseChild.add_default_filter(:my_filter) {}).to be_a(Organizer::Filter)
-        expect(AhotherChild.add_default_filter(:my_filter) {}).to be_a(Organizer::Filter)
+        expect(BaseChild.add_default_filter(:my_filter) {}).to be_a(Organizer::Filter::Item)
+        expect(AhotherChild.add_default_filter(:my_filter) {}).to be_a(Organizer::Filter::Item)
       end
     end
   end
@@ -165,7 +165,7 @@ describe Organizer::Base do
   describe "#add_filter" do
     it "adds new filter" do
       obj = BaseChild.add_filter(:my_filter) {}
-      expect(obj).to be_a(Organizer::Filter)
+      expect(obj).to be_a(Organizer::Filter::Item)
     end
 
     context "with another child class" do
@@ -175,8 +175,8 @@ describe Organizer::Base do
       end
 
       it "adds filter to each class" do
-        expect(BaseChild.add_filter(:my_filter) {}).to be_a(Organizer::Filter)
-        expect(AhotherChild.add_filter(:my_filter) {}).to be_a(Organizer::Filter)
+        expect(BaseChild.add_filter(:my_filter) {}).to be_a(Organizer::Filter::Item)
+        expect(AhotherChild.add_filter(:my_filter) {}).to be_a(Organizer::Filter::Item)
       end
     end
   end

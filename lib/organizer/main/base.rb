@@ -18,36 +18,36 @@ class Organizer::Base
       return
     end
 
-    # Adds a default {Organizer::Filter} to {Organizer::FiltersManager}
+    # Adds a default {Organizer::Filter::Item} to {Organizer::Filter::Manager}
     #
     # @param _name [optional, Symbol] filter's name.
     # @yield code that must return a Boolean value.
     # @yieldparam organizer_item [Organizer::Item]
     # @yieldreturn [Boolean]
-    # @return [Organizer::Filter]
+    # @return [Organizer::Filter::Item]
     def add_default_filter(_name = nil, &block)
       filters_manager.add_default_filter(_name, &block)
     end
 
-    # Adds a normal {Organizer::Filter} to {Organizer::FiltersManager}
+    # Adds a normal {Organizer::Filter::Item} to {Organizer::Filter::Manager}
     #
     # @param _name [Symbol] filter's name.
     # @yield code that must return a Boolean value.
     # @yieldparam organizer_item [Organizer::Item]
     # @yieldreturn [Boolean]
-    # @return [Organizer::Filter]
+    # @return [Organizer::Filter::Item]
     def add_filter(_name, &block)
       filters_manager.add_normal_filter(_name, &block)
     end
 
-    # Adds a {Organizer::Filter} with value to {Organizer::FiltersManager}
+    # Adds a {Organizer::Filter::Item} with value to {Organizer::Filter::Manager}
     #
     # @param _name [Symbol] filter's name.
     # @yield code that must return a Boolean value.
     # @yieldparam organizer_item [Organizer::Item]
     # @yieldparam value [Object]
     # @yieldreturn [Boolean]
-    # @return [Organizer::Filter]
+    # @return [Organizer::Filter::Item]
     def add_filter_with_value(_name, &block)
       filters_manager.add_filter_with_value(_name, &block)
     end
@@ -84,9 +84,9 @@ class Organizer::Base
 
     # Returns manager to handle filter issues.
     #
-    # @return [Organizer::FiltersManager]
+    # @return [Organizer::Filter::Manager]
     def filters_manager
-      @filters_manager ||= Organizer::FiltersManager.new
+      @filters_manager ||= Organizer::Filter::Manager.new
     end
 
     # Returns manager to handle operation issues.

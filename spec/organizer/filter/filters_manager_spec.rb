@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Organizer::FiltersManager do
+describe Organizer::Filter::Manager do
   let_collection(:collection)
 
   describe "#add_default_filter" do
@@ -11,7 +11,7 @@ describe Organizer::FiltersManager do
 
     it "returns a new default filter" do
       filter = subject.add_default_filter(:my_filter) {}
-      expect(filter).to be_a(Organizer::Filter)
+      expect(filter).to be_a(Organizer::Filter::Item)
     end
 
     it "adds default filter without a name" do
@@ -30,7 +30,7 @@ describe Organizer::FiltersManager do
 
     it "returns a new default filter" do
       filter = subject.add_normal_filter(:my_filter) {}
-      expect(filter).to be_a(Organizer::Filter)
+      expect(filter).to be_a(Organizer::Filter::Item)
     end
   end
 
@@ -105,7 +105,7 @@ describe Organizer::FiltersManager do
 
     it "raise exception if _item is not an Organizer::Item" do
       expect { subject.generate_usual_filters("not an item") }.to(
-        raise_organizer_error(Organizer::FiltersManagerException, :generate_over_organizer_items_only))
+        raise_organizer_error(Organizer::Filter::ManagerException, :generate_over_organizer_items_only))
     end
 
     it "has generated filters" do

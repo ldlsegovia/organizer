@@ -27,24 +27,28 @@ class Organizer::ItemException < ::Exception
   }
 end
 
-class Organizer::FilterException < ::Exception
-  ERRORS = {
-    definition_must_be_a_proc: "Filter definition must be a Proc",
-    apply_on_organizer_items_only: "Filters can be applied on Organizer::Items only",
-    definition_must_return_boolean: "Invalid filter definition result. The definition bock call must return a boolean value"
-  }
-end
+module Organizer
+  module Filter
+    class ItemException < ::Exception
+      ERRORS = {
+        definition_must_be_a_proc: "Filter definition must be a Proc",
+        apply_on_organizer_items_only: "Filters can be applied on Organizer::Items only",
+        definition_must_return_boolean: "Invalid filter definition result. The definition bock call must return a boolean value"
+      }
+    end
 
-class Organizer::FiltersManagerException < ::Exception
-  ERRORS = {
-    generate_over_organizer_items_only: "Can generate usual filters only based on Organizer::Items only",
-  }
-end
+    class ManagerException < ::Exception
+      ERRORS = {
+        generate_over_organizer_items_only: "Can generate usual filters only based on Organizer::Items only",
+      }
+    end
 
-class Organizer::FiltersCollectionException < ::Exception
-  ERRORS = {
-    invalid_item: "Invalid filter collection item. Must be Organizer:Filter only"
-  }
+    class CollectionException < ::Exception
+      ERRORS = {
+        invalid_item: "Invalid filter collection item. Must be Organizer:Filter only"
+      }
+    end
+  end
 end
 
 class Organizer::OperationException < ::Exception
