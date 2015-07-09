@@ -30,13 +30,18 @@ module HelpfulVariables
     let("raw_#{_name}") { collection }
 
     let(_name) do
-      organizer_collection = Organizer::Collection.new
-
-      collection.each do |item|
+      collection.inject(Organizer::Collection.new) do |organizer_collection, item|
         organizer_collection << Organizer::Item.new.define_attributes(item)
       end
+    end
+  end
 
-      organizer_collection
+  def let_group(_name, group_attr = :store_id)
+    collection_name = "#{_name}_group_collection"
+    let_collection(collection_name)
+    let(_name) do
+      group = Organizer::Group.new(group_attr)
+      group.build(send(collection_name))
     end
   end
 end

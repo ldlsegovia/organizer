@@ -32,18 +32,24 @@ class Organizer::Base
     # Adds a normal {Organizer::Filter} to {Organizer::FiltersManager}
     #
     # @param _name [Symbol] filter's name.
-    # @param _accept_value [Symbol] sets true if you want to filter using params.
     # @yield code that must return a Boolean value.
     # @yieldparam organizer_item [Organizer::Item]
-    # @yieldparam value [Object] if _accept_value is true
     # @yieldreturn [Boolean]
     # @return [Organizer::Filter]
-    def add_filter(_name, _accept_value = false, &block)
-      if !!_accept_value
-        filters_manager.add_filter_with_value(_name, &block)
-      else
-        filters_manager.add_normal_filter(_name, &block)
-      end
+    def add_filter(_name, &block)
+      filters_manager.add_normal_filter(_name, &block)
+    end
+
+    # Adds a {Organizer::Filter} with value to {Organizer::FiltersManager}
+    #
+    # @param _name [Symbol] filter's name.
+    # @yield code that must return a Boolean value.
+    # @yieldparam organizer_item [Organizer::Item]
+    # @yieldparam value [Object]
+    # @yieldreturn [Boolean]
+    # @return [Organizer::Filter]
+    def add_filter_with_value(_name, &block)
+      filters_manager.add_filter_with_value(_name, &block)
     end
 
     # Adds a new {Organizer::Operation} to {Organizer::OperationsManager}
@@ -56,8 +62,15 @@ class Organizer::Base
       operations_manager.add_operation(_name, &block)
     end
 
-    def add_group_operation(_name, _group_name, &block)
-      #TODO
+    # Adds a new {Organizer::GroupOperation} to {Organizer::OperationsManager}
+    #
+    # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
+    # @param _group_name [Symbol] to identify group related with this operation
+    # @param _initial_value [Object]
+    # @yield code that will return the operation's result
+    # @return [Organizer::Operation]
+    def add_group_operation(_name, _group_name, _initial_value = 0, &block)
+      operations_manager.add_group_operation(_name, _group_name, _initial_value, &block)
     end
 
     # Adds a new {Organizer::Group} to {Organizer::GroupsManager}
@@ -105,14 +118,15 @@ class Organizer::Base
       @collection_options = _collection_options
     end
 
-    # Applies filters, operations and groups to defined collection.
+    # Applies filters, operations, groups, etc. to defined collection.
     #
     # @param _options [Hash]
     # @return [Organizer::Collection]
     def organize(_options = {})
       result = filters_manager.apply(collection, _options)
       result = operations_manager.execute(result)
-      groups_manager.build(result, _options)
+      result = groups_manager.build(result, _options)
+      operations_manager.execute(result)
     end
 
     # It returns collection stored as proc in collection_proc var converted to {Organizer::Collection}

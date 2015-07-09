@@ -64,7 +64,7 @@ Organizer::Template.define("my_organizer") do
 end
 ```
 
-Also, you can pass options (filters usually) to get a desired raw collection: `organizer = MyOrganizer.new({attr1: 84})`.
+Also, you can pass options (filters usually) to get a desired raw collection: `organizer = MyOrganizer.new({ age: 33 })`.
 These options will be present as the first param on collection definition like this:
 
 ```ruby
@@ -261,7 +261,27 @@ Organizer::Template.define("my_organizer") do
 end
 ```
 
+You can define operations for a given group.
+
+```ruby
+Organizer::Template.define("my_organizer") do
+ # collection and other definitions...
+
+  group(:site_id) do
+    operation(:age_sum) do |group_item, item|
+      group_item.age_sum += item.age
+    end
+
+    operation(:age_sum_with_initial_value, 10) do |group_item, item|
+      group_item.age_sum_with_initial_value += item.age
+    end
+  end
+end
+```
+
 #### Usage Example
+
+Normal example...
 
 ```ruby
 MyOrganizer.new.organize(group_by: :site_id)
@@ -282,6 +302,22 @@ MyOrganizer.new.organize(group_by: :site_id)
 #       [2] #<Organizer::Item:0x007f93bd314540 @age=35, @name="Javier", @site_id=3, @store_id=5, @gender="M", @savings=25.5>
 #   ]
 # ]
+```
+
+Using group operations...
+
+```ruby
+MyOrganizer.new.organize(group_by: :site_id).each do |group_item|
+  p group_item.age_sum
+  p group_item.age_sum_with_initial_value
+end
+
+# 53 (22+31)
+# 63 (10+22+31)
+# 170 (64+65+33+8)
+# 180 (10+64+65+33+8)
+# 99 (31+33+35)
+# 109 (10+31+33+35)
 ```
 
 ## Docs

@@ -64,10 +64,18 @@ describe Organizer::DSL do
 
     it "adds operations nested to group" do
       dsl.group(:store_id) do
-        operation(:operation_1) {}
+        operation(:operation_1, 10) {}
+        operation(:operation_2) {}
       end
 
-      skip
+      operations = MyOrganizer.operations_manager.send(:group_operations)
+      expect(operations.count).to eq(2)
+      expect(operations.first.name).to eq(:operation_1)
+      expect(operations.first.group_name).to eq(:store_id)
+      expect(operations.first.initial_value).to eq(10)
+      expect(operations.last.name).to eq(:operation_2)
+      expect(operations.last.group_name).to eq(:store_id)
+      expect(operations.last.initial_value).to eq(0)
     end
   end
 

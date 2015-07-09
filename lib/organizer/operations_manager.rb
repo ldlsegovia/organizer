@@ -5,24 +5,36 @@ class Organizer::OperationsManager
   #
   # @param _name [Symbol] operation's name
   # @yield contains logic to generate the result for this particular operation.
-  # @yieldparam organizer_item [Organizer::Item] you can use item's attributes to get
-  #   the desired operation result.
+  # @yieldparam organizer_item [Organizer::Item] you can use item's attributes to get the desired operation result.
   # @return [Organizer::Operation]
-  def add_operation(_name = nil, &block)
+  def add_operation(_name, &block)
     operations << Organizer::Operation.new(block, _name)
     operations.last
+  end
+
+  # Creates a new {Organizer::GroupOperation} and adds to group operations collection.
+  #
+  # @param _name [Symbol] operation's name
+  # @param _group_name [Symbol] to identify group related with this operation
+  # @param _initial_value [Object]
+  # @yield contains logic to generate the result for this particular operation.
+  # @return [Organizer::Operation]
+  def add_group_operation(_name, _group_name, _initial_value = 0, &block)
+    group_operations << Organizer::GroupOperation.new(block, _name, _group_name, _initial_value)
+    group_operations.last
   end
 
   # Each collection's items will be evaluated against all defined operations. The operation's results
   # will be attached to items as new attributes.
   #
-  # @param _collection [Organizer::Collection]
-  # @return [Organizer::Collection] the collection with new attributes attached.
+  # @param _collection [Organizer::Collection] or [Organizer::Group]
+  # @return [Organizer::Collection] or [Organizer::Group] the collection with new attributes attached.
   #
   # @raise [Organizer::OperationsManagerException]
   def execute(_collection)
-    return _collection if operations.count <= 0
-    _collection.each { |item| execute_recursively(item, operations.dup) }
+    current_operations = _collection.is_a?(Organizer::Group) ? group_operations : operations
+    return _collection if current_operations.count <= 0
+    _collection.each { |item| execute_recursively(item, current_operations.dup) }
     _collection
   end
 
@@ -54,5 +66,9 @@ class Organizer::OperationsManager
 
   def operations
     @operations ||= Organizer::OperationsCollection.new
+  end
+
+  def group_operations
+    @group_operations ||= Organizer::OperationsCollection.new
   end
 end

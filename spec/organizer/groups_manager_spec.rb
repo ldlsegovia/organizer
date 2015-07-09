@@ -5,9 +5,8 @@ describe Organizer::GroupsManager do
 
   describe "#add_group" do
     it "adds new group" do
-      expect(subject.send(:groups).count).to eq(0)
-      subject.add_group(:store_id) {}
-      expect(subject.send(:groups).count).to eq(1)
+      expect { subject.add_group(:store_id) {} }.to change {
+        subject.send(:groups).count }.from(0).to(1)
     end
 
     it "uses name to set group_by_attr if attr is nil" do
@@ -31,16 +30,19 @@ describe Organizer::GroupsManager do
     let_collection(:collection)
     before { subject.add_group(:store, :store_id) }
 
-    it "groups data" do
-      result = subject.build(collection, { group_by: :store })
+    context "with a valid group name" do
+      before { @group = subject.build(collection, { group_by: :store }) }
+      it { expect(@group.size).to eq(5) }
+      it { expect(@group).to be_a(Organizer::Group) }
+      it { @group.each { |group| expect(group).to be_a(Organizer::GroupItem) } }
     end
 
     it "returns collection when group no found" do
-      result = subject.build(collection, { group_by: :invalid_group })
+      expect(subject.build(collection, { group_by: :invalid_group })).to eq(collection)
     end
 
     it "returns collection when group_by option is no present" do
-      result = subject.build(collection, {})
+      expect(subject.build(collection, {})).to eq(collection)
     end
   end
 end

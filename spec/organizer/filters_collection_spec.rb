@@ -12,6 +12,10 @@ describe Organizer::FiltersCollection do
       expect(subject.size).to eq(1)
       expect(subject.first).to be_a(Organizer::Filter)
     end
+
+    it "raises error with repeated name for filter" do
+      skip
+    end
   end
 
   describe "#filter_by_name" do
