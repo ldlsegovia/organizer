@@ -1,4 +1,2 @@
-class Organizer::Item
-  include Organizer::Error
-  include Organizer::AttributesHandler
-end
+require_relative "item/collection"
+require_relative "item/item"
