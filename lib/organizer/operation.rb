@@ -1,4 +1,4 @@
-require_relative "operation/operations_manager"
-require_relative "operation/operations_collection"
-require_relative "operation/operation"
-require_relative "operation/group_operation"
+require_relative "operation/manager"
+require_relative "operation/collection"
+require_relative "operation/item"
+require_relative "operation/group_item"

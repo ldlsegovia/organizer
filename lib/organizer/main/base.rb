@@ -52,23 +52,23 @@ class Organizer::Base
       filters_manager.add_filter_with_value(_name, &block)
     end
 
-    # Adds a new {Organizer::Operation} to {Organizer::OperationsManager}
+    # Adds a new {Organizer::Operation::Item} to {Organizer::Operation::Manager}
     #
     # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
     # @yield code that will return the operation's result
     # @yieldparam organizer_item [Organizer::Item]
-    # @return [Organizer::Operation]
+    # @return [Organizer::Operation::Item]
     def add_operation(_name, &block)
       operations_manager.add_operation(_name, &block)
     end
 
-    # Adds a new {Organizer::GroupOperation} to {Organizer::OperationsManager}
+    # Adds a new {Organizer::Operation::GroupItem} to {Organizer::Operation::Manager}
     #
     # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
     # @param _group_name [Symbol] to identify group related with this operation
     # @param _initial_value [Object]
     # @yield code that will return the operation's result
-    # @return [Organizer::Operation]
+    # @return [Organizer::Operation::Item]
     def add_group_operation(_name, _group_name, _initial_value = 0, &block)
       operations_manager.add_group_operation(_name, _group_name, _initial_value, &block)
     end
@@ -91,9 +91,9 @@ class Organizer::Base
 
     # Returns manager to handle operation issues.
     #
-    # @return [Organizer::OperationsManager]
+    # @return [Organizer::Operation::Manager]
     def operations_manager
-      @operations_manager ||= Organizer::OperationsManager.new
+      @operations_manager ||= Organizer::Operation::Manager.new
     end
 
     # Returns manager to handle group issues.

@@ -51,28 +51,32 @@ module Organizer
   end
 end
 
-class Organizer::OperationException < ::Exception
-  ERRORS = {
-    blank_name: "Operation name param is mandatory",
-    execute_over_organizer_items_only: "Operations can be executed on Organizer::Items only",
-    definition_must_be_a_proc: "Operation definition must be a Proc"
-  }
-end
+module Organizer
+  module Operation
+    class ItemException < ::Exception
+      ERRORS = {
+        blank_name: "Operation name param is mandatory",
+        execute_over_organizer_items_only: "Operations can be executed on Organizer::Items only",
+        definition_must_be_a_proc: "Operation definition must be a Proc"
+      }
+    end
 
-class Organizer::GroupOperationException < ::Exception
-  ERRORS = {
-    execute_over_organizer_group_items_only: "Operations can be executed on Organizer::Group::SubItems only",
-  }
-end
+    class GroupItemException < ::Exception
+      ERRORS = {
+        execute_over_organizer_group_items_only: "Operations can be executed on Organizer::Group::SubItems only",
+      }
+    end
 
-class Organizer::OperationsCollectionException < ::Exception
-  ERRORS = {
-    invalid_item: "Invalid operations collection item. Must be Organizer:Operation only"
-  }
-end
+    class CollectionException < ::Exception
+      ERRORS = {
+        invalid_item: "Invalid operations collection item. Must be Organizer:Operation only"
+      }
+    end
 
-class Organizer::OperationsManagerException < ::Exception
-  ERRORS = {}
+    class ManagerException < ::Exception
+      ERRORS = {}
+    end
+  end
 end
 
 module Organizer
