@@ -117,14 +117,15 @@ class Organizer::Base
       @collection_options = _collection_options
     end
 
-    # Applies filters, operations and groups to defined collection.
+    # Applies filters, operations, groups, etc. to defined collection.
     #
     # @param _options [Hash]
     # @return [Organizer::Collection]
     def organize(_options = {})
       result = filters_manager.apply(collection, _options)
       result = operations_manager.execute(result)
-      groups_manager.build(result, _options)
+      result = groups_manager.build(result, _options)
+      operations_manager.execute(result)
     end
 
     # It returns collection stored as proc in collection_proc var converted to {Organizer::Collection}

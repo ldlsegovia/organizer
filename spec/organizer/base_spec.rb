@@ -81,17 +81,41 @@ describe Organizer::Base do
       end
 
       context "with operations" do
-        before do
-          BaseChild.add_operation(:new_attr) { |item| item.age * 2 }
-        end
+        before { BaseChild.add_operation(:new_attr) { |item| item.age * 2 } }
 
-        it "applies filters" do
+        it "executes operations" do
           base = BaseChild.new
           result = base.organize
           expect(result).to be_a(Organizer::Collection)
           expect(result.first.new_attr).to eq(44)
           expect(result.second.new_attr).to eq(62)
           expect(result.third.new_attr).to eq(128)
+        end
+      end
+
+      context "with groups" do
+        before { BaseChild.add_group(:site_id) }
+
+        it "groups collection items" do
+          base = BaseChild.new
+          result = base.organize(group_by: :site_id)
+          expect(result).to be_a(Organizer::Group)
+          expect(result.size).to eq(3)
+        end
+
+        context "with operations" do
+          before do
+            BaseChild.add_group_operation(:attrs_sum, :site_id) do |group_item, item|
+              group_item.attrs_sum += item.age
+            end
+          end
+
+          it "groups collection items" do
+            base = BaseChild.new
+            result = base.organize(group_by: :site_id)
+            expect(result.first.size).to eq(2)
+            expect(result.first.attrs_sum).to eq(result.first.age + result.last.age)
+          end
         end
       end
     end
