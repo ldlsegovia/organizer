@@ -27,7 +27,7 @@ $ gem install organizer
 First, you need to define an organizer like this:
 
 ```ruby
-Organizer::Template.define("my_organizer") do
+Organizer.define("my_organizer") do
   # definition methods
 end
 ```
@@ -47,7 +47,7 @@ This method takes a block containing a denormalized collection. The block's cont
 #### Definition Example
 
 ```ruby
-Organizer::Template.define("my_organizer") do
+Organizer.define("my_organizer") do
   collection do
     [
       { age: 22, name: "Juan Manuel", site_id: 1, store_id: 1, gender: "M", savings: 20.50 },
@@ -68,7 +68,7 @@ Also, you can pass options (filters usually) to get a desired raw collection: `o
 These options will be present as the first param on collection definition like this:
 
 ```ruby
-Organizer::Template.define("my_organizer") do
+Organizer.define("my_organizer") do
   collection do |collection_options|
     data = [
       { age: 22, name: "Juan Manuel", site_id: 1, store_id: 1, gender: "M", savings: 20.50 },
@@ -114,7 +114,7 @@ Allows you to define conditions that will be evaluated, over each collection ite
 #### Definition Example
 
 ```ruby
-Organizer::Template.define("my_organizer") do
+Organizer.define("my_organizer") do
   # collection and other definitions...
 
   default_filter do |item|
@@ -169,7 +169,7 @@ Allows you to define conditions that will not be initially evaluated but user ma
 #### Definition Example
 
 ```ruby
-Organizer::Template.define("my_organizer") do
+Organizer.define("my_organizer") do
   # collection and other definitions...
 
   filter(:filter1) do |item|
@@ -180,7 +180,7 @@ end
 You can define filters that will accept user params, declaring a second block argument.
 
 ```ruby
-Organizer::Template.define("my_organizer") do
+Organizer.define("my_organizer") do
   # collection and other definitions...
 
   filter(:filter2) do |item, value|
@@ -210,7 +210,7 @@ You can perform operations between item's attribute values. The result of this o
 #### Definition Example
 
 ```ruby
-Organizer::Template.define("my_organizer") do
+Organizer.define("my_organizer") do
   # collection and other definitions...
 
   operation(:attrs_sum) do |item|
@@ -222,7 +222,7 @@ end
 You also can perform operations using the resulting attributes. For example:
 
 ```ruby
-Organizer::Template.define("my_organizer") do
+Organizer.define("my_organizer") do
   # collection and other definitions...
 
   operation(:newer_attribute) do |item|
@@ -254,7 +254,7 @@ You can define groups. The data will be grouped by the attribute passed in param
 #### Definition Example
 
 ```ruby
-Organizer::Template.define("my_organizer") do
+Organizer.define("my_organizer") do
  # collection and other definitions...
 
   group(:site_id)
@@ -264,7 +264,7 @@ end
 You can define operations for a given group.
 
 ```ruby
-Organizer::Template.define("my_organizer") do
+Organizer.define("my_organizer") do
  # collection and other definitions...
 
   group(:site_id) do

@@ -8,7 +8,7 @@ module Organizer
 
   class Exception < ::Exception
     ERRORS = {
-      undefined_collection_method: "Undefined collection method. You need to add collection(){} into Organizer::Template.define block"
+      undefined_collection_method: "Undefined collection method. You need to add collection(){} into Organizer.define block"
     }
   end
 
