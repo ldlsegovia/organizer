@@ -3,6 +3,7 @@ module Organizer
     class SubItem < Array
       include Organizer::Error
       include Organizer::AttributesHandler
+      include Organizer::CollectionItem
 
       # @param _items [Array] containing Organizer::Source::Item
       def initialize(_items = nil)

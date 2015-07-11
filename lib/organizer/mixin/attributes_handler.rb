@@ -1,7 +1,5 @@
 module Organizer
   module AttributesHandler
-    attr_reader :attribute_names
-
     # Creates attribute readers based on _hash keys. A reader's value will be the hash value of that key.
     #
     # @param _hash [Hash]

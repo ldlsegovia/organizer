@@ -2,8 +2,9 @@ module Organizer
   module Group
     class Item < Array
       include Organizer::Error
+      include Organizer::CollectionItem
 
-      attr_reader :name, :group_by_attr
+      attr_reader :group_by_attr
 
       # @param _name [Symbol] symbol to identify this particular group.
       # @param _group_by_attr attribute by which the items will be grouped. If nil, _name will be used insted.
@@ -37,14 +38,6 @@ module Organizer
         end
 
         self
-      end
-
-      # Check if this group has name passed as param
-      #
-      # @param _group_name [Organizer::Source::Item]
-      # @return [Boolean]
-      def has_name?(_group_name)
-        !!self.name && self.name.to_sym == _group_name.to_sym
       end
     end
   end

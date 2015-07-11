@@ -2,8 +2,9 @@ module Organizer
   module Filter
     class Item
       include Organizer::Error
+      include Organizer::CollectionItem
 
-      attr_reader :definition, :name, :accept_value
+      attr_reader :definition, :accept_value
 
       # @param _definition [Proc] contains logic to decide if filter must be applied or not.
       # @param _name [Symbol] symbol to identify this particular filter.
@@ -38,14 +39,6 @@ module Organizer
         result = !!accept_value ? definition.call(_item, _value) : definition.call(_item)
         raise_error(:definition_must_return_boolean) if !!result != result
         result
-      end
-
-      # Check if this filter has name passed as param
-      #
-      # @param _filter_name [Organizer::Source::Item]
-      # @return [Boolean]
-      def has_name?(_filter_name)
-        !!self.name && self.name.to_sym == _filter_name.to_sym
       end
     end
   end

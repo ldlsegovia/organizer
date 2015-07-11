@@ -67,13 +67,9 @@ describe Organizer::Filter::Item do
     end
   end
 
-  describe "#has_name?" do
-    it "returns true when filter has name param" do
-      expect(Organizer::Filter::Item.new(Proc.new {}, :my_filter).has_name?("my_filter")).to be_truthy
-    end
+  describe "collection item mixin" do
+    let!(:item) { Organizer::Filter::Item.new(Proc.new {}, :item_name) }
 
-    it "returns false when filter has not name param" do
-      expect(Organizer::Filter::Item.new(Proc.new {}, :my_filter).has_name?("invalid")).to be_falsy
-    end
+    it_should_behave_like(:collection_item)
   end
 end

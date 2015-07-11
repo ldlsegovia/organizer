@@ -67,13 +67,9 @@ describe Organizer::Group::Item do
     end
   end
 
-  describe "#has_name?" do
-    it "returns true when group has name param" do
-      expect(Organizer::Group::Item.new(:my_group).has_name?("my_group")).to be_truthy
-    end
+  describe "collection item mixin" do
+    let!(:item) { Organizer::Group::Item.new(:item_name) }
 
-    it "returns false when group has not name param" do
-      expect(Organizer::Group::Item.new(:my_group).has_name?("invalid")).to be_falsy
-    end
+    it_should_behave_like(:collection_item)
   end
 end

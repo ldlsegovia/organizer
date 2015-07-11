@@ -14,4 +14,14 @@ describe Organizer::Group::SubItem do
       end
     end
   end
+
+  describe "collection item mixin" do
+    let!(:item) do
+      sub_item = Organizer::Group::SubItem.new
+      sub_item.instance_variable_set(:@name, :item_name)
+      sub_item
+    end
+
+    it_should_behave_like(:collection_item)
+  end
 end

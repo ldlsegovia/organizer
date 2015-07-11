@@ -2,9 +2,10 @@ module Organizer
   module Operation
     class Item
       include Organizer::Error
+      include Organizer::CollectionItem
 
       attr_accessor :error
-      attr_reader :definition, :name
+      attr_reader :definition
 
       # @param _definition [Proc] contains logic to generate the value for this operation
       # @param _name [Symbol] symbol to identify this particular operation

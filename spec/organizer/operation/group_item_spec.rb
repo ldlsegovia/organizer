@@ -39,4 +39,10 @@ describe Organizer::Operation::GroupItem do
       expect(@group_item.attrs_sum).to eq(666)
     end
   end
+
+  describe "collection item mixin" do
+    let!(:item) { Organizer::Operation::GroupItem.new(Proc.new {}, :item_name, :my_group) }
+
+    it_should_behave_like(:collection_item)
+  end
 end
