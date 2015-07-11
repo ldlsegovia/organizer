@@ -3,6 +3,8 @@ module Organizer
     class Item < Array
       include Organizer::Error
       include Organizer::CollectionItem
+      include Organizer::Collection
+      collectable_classes Organizer::Group::SubItem
 
       attr_reader :group_by_attr
 
@@ -13,11 +15,6 @@ module Organizer
         @name = _name
         @group_by_attr = _group_by_attr
         @group_items = []
-      end
-
-      def <<(_item)
-        raise_error(:invalid_item) if !_item.is_a?(Organizer::Group::SubItem)
-        super
       end
 
       # Splits given collection into {Organizer::Group::SubItem}s based on group_by_attr

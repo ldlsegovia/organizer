@@ -2,11 +2,8 @@ module Organizer
   module Operation
     class Collection < Array
       include Organizer::Error
-
-      def <<(_item)
-        raise_error(:invalid_item) if !_item.is_a?(Organizer::Operation::Item)
-        super
-      end
+      include Organizer::Collection
+      collectable_classes Organizer::Operation::Item, Organizer::Operation::GroupItem
 
       # Builds a string containing operation errors
       #

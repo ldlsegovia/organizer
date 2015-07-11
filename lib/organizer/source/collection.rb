@@ -2,11 +2,8 @@ module Organizer
   module Source
     class Collection < Array
       include Organizer::Error
-
-      def <<(_item)
-        raise_error(:invalid_item) if !_item.is_a?(Organizer::Source::Item)
-        super
-      end
+      include Organizer::Collection
+      collectable_classes Organizer::Source::Item
 
       # Loads this collection instance with {Organizer::Source::Item}s created from _raw_collection param.
       #

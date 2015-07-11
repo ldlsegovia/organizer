@@ -67,6 +67,19 @@ describe Organizer::Group::Item do
     end
   end
 
+  describe "collection mixin" do
+    let!(:collection) { Organizer::Group::Item.new(:store_id) }
+    let!(:collection_exception_class) { Organizer::Group::ItemException }
+
+    let!(:item) do
+      group_sub_item = Organizer::Group::SubItem.new(Organizer::Source::Collection.new)
+      group_sub_item.instance_variable_set(:@name, :item_name)
+      group_sub_item
+    end
+
+    it_should_behave_like(:collection)
+  end
+
   describe "collection item mixin" do
     let!(:item) { Organizer::Group::Item.new(:item_name) }
 

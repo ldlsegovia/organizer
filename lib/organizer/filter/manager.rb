@@ -113,19 +113,19 @@ module Organizer
 
       def apply_default_fitlers(_collection, _options = {})
         filter_by = _options.fetch(:skip_default_filters, [])
-        selected_filters = (filter_by == :all) ? nil : default_filters.reject_filters(filter_by)
+        selected_filters = (filter_by == :all) ? nil : default_filters.reject_items(filter_by)
         apply_filters(selected_filters, _collection)
       end
 
       def apply_normal_filters(_collection, _options = {})
         filter_names = _options.fetch(:enabled_filters, [])
-        selected_filters = normal_filters.select_filters(filter_names)
+        selected_filters = normal_filters.select_items(filter_names)
         apply_filters(selected_filters, _collection)
       end
 
       def apply_filters_with_values(_collection, _options = {})
         filter_pairs = _options.fetch(:filters, {})
-        selected_filters = filters_with_values.select_filters(filter_pairs.keys)
+        selected_filters = filters_with_values.select_items(filter_pairs.keys)
         apply_filters(selected_filters, _collection, filter_pairs)
       end
 

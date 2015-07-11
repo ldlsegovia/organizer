@@ -3,17 +3,17 @@ require 'spec_helper'
 describe Organizer::Source::Collection do
   let_collection(:collection)
 
-  describe "#<<" do
-    it "raises error trying to add non organizer items to collection" do
-      expect { subject << "not an organizer item" }.to(
-        raise_organizer_error(Organizer::Source::CollectionException, :invalid_item))
+  describe "collection mixin" do
+    let!(:collection) { Organizer::Source::Collection.new }
+    let!(:collection_exception_class) { Organizer::Source::CollectionException }
+
+    let!(:item) do
+      source_item = Organizer::Source::Item.new
+      source_item.instance_variable_set(:@name, :item_name)
+      source_item
     end
 
-    it "adds Organizer::Source::Item to collection" do
-      subject << Organizer::Source::Item.new
-      expect(subject.size).to eq(1)
-      expect(subject.first).to be_a(Organizer::Source::Item)
-    end
+    it_should_behave_like(:collection)
   end
 
   describe "#fill" do

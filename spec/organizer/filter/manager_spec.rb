@@ -112,7 +112,7 @@ describe Organizer::Filter::Manager do
       item_hash_keys.each do |attribute|
         [:eq, :not_eq, :gt, :lt, :goet, :loet, :starts, :ends, :contains].each do |sufix|
           filter_name = "#{attribute}_#{sufix}"
-          expect(@all_filters.filter_by_name(filter_name).name).to eq(filter_name)
+          expect(@all_filters.find_by_name(filter_name).name).to eq(filter_name)
         end
       end
     end

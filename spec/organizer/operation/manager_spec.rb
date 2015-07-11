@@ -56,7 +56,7 @@ describe Organizer::Operation::Manager do
           before { subject.add_operation(:another_attr) { |item| item.invalid_attr * 2 } }
           before { subject.add_operation(:some_attr) { |item| item.some_invalid_attr * 2 } }
 
-          it "raise exception", focus: true do
+          it "raise exception" do
             expect { subject.execute(collection) }.to(
               raise_error(Organizer::Operation::ManagerException))
           end

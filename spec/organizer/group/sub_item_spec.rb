@@ -15,6 +15,19 @@ describe Organizer::Group::SubItem do
     end
   end
 
+  describe "collection mixin" do
+    let!(:collection) { Organizer::Group::SubItem.new }
+    let!(:collection_exception_class) { Organizer::Group::SubItemException }
+
+    let!(:item) do
+      source_item = Organizer::Source::Item.new
+      source_item.instance_variable_set(:@name, :item_name)
+      source_item
+    end
+
+    it_should_behave_like(:collection)
+  end
+
   describe "collection item mixin" do
     let!(:item) do
       sub_item = Organizer::Group::SubItem.new

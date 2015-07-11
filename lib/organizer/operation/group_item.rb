@@ -1,8 +1,6 @@
 module Organizer
   module Operation
     class GroupItem < Organizer::Operation::Item
-      include Organizer::Error
-
       attr_reader :group_name
       attr_reader :initial_value
 

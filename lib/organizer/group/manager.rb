@@ -24,7 +24,7 @@ module Organizer
       def build(_collection, _options)
         group_name = _options.fetch(:group_by, nil)
         return _collection unless group_name
-        group = groups.group_by_name(group_name)
+        group = groups.find_by_name(group_name)
         return _collection unless group
         group.build(_collection)
       end

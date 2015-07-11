@@ -113,6 +113,7 @@ module Organizer
 
     class SubItemException < ::Exception
       ERRORS = {
+        invalid_item: "Invalid group sub item. Must be Organizer::Source::Item only",
         must_be_a_hash: "_hash parameter must be a Hash",
         invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
         attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"

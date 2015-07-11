@@ -1,22 +1,28 @@
 require 'spec_helper'
 
 describe Organizer::Operation::Collection do
-  describe "#<<" do
-    it "raises error trying to add non organizer operations to collection" do
-      expect { subject << "not an organizer operation" }.to(
-        raise_organizer_error(Organizer::Operation::CollectionException, :invalid_item))
+  describe "collection mixin" do
+    let!(:collection) { Organizer::Operation::Collection.new }
+    let!(:collection_exception_class) { Organizer::Operation::CollectionException }
+
+    context "with source item operations" do
+      let!(:item) do
+        proc = Proc.new {}
+        operation = Organizer::Operation::Item.new(proc, :item_name)
+        operation
+      end
+
+      it_should_behave_like(:collection)
     end
 
-    it "adds Organizer::Operation::Item to collection" do
-      proc = Proc.new {}
-      operation = Organizer::Operation::Item.new(proc, :my_new_attribute)
-      subject << operation
-      expect(subject.size).to eq(1)
-      expect(subject.first).to be_a(Organizer::Operation::Item)
-    end
+    context "with group item operations" do
+      let!(:item) do
+        proc = Proc.new {}
+        operation = Organizer::Operation::GroupItem.new(proc, :item_name, :my_group)
+        operation
+      end
 
-    it "raises error with repeated operation name" do
-      skip
+      it_should_behave_like(:collection)
     end
   end
 end

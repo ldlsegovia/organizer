@@ -1,2 +1,2 @@
-require_relative "source/collection"
 require_relative "source/item"
+require_relative "source/collection"

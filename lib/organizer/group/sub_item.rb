@@ -4,6 +4,8 @@ module Organizer
       include Organizer::Error
       include Organizer::AttributesHandler
       include Organizer::CollectionItem
+      include Organizer::Collection
+      collectable_classes Organizer::Source::Item
 
       # @param _items [Array] containing Organizer::Source::Item
       def initialize(_items = nil)
