@@ -1,12 +1,32 @@
 require "active_support/all"
 
 require "organizer/version"
-require "organizer/mixin"
-require "organizer/source"
-require "organizer/filter"
-require "organizer/operation"
-require "organizer/group"
-require "organizer/main"
+
+require_relative "organizer/mixin/error"
+require_relative "organizer/mixin/attributes_handler"
+require_relative "organizer/mixin/collection"
+require_relative "organizer/mixin/collection_item"
+
+require_relative "organizer/source/item"
+require_relative "organizer/source/collection"
+
+require_relative "organizer/filter/item"
+require_relative "organizer/filter/collection"
+require_relative "organizer/filter/manager"
+
+require_relative "organizer/operation/item"
+require_relative "organizer/operation/group_item"
+require_relative "organizer/operation/collection"
+require_relative "organizer/operation/manager"
+
+require_relative "organizer/group/sub_item"
+require_relative "organizer/group/item"
+require_relative "organizer/group/collection"
+require_relative "organizer/group/manager"
+
+require_relative "organizer/main/context_manager"
+require_relative "organizer/main/dsl"
+require_relative "organizer/main/base"
 
 module Organizer
   include Organizer::Error
