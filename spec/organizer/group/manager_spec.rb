@@ -20,10 +20,6 @@ describe Organizer::Group::Manager do
       expect(group.name).to eq(:site)
       expect(group.group_by_attr).to eq(:site_id)
     end
-
-    it "raises error with repeated operation name" do
-      skip
-    end
   end
 
   describe "#build" do
