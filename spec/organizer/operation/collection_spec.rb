@@ -8,7 +8,7 @@ describe Organizer::Operation::Collection do
     context "with source item operations" do
       let!(:item) do
         proc = Proc.new {}
-        operation = Organizer::Operation::Item.new(proc, :item_name)
+        operation = Organizer::Operation::SourceItem.new(proc, :item_name)
         operation
       end
 

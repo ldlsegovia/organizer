@@ -74,7 +74,7 @@ module Organizer
   end
 
   module Operation
-    class ItemException < ::Exception
+    class SourceItemException < ::Exception
       ERRORS = {
         blank_name: "Operation name param is mandatory",
         execute_over_organizer_items_only: "Operations can be executed on Organizer::Source::Items only",

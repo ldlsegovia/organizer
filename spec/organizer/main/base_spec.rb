@@ -184,7 +184,7 @@ describe Organizer::Base do
   describe "#add_operation" do
     it "adds new operation" do
       obj = BaseChild.add_operation(:my_operation) {}
-      expect(obj).to be_a(Organizer::Operation::Item)
+      expect(obj).to be_a(Organizer::Operation::SourceItem)
     end
 
     context "with another child class" do
@@ -194,8 +194,8 @@ describe Organizer::Base do
       end
 
       it "adds filter to each class" do
-        expect(BaseChild.add_operation(:my_operation) {}).to be_a(Organizer::Operation::Item)
-        expect(AhotherChild.add_operation(:my_operation) {}).to be_a(Organizer::Operation::Item)
+        expect(BaseChild.add_operation(:my_operation) {}).to be_a(Organizer::Operation::SourceItem)
+        expect(AhotherChild.add_operation(:my_operation) {}).to be_a(Organizer::Operation::SourceItem)
       end
     end
   end
@@ -203,7 +203,7 @@ describe Organizer::Base do
   describe "#add_group_operation" do
     it "adds new operation" do
       obj = BaseChild.add_group_operation(:my_operation, :my_group) {}
-      expect(obj).to be_a(Organizer::Operation::Item)
+      expect(obj).to be_a(Organizer::Operation::SourceItem)
     end
 
     context "with another child class" do
@@ -213,8 +213,8 @@ describe Organizer::Base do
       end
 
       it "adds filter to each class" do
-        expect(BaseChild.add_group_operation(:my_operation, :my_group) {}).to be_a(Organizer::Operation::Item)
-        expect(AhotherChild.add_group_operation(:my_operation, :my_group) {}).to be_a(Organizer::Operation::Item)
+        expect(BaseChild.add_group_operation(:my_operation, :my_group) {}).to be_a(Organizer::Operation::SourceItem)
+        expect(AhotherChild.add_group_operation(:my_operation, :my_group) {}).to be_a(Organizer::Operation::SourceItem)
       end
     end
   end

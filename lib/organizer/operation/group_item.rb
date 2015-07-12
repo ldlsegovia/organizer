@@ -1,6 +1,6 @@
 module Organizer
   module Operation
-    class GroupItem < Organizer::Operation::Item
+    class GroupItem < Organizer::Operation::SourceItem
       attr_reader :group_name
       attr_reader :initial_value
 
@@ -17,9 +17,9 @@ module Organizer
       # Evaluates definition proc to build a new attribute. This attribute will be added to _group_item param.
       #
       # @param _group_item [Organizer::Group::SubItem] you can use group item's attributes to build the new attribute
-      # @return [Organizer::Group::SubItem] with the new attribute added
+      # @return [Organizer::Group::SubItem] with the new added attribute
       #
-      # @raise [Organizer::Operation::ItemException] :execute_over_organizer_group_items_only
+      # @raise [Organizer::Operation::SourceItemException] :execute_over_organizer_group_items_only
       def execute(_group_item)
         raise_error(:execute_over_organizer_group_items_only) if !_group_item.is_a?(Organizer::Group::SubItem)
         _group_item.define_attribute(self.name, self.initial_value, false)

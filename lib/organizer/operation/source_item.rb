@@ -1,6 +1,6 @@
 module Organizer
   module Operation
-    class Item
+    class SourceItem
       include Organizer::Error
       include Organizer::CollectionItem
 
@@ -21,7 +21,7 @@ module Organizer
       # @param _item [Organizer::Source::Item] you can use item's attributes to build the new attribute
       # @return [Organizer::Source::Item] with the new attribute added
       #
-      # @raise [Organizer::Operation::ItemException] :execute_over_organizer_items_only
+      # @raise [Organizer::Operation::SourceItemException] :execute_over_organizer_items_only
       #
       # @example
       #   hash = { attr1: 400, attr2: 266 }
@@ -32,7 +32,7 @@ module Organizer
       #     organizer_item.attr1 + organizer_item.attr2
       #   end
       #
-      #   item = Organizer::Operation::Item.new(proc, :attrs_sum).execute(item)
+      #   item = Organizer::Operation::SourceItem.new(proc, :attrs_sum).execute(item)
       #   item.attrs_sum
       #   #=> 666
       def execute(_item)

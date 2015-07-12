@@ -3,14 +3,14 @@ module Organizer
     class Manager
       include Organizer::Error
 
-      # Creates a new {Organizer::Operation::Item} and adds to operations collection.
+      # Creates a new {Organizer::Operation::SourceItem} and adds to operations collection.
       #
       # @param _name [Symbol] operation's name
       # @yield contains logic to generate the result for this particular operation.
       # @yieldparam organizer_item [Organizer::Source::Item] you can use item's attributes to get the desired operation result.
-      # @return [Organizer::Operation::Item]
+      # @return [Organizer::Operation::SourceItem]
       def add_operation(_name, &block)
-        operations << Organizer::Operation::Item.new(block, _name)
+        operations << Organizer::Operation::SourceItem.new(block, _name)
         operations.last
       end
 
@@ -20,7 +20,7 @@ module Organizer
       # @param _group_name [Symbol] to identify group related with this operation
       # @param _initial_value [Object]
       # @yield contains logic to generate the result for this particular operation.
-      # @return [Organizer::Operation::Item]
+      # @return [Organizer::Operation::SourceItem]
       def add_group_operation(_name, _group_name, _initial_value = 0, &block)
         group_operations << Organizer::Operation::GroupItem.new(block, _name, _group_name, _initial_value)
         group_operations.last

@@ -3,7 +3,7 @@ module Organizer
     class Collection < Array
       include Organizer::Error
       include Organizer::Collection
-      collectable_classes Organizer::Operation::Item, Organizer::Operation::GroupItem
+      collectable_classes Organizer::Operation::SourceItem, Organizer::Operation::GroupItem
 
       # Builds a string containing operation errors
       #
