@@ -88,17 +88,9 @@ module Organizer
 
       private
 
-      def default_filters
-        @default_filters ||= Organizer::Filter::Collection.new
-      end
-
-      def normal_filters
-        @normal_filters ||= Organizer::Filter::Collection.new
-      end
-
-      def filters_with_values
-        @filters_with_values ||= Organizer::Filter::Collection.new
-      end
+      def default_filters; @default_filters ||= Organizer::Filter::Collection.new; end
+      def normal_filters; @normal_filters ||= Organizer::Filter::Collection.new; end
+      def filters_with_values; @filters_with_values ||= Organizer::Filter::Collection.new; end
 
       def all_filters
         filters = Organizer::Filter::Collection.new
@@ -108,7 +100,8 @@ module Organizer
       end
 
       def generate_attr_filter(_attr, _sufix, &proc)
-        add_filter_with_value("#{_attr}_#{_sufix}", &proc)
+        filter_name = "#{_attr}_#{_sufix}"
+        add_filter_with_value(filter_name, &proc) unless filters_with_values.item_included?(filter_name)
       end
 
       def apply_default_fitlers(_collection, _options = {})

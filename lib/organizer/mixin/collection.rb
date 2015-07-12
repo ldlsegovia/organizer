@@ -5,7 +5,8 @@ module Organizer
     end
 
     def <<(_item)
-      raise_error(:invalid_item) unless self.class.item_classes.include?(_item.class)
+      raise_error(:invalid_item) unless is_collectable_item?(_item)
+      raise_error(:repeated_item) if item_included?(_item.name)
       super
     end
 
@@ -27,6 +28,14 @@ module Organizer
       self.select { |item| item_in_names?(item, _item_names) }
     end
 
+    # Returns ture if collection has an item with name passed as param
+    #
+    # param _item_name [String]
+    # @return [Boolean]
+    def item_included?(_item_name)
+      !!_item_name && select_items([ _item_name]).one?
+    end
+
     # Returns all items except ones included into _item_names array
     #
     # param _item_names [Array] item names to exlcude
@@ -34,6 +43,14 @@ module Organizer
     def reject_items(_item_names)
       return self if empty_item_names?(_item_names)
       self.reject { |item| item_in_names?(item, _item_names) }
+    end
+
+    # Returns ture if item was marked as collectable
+    #
+    # param _item [Object]
+    # @return [Boolean]
+    def is_collectable_item?(_item)
+      self.class.item_classes.include?(_item.class)
     end
 
     private

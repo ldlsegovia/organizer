@@ -35,6 +35,7 @@ module Organizer
     class CollectionException < ::Exception
       ERRORS = {
         invalid_item: "Invalid item for collection. Must be Organizer::Source::Item instance",
+        repeated_item: "Repeated item. An Item with same name was added previously",
         invalid_collection_structure: "Invalid collection structure. Must be Array",
         invalid_collection_item_structure: "Invalid collection item structure. Must be a Hash"
       }
@@ -66,7 +67,8 @@ module Organizer
 
     class CollectionException < ::Exception
       ERRORS = {
-        invalid_item: "Invalid filter collection item. Must be Organizer:Filter only"
+        invalid_item: "Invalid filter collection item. Must be Organizer:Filter only",
+        repeated_item: "Repeated item. An Item with same name was added previously"
       }
     end
   end
@@ -88,7 +90,8 @@ module Organizer
 
     class CollectionException < ::Exception
       ERRORS = {
-        invalid_item: "Invalid operations collection item. Must be Organizer:Operation only"
+        invalid_item: "Invalid operations collection item. Must be Organizer:Operation only",
+        repeated_item: "Repeated item. An Item with same name was added previously"
       }
     end
 
@@ -100,13 +103,15 @@ module Organizer
   module Group
     class CollectionException < ::Exception
       ERRORS = {
-        invalid_item: "Invalid group collection item. Must be Organizer:Group only"
+        invalid_item: "Invalid group collection item. Must be Organizer::Group::Item only",
+        repeated_item: "Repeated item. An Item with same name was added previously"
       }
     end
 
     class ItemException < ::Exception
       ERRORS = {
         invalid_item: "Invalid group item. Must be Organizer::Group::SubItem only",
+        repeated_item: "Repeated item. An Item with same name was added previously",
         group_by_attr_not_present_in_collection: "group_by_attr is not present in collection Organizer::Source::Items"
       }
     end
@@ -114,6 +119,7 @@ module Organizer
     class SubItemException < ::Exception
       ERRORS = {
         invalid_item: "Invalid group sub item. Must be Organizer::Source::Item only",
+        repeated_item: "Repeated item. An Item with same name was added previously",
         must_be_a_hash: "_hash parameter must be a Hash",
         invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
         attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
