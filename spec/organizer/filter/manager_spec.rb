@@ -98,10 +98,7 @@ describe Organizer::Filter::Manager do
   describe "#generate_usual_filters" do
     let_item(:item)
     let(:collection) { Organizer::Source::Collection.new << item }
-    before do
-      subject.generate_usual_filters(item)
-      @all_filters = subject.send(:all_filters)
-    end
+    before { subject.generate_usual_filters(item) }
 
     it "raise exception if _item is not an Organizer::Source::Item" do
       expect { subject.generate_usual_filters("not an item") }.to(
@@ -112,7 +109,7 @@ describe Organizer::Filter::Manager do
       item_hash_keys.each do |attribute|
         [:eq, :not_eq, :gt, :lt, :goet, :loet, :starts, :ends, :contains].each do |sufix|
           filter_name = "#{attribute}_#{sufix}"
-          expect(@all_filters.find_by_name(filter_name).name).to eq(filter_name)
+          expect(subject.send(:filters_with_values).find_by_name(filter_name).name).to eq(filter_name)
         end
       end
     end

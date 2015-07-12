@@ -92,13 +92,6 @@ module Organizer
       def normal_filters; @normal_filters ||= Organizer::Filter::Collection.new; end
       def filters_with_values; @filters_with_values ||= Organizer::Filter::Collection.new; end
 
-      def all_filters
-        filters = Organizer::Filter::Collection.new
-        default_filters.each { |f| filters << f }
-        normal_filters.each { |f| filters << f }
-        filters_with_values.each { |f| filters << f }
-      end
-
       def generate_attr_filter(_attr, _sufix, &proc)
         filter_name = "#{_attr}_#{_sufix}"
         add_filter_with_value(filter_name, &proc) unless filters_with_values.item_included?(filter_name)
