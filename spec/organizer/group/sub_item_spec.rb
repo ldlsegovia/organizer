@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Organizer::Group::SubItem do
-  it_should_behave_like(:attributes_handler, Organizer::Group::SubItem, Organizer::Group::SubItemException)
-
   describe "#initialize" do
     let_collection(:collection)
     before { @group_item = Organizer::Group::SubItem.new(collection) }
@@ -13,6 +11,13 @@ describe Organizer::Group::SubItem do
         expect(@group_item.send(attribute)).to eq(item.send(attribute))
       end
     end
+  end
+
+  describe "attributes handler mixin" do
+    let!(:klass) { Organizer::Group::SubItem }
+    let!(:error_class) { Organizer::Group::SubItemException }
+
+    it_should_behave_like(:attributes_handler)
   end
 
   describe "collection mixin" do

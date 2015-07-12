@@ -1,4 +1,4 @@
-shared_examples :attributes_handler do |klass, error_class|
+shared_examples :attributes_handler do
   let(:valid_attributes) do
     {
       first_name: "Leandro",
