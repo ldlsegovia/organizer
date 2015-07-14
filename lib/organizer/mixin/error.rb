@@ -74,6 +74,14 @@ module Organizer
   end
 
   module Operation
+    class ItemException < ::Exception
+      ERRORS = {
+        not_implemented: "Must override on child classes",
+        blank_name: "Operation name param is mandatory",
+        definition_must_be_a_proc: "Operation definition must be a Proc"
+      }
+    end
+
     class SourceItemException < ::Exception
       ERRORS = {
         blank_name: "Operation name param is mandatory",
