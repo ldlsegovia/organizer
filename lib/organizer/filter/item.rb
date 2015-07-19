@@ -3,6 +3,7 @@ module Organizer
     class Item
       include Organizer::Error
       include Organizer::CollectionItem
+      include Organizer::Explainer
 
       attr_reader :definition, :accept_value
 
@@ -12,7 +13,7 @@ module Organizer
       def initialize(_definition, _name = nil, _accept_value = false)
         raise_error(:definition_must_be_a_proc) if !_definition.is_a?(Proc)
         @definition = _definition
-        @name = _name
+        @item_name = _name
         @accept_value = !!_accept_value
       end
 

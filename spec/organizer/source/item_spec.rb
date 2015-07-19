@@ -11,10 +11,15 @@ describe Organizer::Source::Item do
   describe "collection item mixin" do
     let!(:item) do
       source_item = Organizer::Source::Item.new
-      source_item.instance_variable_set(:@name, :item_name)
+      source_item.instance_variable_set(:@item_name, :item_name)
       source_item
     end
 
     it_should_behave_like(:collection_item)
+  end
+
+  describe "explainer mixin" do
+    let!(:explainer) { Organizer::Source::Item.new }
+    it_should_behave_like(:explainer)
   end
 end

@@ -25,4 +25,9 @@ describe Organizer::Operation::Collection do
       it_should_behave_like(:collection)
     end
   end
+
+  describe "explainer mixin" do
+    let!(:explainer) { Organizer::Operation::Collection.new }
+    it_should_behave_like(:explainer)
+  end
 end

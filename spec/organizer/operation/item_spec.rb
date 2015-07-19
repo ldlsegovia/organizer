@@ -6,7 +6,7 @@ describe Organizer::Operation::Item do
       proc = Proc.new {}
       o = Organizer::Operation::Item.new(proc, :my_operation)
       expect(o.definition).to eq(proc)
-      expect(o.name).to eq(:my_operation)
+      expect(o.item_name).to eq(:my_operation)
     end
 
     it "raise exception if _definition is not a Proc" do
@@ -30,5 +30,14 @@ describe Organizer::Operation::Item do
   describe "collection item mixin" do
     let!(:item) { Organizer::Operation::Item.new(Proc.new {}, :item_name) }
     it_should_behave_like(:collection_item)
+  end
+
+  describe "explainer mixin" do
+    let!(:explainer) do
+      proc = Proc.new {}
+      Organizer::Operation::Item.new(proc, :my_operation)
+    end
+
+    it_should_behave_like(:explainer)
   end
 end

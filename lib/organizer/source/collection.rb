@@ -3,6 +3,8 @@ module Organizer
     class Collection < Array
       include Organizer::Error
       include Organizer::Collection
+      include Organizer::Explainer
+
       collectable_classes Organizer::Source::Item
 
       # Loads this collection instance with {Organizer::Source::Item}s created from _raw_collection param.

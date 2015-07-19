@@ -9,7 +9,7 @@ describe Organizer::Source::Collection do
 
     let!(:item) do
       source_item = Organizer::Source::Item.new
-      source_item.instance_variable_set(:@name, :item_name)
+      source_item.instance_variable_set(:@item_name, :item_name)
       source_item
     end
 
@@ -32,5 +32,10 @@ describe Organizer::Source::Collection do
       expect(collection).to be_a(Organizer::Source::Collection)
       expect(collection.count).to eq(9)
     end
+  end
+
+  describe "explainer mixin" do
+    let!(:explainer) { Organizer::Source::Collection.new.fill(raw_collection) }
+    it_should_behave_like(:explainer)
   end
 end

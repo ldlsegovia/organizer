@@ -133,8 +133,8 @@ module Organizer
       end
 
       def get_filter_value(_filter, _filters_values)
-        return if !_filter.accept_value || !_filters_values || !_filter.name
-        _filters_values[_filter.name] || _filters_values[_filter.name.to_sym]
+        return if !_filter.accept_value || !_filters_values || !_filter.item_name
+        _filters_values[_filter.item_name] || _filters_values[_filter.item_name.to_sym]
       end
     end
   end

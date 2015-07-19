@@ -22,7 +22,7 @@ shared_examples :collection do
     before { collection << item }
 
     it "returns existent item" do
-      expect(collection.find_by_name(:item_name).name).to eq(:item_name)
+      expect(collection.find_by_name(:item_name).item_name).to eq(:item_name)
     end
 
     it "returns nil with inexistent item" do
@@ -45,7 +45,7 @@ shared_examples :collection do
         result = collection.select_items([:item_name])
         expect(result).to be_a(Array)
         expect(result.size).to eq(1)
-        expect(result.first.name).to eq(:item_name)
+        expect(result.first.item_name).to eq(:item_name)
       end
 
       it "returns empty items collection with invalid item names" do
@@ -66,7 +66,7 @@ shared_examples :collection do
     end
 
     it "returns true with item previously added" do
-      expect(collection.item_included?(item.name)).to be_truthy
+      expect(collection.item_included?(item.item_name)).to be_truthy
     end
   end
 

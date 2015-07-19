@@ -37,8 +37,11 @@ module Organizer
     # @param _value [Object] this will be the reader's return value
     # @param read_only [Boolean]
     # @return self
+    #
+    # @raise [Organizer::AttributesHandlerException]
     def define_attribute(_attr_name, _value, read_only = true)
       method_name = method_name_from_string(_attr_name)
+      raise_error(:attr_already_defined) if self.respond_to?(method_name)
       accessor_type = !!read_only ? :attr_reader : :attr_accessor
       self.singleton_class.send(accessor_type, method_name)
       self.instance_variable_set("@#{method_name}", _value)

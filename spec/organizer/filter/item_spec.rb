@@ -9,7 +9,7 @@ describe Organizer::Filter::Item do
     end
 
     it "creates filter with name" do
-      expect(Organizer::Filter::Item.new(Proc.new {}, :filter_name).name).to eq(:filter_name)
+      expect(Organizer::Filter::Item.new(Proc.new {}, :filter_name).item_name).to eq(:filter_name)
     end
 
     it "creates filter with value" do
@@ -19,7 +19,7 @@ describe Organizer::Filter::Item do
     it "ensures name, value and definition read only" do
       f = Organizer::Filter::Item.new(Proc.new {})
       expect { f.definition = "definition" }.to raise_error
-      expect { f.name = "name" }.to raise_error
+      expect { f.item_name = "name" }.to raise_error
       expect { f.value = "value" }.to raise_error
     end
 
@@ -69,7 +69,11 @@ describe Organizer::Filter::Item do
 
   describe "collection item mixin" do
     let!(:item) { Organizer::Filter::Item.new(Proc.new {}, :item_name) }
-
     it_should_behave_like(:collection_item)
+  end
+
+  describe "explainer mixin" do
+    let!(:explainer) { Organizer::Filter::Item.new(Proc.new {}, :item_name) }
+    it_should_behave_like(:explainer)
   end
 end

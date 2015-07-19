@@ -3,6 +3,7 @@ module Organizer
     class Item
       include Organizer::Error
       include Organizer::CollectionItem
+      include Organizer::Explainer
 
       attr_accessor :error
       attr_reader :definition
@@ -13,7 +14,7 @@ module Organizer
         raise_error(:definition_must_be_a_proc) if !_definition.is_a?(Proc)
         raise_error(:blank_name) if !_name
         @definition = _definition
-        @name = _name
+        @item_name = _name
       end
 
       def execute(_item)

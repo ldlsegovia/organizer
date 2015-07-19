@@ -6,4 +6,6 @@ require 'organizer'
 
 RSpec.configure do |c|
   c.extend HelpfulVariables
+  c.filter_run :focus
+  c.run_all_when_everything_filtered = true
 end

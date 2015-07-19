@@ -45,6 +45,7 @@ module Organizer
       ERRORS = {
         must_be_a_hash: "_hash parameter must be a Hash",
         invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
+        attr_already_defined: "Attribute already defined",
         attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
       }
     end
@@ -130,7 +131,8 @@ module Organizer
         repeated_item: "Repeated item. An Item with same name was added previously",
         must_be_a_hash: "_hash parameter must be a Hash",
         invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
-        attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
+        attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin",
+        attr_already_defined: "Attribute already defined"
       }
     end
   end

@@ -5,6 +5,8 @@ module Organizer
       include Organizer::AttributesHandler
       include Organizer::CollectionItem
       include Organizer::Collection
+      include Organizer::Explainer
+
       collectable_classes Organizer::Source::Item
 
       # @param _items [Array] containing Organizer::Source::Item

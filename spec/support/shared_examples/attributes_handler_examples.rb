@@ -80,6 +80,12 @@ shared_examples :attributes_handler do
       expect(obj2).not_to respond_to(:method_for_obj1)
       expect(obj2).to respond_to(:method_for_obj2)
     end
+
+    it "raises error trying to redefine attributes" do
+      subject.define_attributes(valid_attributes)
+      expect { subject.define_attributes(valid_attributes) }.to(
+        raise_organizer_error(error_class, :attr_already_defined))
+    end
   end
 
   describe "#attribute_names" do

@@ -70,10 +70,10 @@ describe Organizer::DSL do
 
       operations = MyOrganizer.operations_manager.send(:group_operations)
       expect(operations.count).to eq(2)
-      expect(operations.first.name).to eq(:operation_1)
+      expect(operations.first.item_name).to eq(:operation_1)
       expect(operations.first.group_name).to eq(:store_id)
       expect(operations.first.initial_value).to eq(10)
-      expect(operations.last.name).to eq(:operation_2)
+      expect(operations.last.item_name).to eq(:operation_2)
       expect(operations.last.group_name).to eq(:store_id)
       expect(operations.last.initial_value).to eq(0)
     end

@@ -26,7 +26,7 @@ describe Organizer::Group::SubItem do
 
     let!(:item) do
       source_item = Organizer::Source::Item.new
-      source_item.instance_variable_set(:@name, :item_name)
+      source_item.instance_variable_set(:@item_name, :item_name)
       source_item
     end
 
@@ -36,10 +36,15 @@ describe Organizer::Group::SubItem do
   describe "collection item mixin" do
     let!(:item) do
       sub_item = Organizer::Group::SubItem.new
-      sub_item.instance_variable_set(:@name, :item_name)
+      sub_item.instance_variable_set(:@item_name, :item_name)
       sub_item
     end
 
     it_should_behave_like(:collection_item)
+  end
+
+  describe "explainer mixin" do
+    let!(:explainer) { Organizer::Group::SubItem.new }
+    it_should_behave_like(:explainer)
   end
 end

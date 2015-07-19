@@ -11,13 +11,13 @@ describe Organizer::Group::Manager do
 
     it "uses name to set group_by_attr if attr is nil" do
       group = subject.add_group(:site_id) {}
-      expect(group.name).to eq(:site_id)
+      expect(group.item_name).to eq(:site_id)
       expect(group.group_by_attr).to eq(:site_id)
     end
 
     it "uses different name and group_by_attr" do
       group = subject.add_group(:site, :site_id) {}
-      expect(group.name).to eq(:site)
+      expect(group.item_name).to eq(:site)
       expect(group.group_by_attr).to eq(:site_id)
     end
   end

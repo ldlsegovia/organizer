@@ -6,7 +6,7 @@ describe Organizer::Operation::GroupItem do
       proc = Proc.new {}
       o = Organizer::Operation::GroupItem.new(proc, :my_operation, :my_group, 666)
       expect(o.definition).to eq(proc)
-      expect(o.name).to eq(:my_operation)
+      expect(o.item_name).to eq(:my_operation)
       expect(o.group_name).to eq(:my_group)
       expect(o.initial_value).to eq(666)
     end
@@ -38,5 +38,14 @@ describe Organizer::Operation::GroupItem do
       Organizer::Operation::GroupItem.new(proc, :attrs_sum, :my_group, 344).execute(@group_item)
       expect(@group_item.attrs_sum).to eq(666)
     end
+  end
+
+  describe "explainer mixin" do
+    let!(:explainer) do
+      proc = Proc.new {}
+      Organizer::Operation::GroupItem.new(proc, :my_operation, :my_group)
+    end
+
+    it_should_behave_like(:explainer)
   end
 end
