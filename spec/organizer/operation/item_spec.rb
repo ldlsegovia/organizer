@@ -31,4 +31,13 @@ describe Organizer::Operation::Item do
     let!(:item) { Organizer::Operation::Item.new(Proc.new {}, :item_name) }
     it_should_behave_like(:collection_item)
   end
+
+  describe "explainer mixin" do
+    let!(:explainer) do
+      proc = Proc.new {}
+      Organizer::Operation::Item.new(proc, :my_operation)
+    end
+
+    it_should_behave_like(:explainer)
+  end
 end

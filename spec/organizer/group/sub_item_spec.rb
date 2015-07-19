@@ -42,4 +42,9 @@ describe Organizer::Group::SubItem do
 
     it_should_behave_like(:collection_item)
   end
+
+  describe "explainer mixin" do
+    let!(:explainer) { Organizer::Group::SubItem.new }
+    it_should_behave_like(:explainer)
+  end
 end

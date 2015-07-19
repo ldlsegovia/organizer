@@ -3,6 +3,7 @@ module Organizer
     class Item
       include Organizer::Error
       include Organizer::CollectionItem
+      include Organizer::Explainer
 
       attr_accessor :error
       attr_reader :definition

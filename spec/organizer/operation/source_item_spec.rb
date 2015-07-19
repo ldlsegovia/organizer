@@ -20,4 +20,9 @@ describe Organizer::Operation::SourceItem do
       expect(item.attrs_sum).to eq(666)
     end
   end
+
+  describe "explainer mixin" do
+    let!(:explainer) { Organizer::Operation::SourceItem.new(Proc.new {}, :my_operation) }
+    it_should_behave_like(:explainer)
+  end
 end

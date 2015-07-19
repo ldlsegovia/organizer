@@ -69,7 +69,11 @@ describe Organizer::Filter::Item do
 
   describe "collection item mixin" do
     let!(:item) { Organizer::Filter::Item.new(Proc.new {}, :item_name) }
-
     it_should_behave_like(:collection_item)
+  end
+
+  describe "explainer mixin" do
+    let!(:explainer) { Organizer::Filter::Item.new(Proc.new {}, :item_name) }
+    it_should_behave_like(:explainer)
   end
 end

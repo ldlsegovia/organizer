@@ -33,4 +33,9 @@ describe Organizer::Source::Collection do
       expect(collection.count).to eq(9)
     end
   end
+
+  describe "explainer mixin" do
+    let!(:explainer) { Organizer::Source::Collection.new.fill(raw_collection) }
+    it_should_behave_like(:explainer)
+  end
 end

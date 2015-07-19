@@ -82,7 +82,11 @@ describe Organizer::Group::Item do
 
   describe "collection item mixin" do
     let!(:item) { Organizer::Group::Item.new(:item_name) }
-
     it_should_behave_like(:collection_item)
+  end
+
+  describe "explainer mixin" do
+    let!(:explainer) { Organizer::Group::Item.new(:item_name) }
+    it_should_behave_like(:explainer)
   end
 end

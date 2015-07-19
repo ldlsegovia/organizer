@@ -8,4 +8,9 @@ describe Organizer::Filter::Collection do
 
     it_should_behave_like(:collection)
   end
+
+  describe "explainer mixin" do
+    let!(:explainer) { Organizer::Filter::Collection.new }
+    it_should_behave_like(:explainer)
+  end
 end
