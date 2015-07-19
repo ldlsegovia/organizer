@@ -4,6 +4,8 @@ module Organizer
       include Organizer::Error
       include Organizer::CollectionItem
       include Organizer::Collection
+      include Organizer::Explainer
+
       collectable_classes Organizer::Group::SubItem
 
       attr_reader :group_by_attr
