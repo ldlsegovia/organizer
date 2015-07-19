@@ -14,7 +14,7 @@ module Organizer
       # @param _group_by_attr attribute by which the items will be grouped. If nil, _name will be used insted.
       def initialize(_name, _group_by_attr = nil)
         _group_by_attr = _name if _group_by_attr.blank?
-        @name = _name
+        @item_name = _name
         @group_by_attr = _group_by_attr
         @group_items = []
       end

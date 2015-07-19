@@ -53,8 +53,8 @@ module Organizer
       formatted_class_name = self.class.name.gsub("Organizer::", "").colorize(get_class_color)
       parts = [formatted_class_name]
 
-      if self.class.include?(Organizer::CollectionItem) && !self.name.blank?
-        parts << self.name.to_s.magenta
+      if self.class.include?(Organizer::CollectionItem) && !self.item_name.blank?
+        parts << self.item_name.to_s.magenta
       end
 
       if self.class.include?(Organizer::AttributesHandler)

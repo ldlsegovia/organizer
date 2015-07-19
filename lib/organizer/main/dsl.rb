@@ -82,7 +82,7 @@ module Organizer
         if @ctx.root_parent?
           @organizer_class.add_operation(_name, &block)
         elsif @ctx.group_parent?
-          group_name = @ctx.parent_ctx.data.name
+          group_name = @ctx.parent_ctx.data.item_name
           @organizer_class.add_group_operation(_name, group_name, _initial_value, &block)
         else
           raise_error(:forbidden_nesting)

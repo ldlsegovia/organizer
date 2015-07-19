@@ -9,7 +9,7 @@ describe Organizer::Source::Collection do
 
     let!(:item) do
       source_item = Organizer::Source::Item.new
-      source_item.instance_variable_set(:@name, :item_name)
+      source_item.instance_variable_set(:@item_name, :item_name)
       source_item
     end
 

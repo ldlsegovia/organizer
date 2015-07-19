@@ -83,7 +83,7 @@ EOS
         context "when collection item names are defined" do
           before do
             collection.each_with_index do |item, idx|
-              item.instance_variable_set(:@name, "item#{idx}")
+              item.instance_variable_set(:@item_name, "item#{idx}")
             end
           end
 
@@ -197,9 +197,9 @@ EOS
             context "with attributes and collection item names" do
               before do
                 collection.each_with_index do |item, index|
-                  item.instance_variable_set(:@name, "item#{index}")
+                  item.instance_variable_set(:@item_name, "item#{index}")
                   item.each_with_index do |sub_item, idx|
-                    sub_item.instance_variable_set(:@name, "sub_item#{idx}")
+                    sub_item.instance_variable_set(:@item_name, "sub_item#{idx}")
                   end
                 end
               end

@@ -6,7 +6,7 @@ describe Organizer::Operation::GroupItem do
       proc = Proc.new {}
       o = Organizer::Operation::GroupItem.new(proc, :my_operation, :my_group, 666)
       expect(o.definition).to eq(proc)
-      expect(o.name).to eq(:my_operation)
+      expect(o.item_name).to eq(:my_operation)
       expect(o.group_name).to eq(:my_group)
       expect(o.initial_value).to eq(666)
     end

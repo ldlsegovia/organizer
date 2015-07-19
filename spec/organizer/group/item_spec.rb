@@ -4,19 +4,19 @@ describe Organizer::Group::Item do
   describe "#initialize" do
     it "creates a group with name only" do
       group = Organizer::Group::Item.new(:store_id)
-      expect(group.name).to eq(:store_id)
+      expect(group.item_name).to eq(:store_id)
       expect(group.group_by_attr).to eq(:store_id)
     end
 
     it "creates a group with name and group_by_attr" do
       group = Organizer::Group::Item.new(:store, :store_id)
-      expect(group.name).to eq(:store)
+      expect(group.item_name).to eq(:store)
       expect(group.group_by_attr).to eq(:store_id)
     end
 
     it "ensures name and group_by_attr read only" do
       group = Organizer::Group::Item.new(:store_id)
-      expect { group.name = "name" }.to raise_error
+      expect { group.item_name = "name" }.to raise_error
       expect { group.group_by_attr = "group_by_attr" }.to raise_error
     end
   end
@@ -73,7 +73,7 @@ describe Organizer::Group::Item do
 
     let!(:item) do
       group_sub_item = Organizer::Group::SubItem.new(Organizer::Source::Collection.new)
-      group_sub_item.instance_variable_set(:@name, :item_name)
+      group_sub_item.instance_variable_set(:@item_name, :item_name)
       group_sub_item
     end
 

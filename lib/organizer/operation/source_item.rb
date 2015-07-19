@@ -23,7 +23,7 @@ module Organizer
       def execute(_item)
         raise_error(:execute_over_organizer_items_only) if !_item.is_a?(Organizer::Source::Item)
         result = definition.call(_item)
-        _item.define_attribute(self.name, result)
+        _item.define_attribute(self.item_name, result)
       end
     end
   end

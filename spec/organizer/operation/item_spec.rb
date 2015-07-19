@@ -6,7 +6,7 @@ describe Organizer::Operation::Item do
       proc = Proc.new {}
       o = Organizer::Operation::Item.new(proc, :my_operation)
       expect(o.definition).to eq(proc)
-      expect(o.name).to eq(:my_operation)
+      expect(o.item_name).to eq(:my_operation)
     end
 
     it "raise exception if _definition is not a Proc" do

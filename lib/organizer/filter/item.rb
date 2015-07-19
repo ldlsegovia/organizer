@@ -13,7 +13,7 @@ module Organizer
       def initialize(_definition, _name = nil, _accept_value = false)
         raise_error(:definition_must_be_a_proc) if !_definition.is_a?(Proc)
         @definition = _definition
-        @name = _name
+        @item_name = _name
         @accept_value = !!_accept_value
       end
 
