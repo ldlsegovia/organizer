@@ -31,8 +31,9 @@ describe Organizer::Operation::Manager do
       before { subject.add_operation(:result_attr) { |item| item.age * 2 } }
 
       it "returns the whole collection" do
-        expect(subject.execute(collection).size).to eq(9)
-        expect(subject.execute(collection)).to be_a(Organizer::Source::Collection)
+        result = subject.execute(collection)
+        expect(result.size).to eq(9)
+        expect(result).to be_a(Organizer::Source::Collection)
       end
 
       it "returns collection items with new attribute" do
@@ -47,9 +48,10 @@ describe Organizer::Operation::Manager do
         end
 
         it "returns collection items with new attribute" do
-          expect(subject.execute(collection).first.newer_result_attr).to eq(88)
-          expect(subject.execute(collection).first.newest_result_attr).to eq(176)
-          expect(subject.execute(collection).first.the_newest_result_attr).to eq(352)
+          result = subject.execute(collection).first
+          expect(result.newer_result_attr).to eq(88)
+          expect(result.newest_result_attr).to eq(176)
+          expect(result.the_newest_result_attr).to eq(352)
         end
 
         context "with invalid item attribute" do
@@ -73,8 +75,9 @@ describe Organizer::Operation::Manager do
       end
 
       it "returns a group" do
-        expect(subject.execute(group).size).to eq(2)
-        expect(subject.execute(group)).to be_a(Organizer::Group::Item)
+        result = subject.execute(group)
+        expect(result.size).to eq(2)
+        expect(result).to be_a(Organizer::Group::Item)
       end
 
       it "returns group items with new attribute" do

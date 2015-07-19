@@ -127,7 +127,8 @@ module Organizer
         result = filters_manager.apply(collection, _options)
         result = operations_manager.execute(result)
         result = groups_manager.build(result, _options)
-        operations_manager.execute(result)
+        operations_manager.execute(result) if result.is_a?(Organizer::Group::Item)
+        result
       end
 
       # It returns collection stored as proc in collection_proc var converted to {Organizer::Source::Collection}
