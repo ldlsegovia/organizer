@@ -1,4 +1,5 @@
 require "active_support/all"
+require "colorize"
 
 require "organizer/version"
 
@@ -6,6 +7,7 @@ require_relative "organizer/mixin/error"
 require_relative "organizer/mixin/attributes_handler"
 require_relative "organizer/mixin/collection"
 require_relative "organizer/mixin/collection_item"
+require_relative "organizer/mixin/explainer"
 
 require_relative "organizer/source/item"
 require_relative "organizer/source/collection"
