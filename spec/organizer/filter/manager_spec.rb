@@ -15,9 +15,8 @@ describe Organizer::Filter::Manager do
     end
 
     it "adds default filter without a name" do
-      proc = Proc.new {}
       expect(subject.send(:default_filters).size).to eq(0)
-      subject.add_default_filter(nil, &proc)
+      subject.add_default_filter(nil, &->{})
       expect(subject.send(:default_filters).size).to eq(1)
     end
   end

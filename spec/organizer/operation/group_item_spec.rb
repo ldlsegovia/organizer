@@ -17,7 +17,7 @@ describe Organizer::Operation::GroupItem do
     before { @group_item = Organizer::Group::SubItem.new(collection) }
 
     it "raise exception if _item is not an Organizer::Group::SubItem" do
-      expect { Organizer::Operation::GroupItem.new(Proc.new {}, :my_operation, :my_group).execute("not a group item") }.to(
+      expect { Organizer::Operation::GroupItem.new(->{}, :my_operation, :my_group).execute("not a group item") }.to(
         raise_organizer_error(Organizer::Operation::GroupItemException, :execute_over_organizer_group_items_only))
     end
 
@@ -41,11 +41,7 @@ describe Organizer::Operation::GroupItem do
   end
 
   describe "explainer mixin" do
-    let!(:explainer) do
-      proc = Proc.new {}
-      Organizer::Operation::GroupItem.new(proc, :my_operation, :my_group)
-    end
-
+    let!(:explainer) { Organizer::Operation::GroupItem.new(->{}, :my_operation, :my_group) }
     it_should_behave_like(:explainer)
   end
 end
