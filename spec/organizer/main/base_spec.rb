@@ -84,8 +84,7 @@ describe Organizer::Base do
         before { BaseChild.add_operation(:new_attr) { |item| item.age * 2 } }
 
         it "executes operations" do
-          base = BaseChild.new
-          result = base.organize
+          result = BaseChild.new.organize
           expect(result).to be_a(Organizer::Source::Collection)
           expect(result.first.new_attr).to eq(44)
           expect(result.second.new_attr).to eq(62)
@@ -97,8 +96,7 @@ describe Organizer::Base do
         before { BaseChild.add_group(:site_id) }
 
         it "groups collection items" do
-          base = BaseChild.new
-          result = base.organize(group_by: :site_id)
+          result = BaseChild.new.organize(group_by: :site_id)
           expect(result).to be_a(Organizer::Group::Item)
           expect(result.size).to eq(3)
         end
@@ -111,8 +109,7 @@ describe Organizer::Base do
           end
 
           it "groups collection items" do
-            base = BaseChild.new
-            result = base.organize(group_by: :site_id)
+            result = BaseChild.new.organize(group_by: :site_id)
             expect(result.first.size).to eq(2)
             expect(result.first.attrs_sum).to eq(10 + result.first.age + result.last.age)
           end
