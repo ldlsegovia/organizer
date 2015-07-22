@@ -19,13 +19,10 @@ describe Organizer::DSL do
     end
 
     it "raises error with invalid organizer name" do
-      expect {Organizer::DSL.new("invalid*class<name") }.to(
-        raise_organizer_error(Organizer::DSLException, :invalid_organizer_name))
-    end
-
-    it "raises error with nil organizer name" do
-      expect { Organizer::DSL.new(nil) }.to(
-        raise_organizer_error(Organizer::DSLException, :invalid_organizer_name))
+      ["invalid*class<name", nil].each do |class_name|
+        expect { Organizer::DSL.new(class_name) }.to(
+          raise_organizer_error(Organizer::DSLException, :invalid_organizer_name))
+      end
     end
   end
 
