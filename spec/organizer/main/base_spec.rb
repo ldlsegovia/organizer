@@ -84,8 +84,7 @@ describe Organizer::Base do
         before { BaseChild.add_operation(:new_attr) { |item| item.age * 2 } }
 
         it "executes operations" do
-          base = BaseChild.new
-          result = base.organize
+          result = BaseChild.new.organize
           expect(result).to be_a(Organizer::Source::Collection)
           expect(result.first.new_attr).to eq(44)
           expect(result.second.new_attr).to eq(62)
@@ -97,8 +96,7 @@ describe Organizer::Base do
         before { BaseChild.add_group(:site_id) }
 
         it "groups collection items" do
-          base = BaseChild.new
-          result = base.organize(group_by: :site_id)
+          result = BaseChild.new.organize(group_by: :site_id)
           expect(result).to be_a(Organizer::Group::Item)
           expect(result.size).to eq(3)
         end
@@ -111,110 +109,11 @@ describe Organizer::Base do
           end
 
           it "groups collection items" do
-            base = BaseChild.new
-            result = base.organize(group_by: :site_id)
+            result = BaseChild.new.organize(group_by: :site_id)
             expect(result.first.size).to eq(2)
             expect(result.first.attrs_sum).to eq(10 + result.first.age + result.last.age)
           end
         end
-      end
-    end
-  end
-
-  describe "#add_collection" do
-    it "uses filters passed on initialize" do
-      BaseChild.add_collection do |options|
-        raw_collection.select { |item| item[:age] < options[:age] }
-      end
-
-      expect(BaseChild.new(age: 9).collection.count).to eq(1)
-    end
-
-    it "raises error with undefined collection" do
-      expect { BaseChild.new.collection }.to(
-        raise_organizer_error(Organizer::Exception, :undefined_collection_method))
-    end
-
-    it "returns an Organizer::Source::Collection instance" do
-      BaseChild.add_collection { raw_collection }
-      collection = BaseChild.new.collection
-      expect(collection).to be_a(Organizer::Source::Collection)
-      expect(collection.count).to eq(9)
-    end
-  end
-
-  describe "#add_default_filter" do
-    it "adds new filter" do
-      obj = BaseChild.add_default_filter(:my_filter) {}
-      expect(obj).to be_a(Organizer::Filter::Item)
-    end
-
-    context "with another child class" do
-      before do
-        Object.send(:remove_const, :AhotherChild) rescue nil
-        class AhotherChild < Organizer::Base; end
-      end
-
-      it "adds filter to each class" do
-        expect(BaseChild.add_default_filter(:my_filter) {}).to be_a(Organizer::Filter::Item)
-        expect(AhotherChild.add_default_filter(:my_filter) {}).to be_a(Organizer::Filter::Item)
-      end
-    end
-  end
-
-  describe "#add_filter" do
-    it "adds new filter" do
-      obj = BaseChild.add_filter(:my_filter) {}
-      expect(obj).to be_a(Organizer::Filter::Item)
-    end
-
-    context "with another child class" do
-      before do
-        Object.send(:remove_const, :AhotherChild) rescue nil
-        class AhotherChild < Organizer::Base; end
-      end
-
-      it "adds filter to each class" do
-        expect(BaseChild.add_filter(:my_filter) {}).to be_a(Organizer::Filter::Item)
-        expect(AhotherChild.add_filter(:my_filter) {}).to be_a(Organizer::Filter::Item)
-      end
-    end
-  end
-
-  describe "#add_operation" do
-    it "adds new operation" do
-      obj = BaseChild.add_operation(:my_operation) {}
-      expect(obj).to be_a(Organizer::Operation::SourceItem)
-    end
-
-    context "with another child class" do
-      before do
-        Object.send(:remove_const, :AhotherChild) rescue nil
-        class AhotherChild < Organizer::Base; end
-      end
-
-      it "adds filter to each class" do
-        expect(BaseChild.add_operation(:my_operation) {}).to be_a(Organizer::Operation::SourceItem)
-        expect(AhotherChild.add_operation(:my_operation) {}).to be_a(Organizer::Operation::SourceItem)
-      end
-    end
-  end
-
-  describe "#add_group_operation" do
-    it "adds new operation" do
-      obj = BaseChild.add_group_operation(:my_operation, :my_group) {}
-      expect(obj).to be_a(Organizer::Operation::SourceItem)
-    end
-
-    context "with another child class" do
-      before do
-        Object.send(:remove_const, :AhotherChild) rescue nil
-        class AhotherChild < Organizer::Base; end
-      end
-
-      it "adds filter to each class" do
-        expect(BaseChild.add_group_operation(:my_operation, :my_group) {}).to be_a(Organizer::Operation::SourceItem)
-        expect(AhotherChild.add_group_operation(:my_operation, :my_group) {}).to be_a(Organizer::Operation::SourceItem)
       end
     end
   end
