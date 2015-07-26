@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Organizer::Source::Item do
   describe "attributes handler mixin" do
-    let!(:klass) { Organizer::Source::Item }
+    let!(:instance) { Organizer::Source::Item.new }
     let!(:error_class) { Organizer::Source::ItemException }
 
     it_should_behave_like(:attributes_handler)

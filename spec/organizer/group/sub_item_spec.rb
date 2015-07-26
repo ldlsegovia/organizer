@@ -14,7 +14,7 @@ describe Organizer::Group::SubItem do
   end
 
   describe "attributes handler mixin" do
-    let!(:klass) { Organizer::Group::SubItem }
+    let!(:instance) { Organizer::Group::SubItem.new }
     let!(:error_class) { Organizer::Group::SubItemException }
 
     it_should_behave_like(:attributes_handler)

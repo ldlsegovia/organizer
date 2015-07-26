@@ -67,6 +67,13 @@ describe Organizer::Group::Item do
     end
   end
 
+  describe "attributes handler mixin" do
+    let!(:instance) { Organizer::Group::Item.new(:store_id) }
+    let!(:error_class) { Organizer::Group::ItemException }
+
+    it_should_behave_like(:attributes_handler)
+  end
+
   describe "collection mixin" do
     let!(:collection) { Organizer::Group::Item.new(:store_id) }
     let!(:collection_exception_class) { Organizer::Group::ItemException }

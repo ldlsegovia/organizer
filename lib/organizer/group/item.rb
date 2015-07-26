@@ -2,6 +2,7 @@ module Organizer
   module Group
     class Item < Array
       include Organizer::Error
+      include Organizer::AttributesHandler
       include Organizer::CollectionItem
       include Organizer::Collection
       include Organizer::Explainer

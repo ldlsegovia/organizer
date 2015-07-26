@@ -212,7 +212,7 @@ describe Organizer do
           expect(@operation1.initial_value).to eq(10)
         end
 
-        it "adds operation 1 to group "do
+        it "adds operation 2 to group "do
           expect(@operation2.item_name).to eq(:operation_2)
           expect(@operation2.group_name).to eq(:store_id)
           expect(@operation2.initial_value).to eq(0)

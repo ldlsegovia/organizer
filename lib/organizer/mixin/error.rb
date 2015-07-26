@@ -117,11 +117,21 @@ module Organizer
       }
     end
 
+    class ManagerException < ::Exception
+      ERRORS = {
+        unknown_group_given: "Unknown group name given"
+      }
+    end
+
     class ItemException < ::Exception
       ERRORS = {
         invalid_item: "Invalid group item. Must be Organizer::Group::SubItem only",
         repeated_item: "Repeated item. An Item with same name was added previously",
-        group_by_attr_not_present_in_collection: "group_by_attr is not present in collection Organizer::Source::Items"
+        group_by_attr_not_present_in_collection: "group_by_attr is not present in collection Organizer::Source::Items",
+        must_be_a_hash: "_hash parameter must be a Hash",
+        invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
+        attr_already_defined: "Attribute already defined",
+        attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
       }
     end
 
