@@ -97,7 +97,7 @@ describe Organizer::Base do
 
         it "groups collection items" do
           result = BaseChild.new.organize(group_by: :site_id)
-          expect(result).to be_a(Organizer::Group::Item)
+          expect(result).to be_a(Organizer::Group::Collection)
           expect(result.size).to eq(3)
         end
 
@@ -110,8 +110,10 @@ describe Organizer::Base do
 
           it "groups collection items" do
             result = BaseChild.new.organize(group_by: :site_id)
-            expect(result.first.size).to eq(2)
-            expect(result.first.attrs_sum).to eq(10 + result.first.age + result.last.age)
+            result.each do |group_item|
+              expected_sum = group_item.inject(10){ |memo, source_item| memo += source_item.age }
+              expect(group_item.attrs_sum).to eq(expected_sum)
+            end
           end
         end
       end

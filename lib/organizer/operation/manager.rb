@@ -14,7 +14,7 @@ module Organizer
         operations.last
       end
 
-      # Creates a new {Organizer::Operation::GroupItem} and adds to group operations collection.
+      # Creates a new {Organizer::Operation::GroupCollection} and adds to group operations collection.
       #
       # @param _name [Symbol] operation's name
       # @param _group_name [Symbol] to identify group related with this operation
@@ -22,19 +22,19 @@ module Organizer
       # @yield contains logic to generate the result for this particular operation.
       # @return [Organizer::Operation::SourceItem]
       def add_group_operation(_name, _group_name, _initial_value = 0, &block)
-        group_operations << Organizer::Operation::GroupItem.new(block, _name, _group_name, _initial_value)
+        group_operations << Organizer::Operation::GroupCollection.new(block, _name, _group_name, _initial_value)
         group_operations.last
       end
 
       # Each collection's items will be evaluated against all defined operations. The operation's results
       # will be attached to items as new attributes.
       #
-      # @param _collection [Organizer::Source::Collection] or [Organizer::Group::Item]
-      # @return [Organizer::Source::Collection] or [Organizer::Group::Item] the collection with new attributes attached.
+      # @param _collection [Organizer::Source::Collection] or [Organizer::Group::Collection]
+      # @return [Organizer::Source::Collection] or [Organizer::Group::Collection] the collection with new attributes attached.
       #
       # @raise [Organizer::Operation::ManagerException]
       def execute(_collection)
-        current_operations = _collection.is_a?(Organizer::Group::Item) ? group_operations : operations
+        current_operations = _collection.is_a?(Organizer::Group::Collection) ? group_operations : operations
         return _collection if current_operations.count <= 0
         _collection.each { |item| execute_recursively(item, current_operations.dup) }
         _collection

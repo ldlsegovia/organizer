@@ -18,11 +18,10 @@ require_relative "organizer/filter/manager"
 
 require_relative "organizer/operation/item"
 require_relative "organizer/operation/source_item"
-require_relative "organizer/operation/group_item"
+require_relative "organizer/operation/group_collection"
 require_relative "organizer/operation/collection"
 require_relative "organizer/operation/manager"
 
-require_relative "organizer/group/sub_item"
 require_relative "organizer/group/item"
 require_relative "organizer/group/collection"
 require_relative "organizer/group/manager"

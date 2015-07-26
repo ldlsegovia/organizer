@@ -26,19 +26,38 @@ describe Organizer::Group::Manager do
     let_collection(:collection)
     before { subject.add_group(:store, :store_id) }
 
-    context "with a valid group name" do
-      before { @group = subject.build(collection, { group_by: :store }) }
-      it { expect(@group.size).to eq(5) }
-      it { expect(@group).to be_a(Organizer::Group::Item) }
-      it { @group.each { |group| expect(group).to be_a(Organizer::Group::SubItem) } }
+    it "returns ungrouped collection trying to group by nil" do
+      expect(subject.build(collection, { group_by: nil })).to eq(collection)
     end
 
-    it "returns collection when group no found" do
-      expect(subject.build(collection, { group_by: :invalid_group })).to eq(collection)
+    it "returns error trying to group by unknown group" do
+      expect { subject.build(collection, { group_by: :unknown_group }) }.to(
+        raise_organizer_error(Organizer::Group::ManagerException, :unknown_group_given))
+
+      expect { subject.build(collection, { group_by: [:unknown_group] }) }.to(
+        raise_organizer_error(Organizer::Group::ManagerException, :unknown_group_given))
     end
 
     it "returns collection when group_by option is no present" do
       expect(subject.build(collection, {})).to eq(collection)
+    end
+
+    context "with a single group" do
+      before { @group = subject.build(collection, { group_by: :store }) }
+
+      it { expect(@group.size).to eq(5) }
+      it { expect(@group).to be_a(Organizer::Group::Collection) }
+      it { @group.each { |group| expect(group).to be_a(Organizer::Group::Item) } }
+    end
+
+    context "with nested groups" do
+      before do
+        subject.add_group(:site, :site_id)
+        subject.add_group(:gender)
+        @group = subject.build(collection, { group_by: [:gender, :site, :store] } )
+      end
+
+      it { skip }
     end
   end
 end

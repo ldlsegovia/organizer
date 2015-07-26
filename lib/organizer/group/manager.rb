@@ -22,14 +22,27 @@ module Organizer
       #
       # @raise [Organizer::Operation::ManagerException]
       def build(_collection, _options)
-        group_name = _options.fetch(:group_by, nil)
-        return _collection unless group_name
-        group = groups.find_by_name(group_name)
-        return _collection unless group
-        group.build(_collection)
+        selected_groups = groups_from_options(_options)
+        return _collection if selected_groups.size.zero?
+        Organizer::Group::Collection.new.build(_collection, selected_groups)
       end
 
       private
+
+      def groups_from_options(_options)
+        group_by = _options.fetch(:group_by, nil)
+        selected_groups = Organizer::Group::Collection.new
+        return selected_groups unless group_by
+        group_by = [group_by] unless group_by.is_a?(Array)
+
+        group_by.each do |group_name|
+          group = groups.find_by_name(group_name)
+          raise_error(:unknown_group_given) unless group
+          selected_groups << group
+        end
+
+        selected_groups
+      end
 
       def groups
         @groups ||= Organizer::Group::Collection.new

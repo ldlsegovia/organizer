@@ -63,7 +63,7 @@ module Organizer
         operations_manager.add_operation(_name, &block)
       end
 
-      # Adds a new {Organizer::Operation::GroupItem} to {Organizer::Operation::Manager}
+      # Adds a new {Organizer::Operation::GroupCollection} to {Organizer::Operation::Manager}
       #
       # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
       # @param _group_name [Symbol] to identify group related with this operation
@@ -127,7 +127,7 @@ module Organizer
         result = filters_manager.apply(collection, _options)
         result = operations_manager.execute(result)
         result = groups_manager.build(result, _options)
-        operations_manager.execute(result) if result.is_a?(Organizer::Group::Item)
+        operations_manager.execute(result) if result.is_a?(Organizer::Group::Collection)
         result
       end
 

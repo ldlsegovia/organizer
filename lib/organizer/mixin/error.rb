@@ -62,7 +62,7 @@ module Organizer
 
     class ManagerException < ::Exception
       ERRORS = {
-        generate_over_organizer_items_only: "Can generate usual filters only based on Organizer::Source::Items only",
+        generate_over_organizer_items_only: "Can generate usual filters only based on Organizer::Source::Items only"
       }
     end
 
@@ -85,15 +85,13 @@ module Organizer
 
     class SourceItemException < ::Exception
       ERRORS = {
-        blank_name: "Operation name param is mandatory",
-        execute_over_organizer_items_only: "Operations can be executed on Organizer::Source::Items only",
-        definition_must_be_a_proc: "Operation definition must be a Proc"
+        execute_over_organizer_items_only: "Operations can be executed on Organizer::Source::Items only"
       }
     end
 
-    class GroupItemException < ::Exception
+    class GroupCollectionException < ::Exception
       ERRORS = {
-        execute_over_organizer_group_items_only: "Operations can be executed on Organizer::Group::SubItems only",
+        execute_over_organizer_group_items_only: "Operations can be executed on Organizer::Group::Items only"
       }
     end
 
@@ -113,7 +111,8 @@ module Organizer
     class CollectionException < ::Exception
       ERRORS = {
         invalid_item: "Invalid group collection item. Must be Organizer::Group::Item only",
-        repeated_item: "Repeated item. An Item with same name was added previously"
+        repeated_item: "Repeated item. An Item with same name was added previously",
+        group_by_attr_not_present_in_collection: "group_by_attr is not present in collection Organizer::Source::Items"
       }
     end
 
@@ -125,24 +124,12 @@ module Organizer
 
     class ItemException < ::Exception
       ERRORS = {
-        invalid_item: "Invalid group item. Must be Organizer::Group::SubItem only",
+        invalid_item: "Invalid group item. Must be Organizer::Group::Item only",
         repeated_item: "Repeated item. An Item with same name was added previously",
-        group_by_attr_not_present_in_collection: "group_by_attr is not present in collection Organizer::Source::Items",
         must_be_a_hash: "_hash parameter must be a Hash",
         invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
         attr_already_defined: "Attribute already defined",
         attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
-      }
-    end
-
-    class SubItemException < ::Exception
-      ERRORS = {
-        invalid_item: "Invalid group sub item. Must be Organizer::Source::Item only",
-        repeated_item: "Repeated item. An Item with same name was added previously",
-        must_be_a_hash: "_hash parameter must be a Hash",
-        invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
-        attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin",
-        attr_already_defined: "Attribute already defined"
       }
     end
   end

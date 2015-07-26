@@ -21,7 +21,7 @@ describe Organizer::Operation::Manager do
 
     it "returns a new group operation" do
       operation = subject.add_group_operation(:result_attr, :my_group) {}
-      expect(operation).to be_a(Organizer::Operation::GroupItem)
+      expect(operation).to be_a(Organizer::Operation::GroupCollection)
     end
   end
 
@@ -67,7 +67,7 @@ describe Organizer::Operation::Manager do
     end
 
     context "working with groups" do
-      let_group(:group, :gender)
+      let_group_collection(:group_collection, :gender)
       before do
         subject.add_group_operation(:age_sum, :group) do |group_item, item|
           group_item.age_sum += item.age
@@ -75,13 +75,13 @@ describe Organizer::Operation::Manager do
       end
 
       it "returns a group" do
-        result = subject.execute(group)
+        result = subject.execute(group_collection)
         expect(result.size).to eq(2)
-        expect(result).to be_a(Organizer::Group::Item)
+        expect(result).to be_a(Organizer::Group::Collection)
       end
 
       it "returns group items with new attribute" do
-        result = subject.execute(group)
+        result = subject.execute(group_collection)
         expect(result.first.age_sum).to eq(192)
         expect(result.last.age_sum).to eq(130)
       end

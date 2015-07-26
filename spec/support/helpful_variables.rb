@@ -36,12 +36,12 @@ module HelpfulVariables
     end
   end
 
-  def let_group(_name, group_attr = :store_id)
+  def let_group_collection(_name, group_attr = :store_id)
     collection_name = "#{_name}_group_collection"
     let_collection(collection_name)
     let(_name) do
       group = Organizer::Group::Item.new(group_attr)
-      group.build(send(collection_name))
+      Organizer::Group::Collection.new.build(send(collection_name), [group])
     end
   end
 end

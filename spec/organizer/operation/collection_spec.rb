@@ -11,7 +11,7 @@ describe Organizer::Operation::Collection do
     end
 
     context "with group item operations" do
-      let!(:item) { Organizer::Operation::GroupItem.new(->{}, :item_name, :my_group) }
+      let!(:item) { Organizer::Operation::GroupCollection.new(->{}, :item_name, :my_group) }
       it_should_behave_like(:collection)
     end
   end

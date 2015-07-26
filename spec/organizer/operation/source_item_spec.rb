@@ -12,7 +12,8 @@ describe Organizer::Operation::SourceItem do
       item = Organizer::Source::Item.new
       item.define_attributes(hash)
       proc = Proc.new { |organizer_item| organizer_item.attr1 + organizer_item.attr2 }
-      expect(Organizer::Operation::SourceItem.new(proc, :attrs_sum).execute(item).attrs_sum).to eq(666)
+      Organizer::Operation::SourceItem.new(proc, :attrs_sum).execute(item)
+      expect(item.attrs_sum).to eq(hash[:attr1] + hash[:attr2])
     end
   end
 
