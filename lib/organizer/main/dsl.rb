@@ -45,7 +45,7 @@ module Organizer
       in_root_context { @organizer_class.add_default_filter(_name, &block) }
     end
 
-    # Adds a normal filter to to Organizer class.
+    # Adds a normal filter to the Organizer class.
     # This kind of filters need to be called explicitly using filters name.
     #
     # @param _name [Symbol] filter's name.

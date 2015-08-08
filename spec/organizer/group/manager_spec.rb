@@ -55,9 +55,28 @@ describe Organizer::Group::Manager do
         subject.add_group(:site, :site_id)
         subject.add_group(:gender)
         @group = subject.build(collection, { group_by: [:gender, :site, :store] } )
+        @group.explain
       end
 
-      it { skip }
+      it { expect(@group.size).to eq(2) }
+      it { expect(@group).to be_a(Organizer::Group::Collection) }
+
+      it { expect(@group.first).to be_a(Organizer::Group::Item) }
+      it { expect(@group.first.group_name).to eq(:gender) }
+      it { expect(@group.first.size).to eq(3) }
+
+      it { expect(@group.first.first).to be_a(Organizer::Group::Item) }
+      it { expect(@group.first.first.group_name).to eq(:site) }
+      it { expect(@group.first.first.size).to eq(1) }
+
+      it { expect(@group.first.first.first).to be_a(Organizer::Group::Item) }
+      it { expect(@group.first.first.first.group_name).to eq(:store) }
+      it { expect(@group.first.first.first.size).to eq(2) }
+
+      it { expect(@group.first.first.first.first).to be_a(Organizer::Source::Item) }
+      it { expect(@group.first.first.first.first.gender).to eq("M") }
+      it { expect(@group.first.first.first.first.site_id).to eq(1) }
+      it { expect(@group.first.first.first.first.store_id).to eq(1) }
     end
   end
 end
