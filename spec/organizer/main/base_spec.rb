@@ -116,6 +116,21 @@ describe Organizer::Base do
             end
           end
         end
+
+        context "with nested groups" do
+          before { BaseChild.add_group(:gender) }
+
+          it "groups collection by gender and site" do
+            result = BaseChild.new.organize(group_by: [:gender, :site_id])
+            expect(result).to be_a(Organizer::Group::Collection)
+            expect(result.size).to eq(2)
+            expect(result.first).to be_a(Organizer::Group::Item)
+            expect(result.first.size).to eq(3)
+            expect(result.first.first).to be_a(Organizer::Group::Item)
+            expect(result.first.first.size).to eq(2)
+            expect(result.first.first.first).to be_a(Organizer::Source::Item)
+          end
+        end
       end
     end
   end

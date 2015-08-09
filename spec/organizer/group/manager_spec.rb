@@ -55,7 +55,6 @@ describe Organizer::Group::Manager do
         subject.add_group(:site, :site_id)
         subject.add_group(:gender)
         @group = subject.build(collection, { group_by: [:gender, :site, :store] } )
-        @group.explain
       end
 
       it { expect(@group.size).to eq(2) }
