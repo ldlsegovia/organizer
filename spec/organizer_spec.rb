@@ -252,21 +252,24 @@ describe Organizer do
         end
 
         it "raises error trying to add a two groups at the same definition level" do
-          Organizer.define("my_organizer") do
-            group(:g1) do
-              group(:g2) {}
-              group(:g3) {}
+          expect do
+            Organizer.define("my_organizer") do
+              group(:g1) do
+                group(:g2) {}
+                group(:g3) {}
+              end
             end
-          end
-
-          skip
+          end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
         end
 
         context "with nested groups" do
           before do
             Organizer.define("my_organizer") do
               group(:g1) do
-                group(:g2) {}
+                group(:g2) do
+                  group(:g3) do
+                  end
+                end
               end
             end
           end

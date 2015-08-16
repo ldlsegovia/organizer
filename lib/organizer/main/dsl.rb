@@ -104,7 +104,11 @@ module Organizer
         if @ctx.root_parent?
           @organizer_class.add_group(_name, _group_by_attr)
         elsif @ctx.group_parent?
-          #TODO: support nested groups
+          if @ctx.same_prev_ctx_parent?
+            raise_error(:forbidden_nesting)
+          else
+            # TODO: add nested group
+          end
         else
           raise_error(:forbidden_nesting)
         end
