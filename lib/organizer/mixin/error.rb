@@ -89,7 +89,7 @@ module Organizer
       }
     end
 
-    class GroupCollectionException < ::Exception
+    class MemoException < ::Exception
       ERRORS = {
         execute_over_organizer_group_items_only: "Operations can be executed on Organizer::Group::Items only"
       }

@@ -14,14 +14,14 @@ module Organizer
         operations.last
       end
 
-      # Creates a new {Organizer::Operation::GroupCollection} and adds to group operations collection.
+      # Creates a new {Organizer::Operation::Memo} and adds to group operations collection.
       #
       # @param _name [Symbol] operation's name
       # @param _initial_value [Object]
       # @yield contains logic to generate the result for this particular operation.
       # @return [Organizer::Operation::SourceItem]
       def add_group_operation(_name, _initial_value = 0, &block)
-        group_operations << Organizer::Operation::GroupCollection.new(block, _name, _initial_value)
+        group_operations << Organizer::Operation::Memo.new(block, _name, _initial_value)
         group_operations.last
       end
 
@@ -51,7 +51,7 @@ module Organizer
         return _group_collection if group_operations.count <= 0
         _group_collection.each { |item| execute_recursively(item, group_operations.dup) }
         _group_collection
-        # TODO: calcculate operations for groups
+        # TODO: calculate operations for groups
       end
 
       private

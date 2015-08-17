@@ -1,6 +1,6 @@
 module Organizer
   module Operation
-    class GroupCollection < Organizer::Operation::SourceItem
+    class Memo < Organizer::Operation::Item
       attr_reader :initial_value
 
       # @param _definition [Proc] contains logic to generate the value for this operation
@@ -16,7 +16,7 @@ module Organizer
       # @param _group_item [Organizer::Group::Item]
       # @return [void]
       #
-      # @raise [Organizer::Operation::GroupCollectionException] :execute_over_organizer_group_items_only
+      # @raise [Organizer::Operation::MemoException] :execute_over_organizer_group_items_only
       def execute(_group_item)
         raise_error(:execute_over_organizer_group_items_only) if !_group_item.is_a?(Organizer::Group::Item)
         _group_item.define_attribute(self.item_name, self.initial_value, false)

@@ -21,7 +21,7 @@ describe Organizer::Operation::Manager do
 
     it "returns a new group operation" do
       operation = subject.add_group_operation(:result_attr, :my_group) {}
-      expect(operation).to be_a(Organizer::Operation::GroupCollection)
+      expect(operation).to be_a(Organizer::Operation::Memo)
     end
   end
 

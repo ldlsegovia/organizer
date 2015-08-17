@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe Organizer::Operation::GroupCollection do
+describe Organizer::Operation::Memo do
   describe "#initialize" do
     it "creates a new Operation instance" do
       proc = Proc.new {}
-      o = Organizer::Operation::GroupCollection.new(proc, :my_operation, 666)
+      o = Organizer::Operation::Memo.new(proc, :my_operation, 666)
       expect(o.definition).to eq(proc)
       expect(o.item_name).to eq(:my_operation)
       expect(o.initial_value).to eq(666)
@@ -16,8 +16,8 @@ describe Organizer::Operation::GroupCollection do
     before { @group_item = group_collection.first }
 
     it "raise exception if _item is not an Organizer::Group::Item" do
-      expect { Organizer::Operation::GroupCollection.new(->{}, :my_operation, :my_group).execute("not a group item") }.to(
-        raise_organizer_error(Organizer::Operation::GroupCollectionException, :execute_over_organizer_group_items_only))
+      expect { Organizer::Operation::Memo.new(->{}, :my_operation, :my_group).execute("not a group item") }.to(
+        raise_organizer_error(Organizer::Operation::MemoException, :execute_over_organizer_group_items_only))
     end
 
     it "sets operation result as new attribute into group item param" do
@@ -25,7 +25,7 @@ describe Organizer::Operation::GroupCollection do
         attrs_sum + item.age
       end
 
-      Organizer::Operation::GroupCollection.new(proc, :attrs_sum).execute(@group_item)
+      Organizer::Operation::Memo.new(proc, :attrs_sum).execute(@group_item)
       expect(@group_item.attrs_sum).to eq(@group_item.inject(0) { |memo, item| memo += item.age })
     end
 
@@ -34,13 +34,13 @@ describe Organizer::Operation::GroupCollection do
         attrs_sum + item.age
       end
 
-      Organizer::Operation::GroupCollection.new(proc, :attrs_sum, 10).execute(@group_item)
+      Organizer::Operation::Memo.new(proc, :attrs_sum, 10).execute(@group_item)
       expect(@group_item.attrs_sum).to eq(@group_item.inject(0) { |memo, item| memo += item.age } + 10)
     end
   end
 
   describe "explainer mixin" do
-    let!(:explainer) { Organizer::Operation::GroupCollection.new(->{}, :my_operation, :my_group) }
+    let!(:explainer) { Organizer::Operation::Memo.new(->{}, :my_operation, :my_group) }
     it_should_behave_like(:explainer)
   end
 end

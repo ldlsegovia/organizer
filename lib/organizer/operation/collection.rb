@@ -5,7 +5,7 @@ module Organizer
       include Organizer::Collection
       include Organizer::Explainer
 
-      collectable_classes Organizer::Operation::SourceItem, Organizer::Operation::GroupCollection
+      collectable_classes Organizer::Operation::SourceItem, Organizer::Operation::Memo
 
       # Builds a string containing operation errors
       #

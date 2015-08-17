@@ -63,7 +63,7 @@ module Organizer
         operations_manager.add_operation(_name, &block)
       end
 
-      # Adds a new {Organizer::Operation::GroupCollection} to {Organizer::Operation::Manager}
+      # Adds a new {Organizer::Operation::Memo} to {Organizer::Operation::Manager}
       #
       # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
       # @param _initial_value [Object]
