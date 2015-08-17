@@ -4,10 +4,9 @@ describe Organizer::Operation::GroupCollection do
   describe "#initialize" do
     it "creates a new Operation instance" do
       proc = Proc.new {}
-      o = Organizer::Operation::GroupCollection.new(proc, :my_operation, :my_group, 666)
+      o = Organizer::Operation::GroupCollection.new(proc, :my_operation, 666)
       expect(o.definition).to eq(proc)
       expect(o.item_name).to eq(:my_operation)
-      expect(o.group_name).to eq(:my_group)
       expect(o.initial_value).to eq(666)
     end
   end
@@ -26,7 +25,7 @@ describe Organizer::Operation::GroupCollection do
         group_item.attrs_sum + item.age
       end
 
-      Organizer::Operation::GroupCollection.new(proc, :attrs_sum, :my_group).execute(@group_item)
+      Organizer::Operation::GroupCollection.new(proc, :attrs_sum).execute(@group_item)
       expect(@group_item.attrs_sum).to eq(@group_item.inject(0) { |memo, item| memo += item.age })
     end
 
@@ -35,7 +34,7 @@ describe Organizer::Operation::GroupCollection do
         group_item.attrs_sum + item.age
       end
 
-      Organizer::Operation::GroupCollection.new(proc, :attrs_sum, :my_group, 10).execute(@group_item)
+      Organizer::Operation::GroupCollection.new(proc, :attrs_sum, 10).execute(@group_item)
       expect(@group_item.attrs_sum).to eq(@group_item.inject(0) { |memo, item| memo += item.age } + 10)
     end
   end

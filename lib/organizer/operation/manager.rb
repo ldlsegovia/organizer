@@ -17,12 +17,11 @@ module Organizer
       # Creates a new {Organizer::Operation::GroupCollection} and adds to group operations collection.
       #
       # @param _name [Symbol] operation's name
-      # @param _group_name [Symbol] to identify group related with this operation
       # @param _initial_value [Object]
       # @yield contains logic to generate the result for this particular operation.
       # @return [Organizer::Operation::SourceItem]
-      def add_group_operation(_name, _group_name, _initial_value = 0, &block)
-        group_operations << Organizer::Operation::GroupCollection.new(block, _name, _group_name, _initial_value)
+      def add_group_operation(_name, _initial_value = 0, &block)
+        group_operations << Organizer::Operation::GroupCollection.new(block, _name, _initial_value)
         group_operations.last
       end
 

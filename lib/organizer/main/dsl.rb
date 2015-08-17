@@ -81,12 +81,23 @@ module Organizer
       in_context do
         if @ctx.root_parent?
           @organizer_class.add_operation(_name, &block)
-        elsif @ctx.group_parent?
-          group_name = @ctx.parent_ctx.data.item_name
-          @organizer_class.add_group_operation(_name, group_name, _initial_value, &block)
+        elsif @ctx.groups_parent?
+          @organizer_class.add_group_operation(_name, _initial_value, &block)
         else
           raise_error(:forbidden_nesting)
         end
+      end
+    end
+
+    # Opens groups context. All defined inside the block, will be executed on groups context.
+    #
+    # @yield groups definition
+    # @return [void]
+    #
+    # @raise [Organizer::DSLException] :forbidden_nesting
+    def groups(&nested_definition)
+      in_context(nested_definition) do
+        raise_error(:forbidden_nesting) unless @ctx.root_parent?
       end
     end
 
@@ -101,7 +112,7 @@ module Organizer
     # @raise [Organizer::DSLException] :forbidden_nesting
     def group(_name, _group_by_attr = nil, &nested_definition)
       in_context(nested_definition) do
-        if @ctx.root_parent?
+        if @ctx.groups_parent?
           @organizer_class.add_group(_name, _group_by_attr)
         elsif @ctx.group_parent?
           if @ctx.same_prev_ctx_parent?

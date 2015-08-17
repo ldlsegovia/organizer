@@ -1,15 +1,12 @@
 module Organizer
   module Operation
     class GroupCollection < Organizer::Operation::SourceItem
-      attr_reader :group_name
       attr_reader :initial_value
 
       # @param _definition [Proc] contains logic to generate the value for this operation
       # @param _name [Symbol] symbol to identify this particular operation
-      # @param _group_name [Symbol] to identify group related with this operation
       # @param _initial_value [Object]
-      def initialize(_definition, _name, _group_name, _initial_value = 0)
-        @group_name = _group_name
+      def initialize(_definition, _name, _initial_value = 0)
         @initial_value = _initial_value
         super(_definition, _name)
       end

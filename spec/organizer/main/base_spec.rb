@@ -103,7 +103,7 @@ describe Organizer::Base do
 
         context "with operations" do
           before do
-            BaseChild.add_group_operation(:attrs_sum, :site_id, 10) do |group_item, item|
+            BaseChild.add_group_operation(:attrs_sum, 10) do |group_item, item|
               group_item.attrs_sum += item.age
             end
           end

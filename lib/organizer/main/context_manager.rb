@@ -29,7 +29,7 @@ module Organizer
     def open(_dsl, _ctx_type, _definition = nil, &action)
       ctx = Organizer::Context.new(_ctx_type)
       @ctx_hierarchy << ctx
-      ctx.data = _dsl.instance_eval(&action)
+      ctx.data = _dsl.instance_eval(&action) if action
       _dsl.instance_eval(&_definition) if _definition
       close
     end
@@ -46,6 +46,13 @@ module Organizer
     # @return [Boolean]
     def group_parent?
       (parent_ctx.type == :group) rescue false
+    end
+
+    # Returns true if the current context has a groups parent.
+    #
+    # @return [Boolean]
+    def groups_parent?
+      (parent_ctx.type == :groups) rescue false
     end
 
     # Returns parent context

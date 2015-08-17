@@ -19,7 +19,6 @@ module Organizer
         @item_name = _name
         @group_name = _name
         @group_by_attr = _group_by_attr
-        @group_items = []
       end
 
       def particularize_group(_group_value)
