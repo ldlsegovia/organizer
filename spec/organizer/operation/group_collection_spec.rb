@@ -21,8 +21,8 @@ describe Organizer::Operation::GroupCollection do
     end
 
     it "sets operation result as new attribute into group item param" do
-      proc = Proc.new do |group_item, item|
-        group_item.attrs_sum + item.age
+      proc = Proc.new do |attrs_sum, item|
+        attrs_sum + item.age
       end
 
       Organizer::Operation::GroupCollection.new(proc, :attrs_sum).execute(@group_item)
@@ -30,8 +30,8 @@ describe Organizer::Operation::GroupCollection do
     end
 
     it "sets initial value" do
-      proc = Proc.new do |group_item, item|
-        group_item.attrs_sum + item.age
+      proc = Proc.new do |attrs_sum, item|
+        attrs_sum + item.age
       end
 
       Organizer::Operation::GroupCollection.new(proc, :attrs_sum, 10).execute(@group_item)

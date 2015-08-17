@@ -69,8 +69,8 @@ describe Organizer::Operation::Manager do
     context "working with groups" do
       let_group_collection(:group_collection, :gender)
       before do
-        subject.add_group_operation(:age_sum) do |group_item, item|
-          group_item.age_sum += item.age
+        subject.add_group_operation(:age_sum) do |age_sum, item|
+          age_sum += item.age
         end
       end
 
