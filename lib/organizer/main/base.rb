@@ -123,10 +123,12 @@ module Organizer
       # @param _options [Hash]
       # @return [Organizer::Source::Collection]
       def organize(_options = {})
-        result = filters_manager.apply(collection, _options)
-        result = operations_manager.execute(result)
-        result = groups_manager.build(result, _options)
-        operations_manager.execute(result) if result.is_a?(Organizer::Group::Collection)
+        filtered_collection = filters_manager.apply(collection, _options)
+        operations_manager.execute_over_source_items(filtered_collection)
+        result = groups_manager.build(filtered_collection, _options)
+        if result.is_a?(Organizer::Group::Collection)
+          operations_manager.execute_over_group_items(filtered_collection, result)
+        end
         result
       end
 

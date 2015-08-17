@@ -25,18 +25,33 @@ module Organizer
         group_operations.last
       end
 
-      # Each collection's items will be evaluated against all defined operations. The operation's results
+      # Each source collection item will be evaluated against defined operations. The operation's results
       # will be attached to items as new attributes.
       #
-      # @param _collection [Organizer::Source::Collection] or [Organizer::Group::Collection]
-      # @return [Organizer::Source::Collection] or [Organizer::Group::Collection] the collection with new attributes attached.
+      # @param _collection [Organizer::Source::Collection]
+      # @return [Organizer::Source::Collection] the collection with new attached attributes.
       #
       # @raise [Organizer::Operation::ManagerException]
-      def execute(_collection)
-        current_operations = _collection.is_a?(Organizer::Group::Collection) ? group_operations : operations
-        return _collection if current_operations.count <= 0
-        _collection.each { |item| execute_recursively(item, current_operations.dup) }
+      def execute_over_source_items(_collection)
+        return unless _collection.is_a?(Organizer::Source::Collection)
+        return _collection if operations.count <= 0
+        _collection.each { |item| execute_recursively(item, operations.dup) }
         _collection
+      end
+
+      # Each group collection item (and descendants) will be evaluated against defined operations.
+      # The operation's results will be attached to items as new attributes.
+      #
+      # @param _source_collection [Organizer::Source::Collection]
+      # @param _source_collection [Organizer::Group::Collection]
+      # @return [Organizer::Group::Collection] the collection with new attached attributes.
+      def execute_over_group_items(_source_collection, _group_collection)
+        return unless _source_collection.is_a?(Organizer::Source::Collection)
+        return unless _group_collection.is_a?(Organizer::Group::Collection)
+        return _group_collection if group_operations.count <= 0
+        _group_collection.each { |item| execute_recursively(item, group_operations.dup) }
+        _group_collection
+        # TODO: calcculate operations for groups
       end
 
       private

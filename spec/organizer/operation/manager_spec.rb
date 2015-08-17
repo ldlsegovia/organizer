@@ -31,13 +31,13 @@ describe Organizer::Operation::Manager do
       before { subject.add_operation(:result_attr) { |item| item.age * 2 } }
 
       it "returns the whole collection" do
-        result = subject.execute(collection)
+        result = subject.execute_over_source_items(collection)
         expect(result.size).to eq(9)
         expect(result).to be_a(Organizer::Source::Collection)
       end
 
       it "returns collection items with new attribute" do
-        expect(subject.execute(collection).first.result_attr).to eq(44)
+        expect(subject.execute_over_source_items(collection).first.result_attr).to eq(44)
       end
 
       context "with nested operations" do
@@ -48,7 +48,7 @@ describe Organizer::Operation::Manager do
         end
 
         it "returns collection items with new attribute" do
-          result = subject.execute(collection).first
+          result = subject.execute_over_source_items(collection).first
           expect(result.newer_result_attr).to eq(88)
           expect(result.newest_result_attr).to eq(176)
           expect(result.the_newest_result_attr).to eq(352)
@@ -59,7 +59,7 @@ describe Organizer::Operation::Manager do
           before { subject.add_operation(:some_attr) { |item| item.some_invalid_attr * 2 } }
 
           it "raise exception" do
-            expect { subject.execute(collection) }.to(
+            expect { subject.execute_over_source_items(collection) }.to(
               raise_error(Organizer::Operation::ManagerException))
           end
         end
@@ -67,7 +67,7 @@ describe Organizer::Operation::Manager do
     end
 
     context "working with groups" do
-      let_group_collection(:group_collection, :gender)
+      let_group_collection(:gender, :gender)
       before do
         subject.add_group_operation(:age_sum) do |age_sum, item|
           age_sum += item.age
@@ -75,13 +75,13 @@ describe Organizer::Operation::Manager do
       end
 
       it "returns a group" do
-        result = subject.execute(group_collection)
+        result = subject.execute_over_group_items(gender_group_collection, gender)
         expect(result.size).to eq(2)
         expect(result).to be_a(Organizer::Group::Collection)
       end
 
       it "returns group items with new attribute" do
-        result = subject.execute(group_collection)
+        result = subject.execute_over_group_items(gender_group_collection, gender)
         expect(result.first.age_sum).to eq(192)
         expect(result.last.age_sum).to eq(130)
       end
