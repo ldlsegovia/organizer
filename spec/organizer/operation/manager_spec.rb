@@ -9,7 +9,7 @@ describe Organizer::Operation::Manager do
 
     it "returns a new operation" do
       operation = subject.add_operation(:result_attr) {}
-      expect(operation).to be_a(Organizer::Operation::SourceItem)
+      expect(operation).to be_a(Organizer::Operation::Simple)
     end
   end
 

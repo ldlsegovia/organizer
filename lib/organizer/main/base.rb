@@ -53,12 +53,12 @@ module Organizer
         filters_manager.add_filter_with_value(_name, &block)
       end
 
-      # Adds a new {Organizer::Operation::SourceItem} to {Organizer::Operation::Manager}
+      # Adds a new {Organizer::Operation::Simple} to {Organizer::Operation::Manager}
       #
       # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
       # @yield code that will return the operation's result
       # @yieldparam organizer_item [Organizer::Source::Item]
-      # @return [Organizer::Operation::SourceItem]
+      # @return [Organizer::Operation::Simple]
       def add_operation(_name, &block)
         operations_manager.add_operation(_name, &block)
       end
@@ -68,7 +68,7 @@ module Organizer
       # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
       # @param _initial_value [Object]
       # @yield code that will return the operation's result
-      # @return [Organizer::Operation::SourceItem]
+      # @return [Organizer::Operation::Simple]
       def add_group_operation(_name, _initial_value = 0, &block)
         operations_manager.add_group_operation(_name, _initial_value, &block)
       end

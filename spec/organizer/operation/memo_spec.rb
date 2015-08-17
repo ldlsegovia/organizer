@@ -15,11 +15,6 @@ describe Organizer::Operation::Memo do
     let_group_collection(:group_collection, :site_id)
     before { @group_item = group_collection.first }
 
-    it "raise exception if _item is not an Organizer::Group::Item" do
-      expect { Organizer::Operation::Memo.new(->{}, :my_operation, :my_group).execute("not a group item") }.to(
-        raise_organizer_error(Organizer::Operation::MemoException, :execute_over_organizer_group_items_only))
-    end
-
     it "sets operation result as new attribute into group item param" do
       proc = Proc.new do |attrs_sum, item|
         attrs_sum + item.age

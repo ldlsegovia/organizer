@@ -83,18 +83,6 @@ module Organizer
       }
     end
 
-    class SourceItemException < ::Exception
-      ERRORS = {
-        execute_over_organizer_items_only: "Operations can be executed on Organizer::Source::Items only"
-      }
-    end
-
-    class MemoException < ::Exception
-      ERRORS = {
-        execute_over_organizer_group_items_only: "Operations can be executed on Organizer::Group::Items only"
-      }
-    end
-
     class CollectionException < ::Exception
       ERRORS = {
         invalid_item: "Invalid operations collection item. Must be Organizer:Operation only",

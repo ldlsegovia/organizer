@@ -18,7 +18,6 @@ module Organizer
       #
       # @raise [Organizer::Operation::MemoException] :execute_over_organizer_group_items_only
       def execute(_group_item)
-        raise_error(:execute_over_organizer_group_items_only) if !_group_item.is_a?(Organizer::Group::Item)
         _group_item.define_attribute(self.item_name, self.initial_value, false)
         _group_item.each do |item|
           result = definition.call(_group_item.send(self.item_name), item)

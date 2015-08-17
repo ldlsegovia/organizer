@@ -6,7 +6,7 @@ describe Organizer::Operation::Collection do
     let!(:collection_exception_class) { Organizer::Operation::CollectionException }
 
     context "with source item operations" do
-      let!(:item) { Organizer::Operation::SourceItem.new(->{}, :item_name) }
+      let!(:item) { Organizer::Operation::Simple.new(->{}, :item_name) }
       it_should_behave_like(:collection)
     end
 
