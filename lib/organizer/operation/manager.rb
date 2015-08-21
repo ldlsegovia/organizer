@@ -43,18 +43,43 @@ module Organizer
       # The operation's results will be attached to items as new attributes.
       #
       # @param _source_collection [Organizer::Source::Collection]
-      # @param _source_collection [Organizer::Group::Collection]
+      # @param _group_collection [Organizer::Group::Collection]
       # @return [Organizer::Group::Collection] the collection with new attached attributes.
       def execute_over_group_items(_source_collection, _group_collection)
         return unless _source_collection.is_a?(Organizer::Source::Collection)
         return unless _group_collection.is_a?(Organizer::Group::Collection)
         return _group_collection if group_operations.count <= 0
-        _group_collection.each { |item| execute_recursively(item, group_operations.dup) }
+
+        _source_collection.each do |source_item|
+          _group_collection.each do |group_item|
+            eval_operations_against_groups(source_item, [group_item])
+          end
+        end
+
         _group_collection
-        # TODO: calculate operations for groups
       end
 
       private
+
+      def eval_operations_against_groups(_source_item, _group_items_hierarchy)
+        group_item = _group_items_hierarchy.last
+        return unless group_item.is_a?(Organizer::Group::Item)
+
+        result = _group_items_hierarchy.map do |gi|
+          _source_item.send(gi.group_by_attr).to_s === gi.item_name.to_s
+        end.uniq
+
+        if result.size == 1 && !!result.first
+          group_operations.each { |operation| operation.execute(group_item, _source_item) }
+        end
+
+        group_item.each do |child|
+          return unless child.is_a?(Organizer::Group::Item)
+          new_hierarchy = _group_items_hierarchy.clone
+          new_hierarchy << child
+          eval_operations_against_groups(_source_item, new_hierarchy)
+        end
+      end
 
       def execute_recursively(_item, _operations, _previous_operations_count = 0)
         return _item if _operations.size.zero?

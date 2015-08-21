@@ -25,56 +25,55 @@ describe Organizer::Operation::Manager do
     end
   end
 
-  describe "#execute" do
-    context "working with normal collections" do
-      let_collection(:collection)
-      before { subject.add_operation(:result_attr) { |item| item.age * 2 } }
+  describe "#execute_over_source_items" do
+    let_collection(:collection)
+    before { subject.add_operation(:result_attr) { |item| item.age * 2 } }
 
-      it "returns the whole collection" do
-        result = subject.execute_over_source_items(collection)
-        expect(result.size).to eq(9)
-        expect(result).to be_a(Organizer::Source::Collection)
+    it "returns the whole collection" do
+      result = subject.execute_over_source_items(collection)
+      expect(result.size).to eq(9)
+      expect(result).to be_a(Organizer::Source::Collection)
+    end
+
+    it "returns collection items with new attribute" do
+      expect(subject.execute_over_source_items(collection).first.result_attr).to eq(44)
+    end
+
+    context "with nested operations" do
+      before do
+        subject.add_operation(:newer_result_attr) { |item| item.result_attr * 2 }
+        subject.add_operation(:newest_result_attr) { |item| item.newer_result_attr * 2 }
+        subject.add_operation(:the_newest_result_attr) { |item| item.newest_result_attr * 2 }
       end
 
       it "returns collection items with new attribute" do
-        expect(subject.execute_over_source_items(collection).first.result_attr).to eq(44)
+        result = subject.execute_over_source_items(collection).first
+        expect(result.newer_result_attr).to eq(88)
+        expect(result.newest_result_attr).to eq(176)
+        expect(result.the_newest_result_attr).to eq(352)
       end
 
-      context "with nested operations" do
-        before do
-          subject.add_operation(:newer_result_attr) { |item| item.result_attr * 2 }
-          subject.add_operation(:newest_result_attr) { |item| item.newer_result_attr * 2 }
-          subject.add_operation(:the_newest_result_attr) { |item| item.newest_result_attr * 2 }
-        end
+      context "with invalid item attribute" do
+        before { subject.add_operation(:another_attr) { |item| item.invalid_attr * 2 } }
+        before { subject.add_operation(:some_attr) { |item| item.some_invalid_attr * 2 } }
 
-        it "returns collection items with new attribute" do
-          result = subject.execute_over_source_items(collection).first
-          expect(result.newer_result_attr).to eq(88)
-          expect(result.newest_result_attr).to eq(176)
-          expect(result.the_newest_result_attr).to eq(352)
-        end
-
-        context "with invalid item attribute" do
-          before { subject.add_operation(:another_attr) { |item| item.invalid_attr * 2 } }
-          before { subject.add_operation(:some_attr) { |item| item.some_invalid_attr * 2 } }
-
-          it "raise exception" do
-            expect { subject.execute_over_source_items(collection) }.to(
-              raise_error(Organizer::Operation::ManagerException))
-          end
+        it "raise exception" do
+          expect { subject.execute_over_source_items(collection) }.to(
+            raise_error(Organizer::Operation::ManagerException))
         end
       end
     end
 
-    context "working with groups" do
+    describe "#execute_over_group_items" do
       let_group_collection(:gender, :gender)
+
       before do
-        subject.add_group_operation(:age_sum) do |age_sum, item|
-          age_sum += item.age
+        subject.add_group_operation(:age_sum) do |memo, item|
+          memo.age_sum + item.age
         end
       end
 
-      it "returns a group" do
+      it "returns a group collection" do
         result = subject.execute_over_group_items(gender_group_collection, gender)
         expect(result.size).to eq(2)
         expect(result).to be_a(Organizer::Group::Collection)

@@ -13,24 +13,30 @@ describe Organizer::Operation::Memo do
 
   describe "#execute" do
     let_group_collection(:group_collection, :site_id)
-    before { @group_item = group_collection.first }
-
-    it "sets operation result as new attribute into group item param" do
-      proc = Proc.new do |attrs_sum, item|
-        attrs_sum + item.age
-      end
-
-      Organizer::Operation::Memo.new(proc, :attrs_sum).execute(@group_item)
-      expect(@group_item.attrs_sum).to eq(@group_item.inject(0) { |memo, item| memo += item.age })
+    before do
+      @group_item = group_collection.first
+      @source_item1 = @group_item.first
+      @source_item2 = @group_item.second
     end
 
-    it "sets initial value" do
-      proc = Proc.new do |attrs_sum, item|
-        attrs_sum + item.age
+    it "uses memo attribute to keep old results" do
+      proc = Proc.new do |memo, item|
+        memo.age_sum + item.age
       end
 
-      Organizer::Operation::Memo.new(proc, :attrs_sum, 10).execute(@group_item)
-      expect(@group_item.attrs_sum).to eq(@group_item.inject(0) { |memo, item| memo += item.age } + 10)
+      Organizer::Operation::Memo.new(proc, :age_sum).execute(@group_item, @source_item1)
+      expect(@group_item.age_sum).to eq(@source_item1.age)
+      Organizer::Operation::Memo.new(proc, :age_sum).execute(@group_item, @source_item2)
+      expect(@group_item.age_sum).to eq(@source_item1.age + @source_item2.age)
+    end
+
+    it "sets memo initial value" do
+      proc = Proc.new do |memo, item|
+        memo.age_sum + item.age
+      end
+
+      Organizer::Operation::Memo.new(proc, :age_sum, 10).execute(@group_item, @source_item1)
+      expect(@group_item.age_sum).to eq(@source_item1.age + 10)
     end
   end
 

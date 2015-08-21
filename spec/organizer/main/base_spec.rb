@@ -103,8 +103,8 @@ describe Organizer::Base do
 
         context "with operations" do
           before do
-            BaseChild.add_group_operation(:attrs_sum, 10) do |attrs_sum, item|
-              attrs_sum += item.age
+            BaseChild.add_group_operation(:attrs_sum, 10) do |memo, item|
+              memo.attrs_sum + item.age
             end
           end
 
@@ -129,6 +129,22 @@ describe Organizer::Base do
             expect(result.first.first).to be_a(Organizer::Group::Item)
             expect(result.first.first.size).to eq(2)
             expect(result.first.first.first).to be_a(Organizer::Source::Item)
+          end
+
+          context "with operations" do
+            before do
+              BaseChild.add_group_operation(:greater_age) do |memo, item|
+                memo.greater_age > item.age ? memo.greater_age : item.age
+              end
+            end
+
+            it "applies operations to full group hierarchy" do
+              result = BaseChild.new.organize(group_by: [:gender, :site_id])
+              expect(result.first.greater_age).to eq(65)
+              expect(result.first.first.greater_age).to eq(31)
+              expect(result.second.greater_age).to eq(64)
+              expect(result.second.first.greater_age).to eq(64)
+            end
           end
         end
       end

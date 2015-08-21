@@ -11,18 +11,18 @@ module Organizer
         super(_definition, _name)
       end
 
-      # Evaluates definition proc to build a new attribute. This attribute will be added to _group_item param.
+      # Evaluates definition proc to build a new attribute. This attribute will be added to _item param.
       #
-      # @param _group_item [Organizer::Group::Item]
+      # @param _memo_item [Object] attribute holding the accumulated result
+      # @param _item [Object] needs to include [Organizer::AttributesHandler] mixin
       # @return [void]
-      #
-      # @raise [Organizer::Operation::MemoException] :execute_over_organizer_group_items_only
-      def execute(_group_item)
-        _group_item.define_attribute(self.item_name, self.initial_value, false)
-        _group_item.each do |item|
-          result = definition.call(_group_item.send(self.item_name), item)
-          _group_item.send("#{self.item_name}=", result)
+      def execute(_memo_item, _item)
+        if !_memo_item.respond_to?(self.item_name)
+          _memo_item.define_attribute(self.item_name, self.initial_value, false)
         end
+
+        result = definition.call(_memo_item, _item)
+        _memo_item.send("#{self.item_name}=", result)
         return
       end
     end
