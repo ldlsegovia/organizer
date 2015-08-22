@@ -106,7 +106,8 @@ module Organizer
 
     class ManagerException < ::Exception
       ERRORS = {
-        unknown_group_given: "Unknown group name given"
+        unknown_group_given: "Unknown group name given",
+        invalid_parent: "Group not found in collection"
       }
     end
 

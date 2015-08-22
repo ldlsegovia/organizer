@@ -118,7 +118,8 @@ module Organizer
           if @ctx.same_prev_ctx_parent?
             raise_error(:forbidden_nesting)
           else
-            # TODO: add nested group
+            parent_name = @ctx.parent_ctx.data.group_name
+            @organizer_class.add_group(_name, _group_by_attr, parent_name)
           end
         else
           raise_error(:forbidden_nesting)

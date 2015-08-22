@@ -7,9 +7,11 @@ module Organizer
       #
       # @param _name [Symbol] symbol to identify this particular group.
       # @param _group_by_attr attribute by which the items will be grouped. If nil, _name will be used insted.
+      # @param _parent_name stores the group parent name of the new group if has one.
       # @return [Organizer::Group::Item]
-      def add_group(_name, _group_by_attr = nil)
-        groups << Organizer::Group::Item.new(_name, _group_by_attr)
+      def add_group(_name, _group_by_attr = nil, _parent_name = nil)
+        raise_error(:invalid_parent) if _parent_name && !in_groups?(_parent_name)
+        groups << Organizer::Group::Item.new(_name, _group_by_attr, _parent_name)
         groups.last
       end
 
@@ -42,6 +44,10 @@ module Organizer
         end
 
         selected_groups
+      end
+
+      def in_groups?(_group_name)
+        !!groups.find_by_name(_group_name)
       end
 
       def groups

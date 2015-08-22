@@ -20,6 +20,22 @@ describe Organizer::Group::Manager do
       expect(group.item_name).to eq(:site)
       expect(group.group_by_attr).to eq(:site_id)
     end
+
+    context "with parent" do
+      before do
+        subject.add_group(:site, :site_id) {}
+      end
+
+      it "raises error with invalid parent" do
+        expect { group = subject.add_group(:section, :section_id, :invalid_parent) {} }.to(
+          raise_organizer_error(Organizer::Group::ManagerException, :invalid_parent))
+      end
+
+      it "sets parent name into child group" do
+        group = subject.add_group(:section, :section_id, :site) {}
+        expect(group.parent_name).to eq(:site)
+      end
+    end
   end
 
   describe "#build" do

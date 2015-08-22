@@ -12,12 +12,18 @@ describe Organizer::Group::Item do
       group = Organizer::Group::Item.new(:store, :store_id)
       expect(group.item_name).to eq(:store)
       expect(group.group_by_attr).to eq(:store_id)
+      expect(group.parent_name).to be_nil
     end
 
     it "ensures name and group_by_attr read only" do
       group = Organizer::Group::Item.new(:store_id)
       expect { group.item_name = "name" }.to raise_error
       expect { group.group_by_attr = "group_by_attr" }.to raise_error
+    end
+
+    it "creates group with parent" do
+      group = Organizer::Group::Item.new(:store, :store_id, :site)
+      expect(group.parent_name).to eq(:site)
     end
   end
 

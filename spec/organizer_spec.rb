@@ -281,10 +281,14 @@ describe Organizer do
                 end
               end
             end
+
+            @groups = MyOrganizer.groups_manager.send(:groups)
           end
 
           it "adds a group nested to another group" do
-            skip
+            expect(@groups.first.parent_name).to be_nil
+            expect(@groups.second.parent_name).to eq(:g1)
+            expect(@groups.third.parent_name).to eq(:g2)
           end
         end
       end
