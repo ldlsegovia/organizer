@@ -21,6 +21,23 @@ describe Organizer do
       end
     end
 
+    it "raises error passing invalid dsl methods in definition block" do
+      {
+        group: :my_group
+      }.each do |dsl_method, params|
+        Object.send(:remove_const, :MyOrganizer) rescue nil
+        expect do
+          Organizer.define("my_organizer") do
+            if params
+              send(dsl_method, params)
+            else
+              send(dsl_method)
+            end
+          end
+        end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
+      end
+    end
+
     describe "#collection" do
       let_collection(:collection)
 
@@ -40,7 +57,7 @@ describe Organizer do
           expect(@collection).to be_a(Organizer::Source::Collection)
         end
 
-        context "with another organizer" do
+        context "working with another organizer" do
           before do
             Object.send(:remove_const, :AnotherOrganizer) rescue nil
             another_collection = [
@@ -92,24 +109,6 @@ describe Organizer do
         expect(@filters.count).to eq(1)
         expect(@filters.first).to be_a(Organizer::Filter::Item)
       end
-
-      context "with another organizer" do
-        before do
-          Object.send(:remove_const, :AnotherOrganizer) rescue nil
-
-          Organizer.define("another_organizer") do
-            default_filter {}
-            default_filter {}
-          end
-
-          @filters2 = AnotherOrganizer.filters_manager.send(:default_filters)
-        end
-
-        it "keeps default filters on each class" do
-          expect(@filters.count).to eq(1)
-          expect(@filters2.count).to eq(2)
-        end
-      end
     end
 
     describe "#filter" do
@@ -125,23 +124,6 @@ describe Organizer do
         it "adds a filter to MyOrganizer class" do
           expect(@filters.count).to eq(1)
           expect(@filters.first).to be_a(Organizer::Filter::Item)
-        end
-
-        context "with another organizer" do
-          before do
-            Object.send(:remove_const, :AnotherOrganizer) rescue nil
-
-            Organizer.define("another_organizer") do
-              filter(:my_another_filter) {}
-            end
-
-            @filters2 = AnotherOrganizer.filters_manager.send(:normal_filters)
-          end
-
-          it "keeps default filters on each class" do
-            expect(@filters.first.item_name).to eq(:my_filter)
-            expect(@filters2.first.item_name).to eq(:my_another_filter)
-          end
         end
       end
 
@@ -172,25 +154,12 @@ describe Organizer do
           expect(@operations.count).to eq(1)
           expect(@operations).to be_a(Organizer::Operation::Collection)
         end
-
-        context "with another organizer" do
-          before do
-            Object.send(:remove_const, :AnotherOrganizer) rescue nil
-            Organizer.define("another_organizer") { operation(:another_operation) {} }
-            @operations2 = AnotherOrganizer.operations_manager.send(:operations)
-          end
-
-          it "keeps collections on each class" do
-            expect(@operations.first.item_name).to eq(:my_operation)
-            expect(@operations2.first.item_name).to eq(:another_operation)
-          end
-        end
       end
 
-      context "in group context" do
+      context "in groups context" do
         before do
           Organizer.define("my_organizer") do
-            group(:store_id) do
+            groups do
               operation(:operation_1, 10) {}
               operation(:operation_2) {}
             end
@@ -208,22 +177,51 @@ describe Organizer do
 
         it "adds operation 1 to group" do
           expect(@operation1.item_name).to eq(:operation_1)
-          expect(@operation1.group_name).to eq(:store_id)
           expect(@operation1.initial_value).to eq(10)
         end
 
         it "adds operation 2 to group "do
           expect(@operation2.item_name).to eq(:operation_2)
-          expect(@operation2.group_name).to eq(:store_id)
           expect(@operation2.initial_value).to eq(0)
         end
       end
     end
 
+    describe "#groups" do
+      it { expect { Organizer.define("my_organizer") { groups {} } }.to_not raise_error }
+
+      it "raises error passing invalid methods in groups definition block" do
+        {
+          collection: nil,
+          filter: :my_filter,
+          default_filter: nil,
+          groups: nil,
+        }.each do |dsl_method, params|
+          Object.send(:remove_const, :MyOrganizer) rescue nil
+          expect do
+            Organizer.define("my_organizer") do
+              groups do
+                if params
+                  send(dsl_method, params)
+                else
+                  send(dsl_method)
+                end
+              end
+            end
+          end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
+        end
+      end
+    end
+
     describe "#group" do
-      context "in root context" do
+      context "in groups context" do
         before do
-          Organizer.define("my_organizer") { group(:store_id, :store) {} }
+          Organizer.define("my_organizer") do
+            groups do
+              group(:store_id, :store) {}
+            end
+          end
+
           @groups = MyOrganizer.groups_manager.send(:groups)
         end
 
@@ -235,15 +233,23 @@ describe Organizer do
 
       context "in group context" do
         it "raises error passing invalid methods in group definition block" do
-          { collection: nil, filter: :my_filter, default_filter: nil }.each do |dsl_method, params|
+          {
+            collection: nil,
+            filter: :my_filter,
+            default_filter: nil,
+            groups: nil,
+            operation: :my_operation
+          }.each do |dsl_method, params|
             Object.send(:remove_const, :MyOrganizer) rescue nil
             expect do
               Organizer.define("my_organizer") do
-                group(:my_group) do
-                  if params
-                    send(dsl_method, params)
-                  else
-                    send(dsl_method)
+                groups do
+                  group(:my_group) do
+                    if params
+                      send(dsl_method, params)
+                    else
+                      send(dsl_method)
+                    end
                   end
                 end
               end
@@ -252,27 +258,37 @@ describe Organizer do
         end
 
         it "raises error trying to add a two groups at the same definition level" do
-          Organizer.define("my_organizer") do
-            group(:g1) do
-              group(:g2) {}
-              group(:g3) {}
+          expect do
+            Organizer.define("my_organizer") do
+              groups do
+                group(:g1) do
+                  group(:g2) {}
+                  group(:g3) {}
+                end
+              end
             end
-          end
-
-          skip
+          end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
         end
 
         context "with nested groups" do
           before do
             Organizer.define("my_organizer") do
-              group(:g1) do
-                group(:g2) {}
+              groups do
+                group(:g1) do
+                  group(:g2) do
+                    group(:g3) {}
+                  end
+                end
               end
             end
+
+            @groups = MyOrganizer.groups_manager.send(:groups)
           end
 
           it "adds a group nested to another group" do
-            skip
+            expect(@groups.first.parent_name).to be_nil
+            expect(@groups.second.parent_name).to eq(:g1)
+            expect(@groups.third.parent_name).to eq(:g2)
           end
         end
       end

@@ -3,44 +3,83 @@ module Organizer
     class Manager
       include Organizer::Error
 
-      # Creates a new {Organizer::Operation::SourceItem} and adds to operations collection.
+      # Creates a new {Organizer::Operation::Simple} and adds to operations collection.
       #
       # @param _name [Symbol] operation's name
       # @yield contains logic to generate the result for this particular operation.
       # @yieldparam organizer_item [Organizer::Source::Item] you can use item's attributes to get the desired operation result.
-      # @return [Organizer::Operation::SourceItem]
+      # @return [Organizer::Operation::Simple]
       def add_operation(_name, &block)
-        operations << Organizer::Operation::SourceItem.new(block, _name)
+        operations << Organizer::Operation::Simple.new(block, _name)
         operations.last
       end
 
-      # Creates a new {Organizer::Operation::GroupCollection} and adds to group operations collection.
+      # Creates a new {Organizer::Operation::Memo} and adds to group operations collection.
       #
       # @param _name [Symbol] operation's name
-      # @param _group_name [Symbol] to identify group related with this operation
       # @param _initial_value [Object]
       # @yield contains logic to generate the result for this particular operation.
-      # @return [Organizer::Operation::SourceItem]
-      def add_group_operation(_name, _group_name, _initial_value = 0, &block)
-        group_operations << Organizer::Operation::GroupCollection.new(block, _name, _group_name, _initial_value)
+      # @return [Organizer::Operation::Simple]
+      def add_group_operation(_name, _initial_value = 0, &block)
+        group_operations << Organizer::Operation::Memo.new(block, _name, _initial_value)
         group_operations.last
       end
 
-      # Each collection's items will be evaluated against all defined operations. The operation's results
+      # Each source collection item will be evaluated against defined operations. The operation's results
       # will be attached to items as new attributes.
       #
-      # @param _collection [Organizer::Source::Collection] or [Organizer::Group::Collection]
-      # @return [Organizer::Source::Collection] or [Organizer::Group::Collection] the collection with new attributes attached.
+      # @param _collection [Organizer::Source::Collection]
+      # @return [Organizer::Source::Collection] the collection with new attached attributes.
       #
       # @raise [Organizer::Operation::ManagerException]
-      def execute(_collection)
-        current_operations = _collection.is_a?(Organizer::Group::Collection) ? group_operations : operations
-        return _collection if current_operations.count <= 0
-        _collection.each { |item| execute_recursively(item, current_operations.dup) }
+      def execute_over_source_items(_collection)
+        return unless _collection.is_a?(Organizer::Source::Collection)
+        return _collection if operations.count <= 0
+        _collection.each { |item| execute_recursively(item, operations.dup) }
         _collection
       end
 
+      # Each group collection item (and descendants) will be evaluated against defined operations.
+      # The operation's results will be attached to items as new attributes.
+      #
+      # @param _source_collection [Organizer::Source::Collection]
+      # @param _group_collection [Organizer::Group::Collection]
+      # @return [Organizer::Group::Collection] the collection with new attached attributes.
+      def execute_over_group_items(_source_collection, _group_collection)
+        return unless _source_collection.is_a?(Organizer::Source::Collection)
+        return unless _group_collection.is_a?(Organizer::Group::Collection)
+        return _group_collection if group_operations.count <= 0
+
+        _source_collection.each do |source_item|
+          _group_collection.each do |group_item|
+            eval_operations_against_groups(source_item, [group_item])
+          end
+        end
+
+        _group_collection
+      end
+
       private
+
+      def eval_operations_against_groups(_source_item, _group_items_hierarchy)
+        group_item = _group_items_hierarchy.last
+        return unless group_item.is_a?(Organizer::Group::Item)
+
+        result = _group_items_hierarchy.map do |gi|
+          _source_item.send(gi.group_by_attr).to_s === gi.item_name.to_s
+        end.uniq
+
+        if result.size == 1 && !!result.first
+          group_operations.each { |operation| operation.execute(group_item, _source_item) }
+        end
+
+        group_item.each do |child|
+          return unless child.is_a?(Organizer::Group::Item)
+          new_hierarchy = _group_items_hierarchy.clone
+          new_hierarchy << child
+          eval_operations_against_groups(_source_item, new_hierarchy)
+        end
+      end
 
       def execute_recursively(_item, _operations, _previous_operations_count = 0)
         return _item if _operations.size.zero?

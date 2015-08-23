@@ -6,12 +6,12 @@ describe Organizer::Operation::Collection do
     let!(:collection_exception_class) { Organizer::Operation::CollectionException }
 
     context "with source item operations" do
-      let!(:item) { Organizer::Operation::SourceItem.new(->{}, :item_name) }
+      let!(:item) { Organizer::Operation::Simple.new(->{}, :item_name) }
       it_should_behave_like(:collection)
     end
 
     context "with group item operations" do
-      let!(:item) { Organizer::Operation::GroupCollection.new(->{}, :item_name, :my_group) }
+      let!(:item) { Organizer::Operation::Memo.new(->{}, :item_name, :my_group) }
       it_should_behave_like(:collection)
     end
   end

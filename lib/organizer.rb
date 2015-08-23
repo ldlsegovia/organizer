@@ -17,8 +17,8 @@ require_relative "organizer/filter/collection"
 require_relative "organizer/filter/manager"
 
 require_relative "organizer/operation/item"
-require_relative "organizer/operation/source_item"
-require_relative "organizer/operation/group_collection"
+require_relative "organizer/operation/simple"
+require_relative "organizer/operation/memo"
 require_relative "organizer/operation/collection"
 require_relative "organizer/operation/manager"
 

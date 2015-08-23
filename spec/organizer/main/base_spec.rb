@@ -93,26 +93,79 @@ describe Organizer::Base do
       end
 
       context "with groups" do
-        before { BaseChild.add_group(:site_id) }
-
-        it "groups collection items" do
-          result = BaseChild.new.organize(group_by: :site_id)
-          expect(result).to be_a(Organizer::Group::Collection)
-          expect(result.size).to eq(3)
-        end
-
-        context "with operations" do
-          before do
-            BaseChild.add_group_operation(:attrs_sum, :site_id, 10) do |group_item, item|
-              group_item.attrs_sum += item.age
-            end
-          end
+        context "with a single group" do
+          before { BaseChild.add_group(:site_id) }
 
           it "groups collection items" do
             result = BaseChild.new.organize(group_by: :site_id)
-            result.each do |group_item|
-              expected_sum = group_item.inject(10){ |memo, source_item| memo += source_item.age }
-              expect(group_item.attrs_sum).to eq(expected_sum)
+            expect(result).to be_a(Organizer::Group::Collection)
+            expect(result.size).to eq(3)
+          end
+
+          context "with operations" do
+            before do
+              BaseChild.add_group_operation(:attrs_sum, 10) do |memo, item|
+                memo.attrs_sum + item.age
+              end
+            end
+
+            it "groups collection items" do
+              result = BaseChild.new.organize(group_by: :site_id)
+              result.each do |group_item|
+                expected_sum = group_item.inject(10){ |memo, source_item| memo += source_item.age }
+                expect(group_item.attrs_sum).to eq(expected_sum)
+              end
+            end
+          end
+        end
+
+        context "with nested groups" do
+          before { BaseChild.add_group(:gender) }
+
+          shared_examples :nested_group do
+            it "groups collection by gender and site" do
+              expect(@group).to be_a(Organizer::Group::Collection)
+              expect(@group.size).to eq(2)
+              expect(@group.first).to be_a(Organizer::Group::Item)
+              expect(@group.first.size).to eq(3)
+              expect(@group.first.first).to be_a(Organizer::Group::Item)
+              expect(@group.first.first.size).to eq(2)
+              expect(@group.first.first.first).to be_a(Organizer::Source::Item)
+            end
+          end
+
+          context "nested through params" do
+            before do
+              BaseChild.add_group(:site_id)
+              @group = BaseChild.new.organize(group_by: [:gender, :site_id])
+            end
+
+            it_should_behave_like(:nested_group)
+          end
+
+          context "nested on definition" do
+            before do
+              BaseChild.add_group(:site, :site_id, :gender)
+              @group = BaseChild.new.organize(group_by: :gender)
+            end
+
+            it_should_behave_like(:nested_group)
+          end
+
+          context "with operations" do
+            before do
+              BaseChild.add_group(:site_id)
+              BaseChild.add_group_operation(:greater_age) do |memo, item|
+                memo.greater_age > item.age ? memo.greater_age : item.age
+              end
+            end
+
+            it "applies operations to full group hierarchy" do
+              result = BaseChild.new.organize(group_by: [:gender, :site_id])
+              expect(result.first.greater_age).to eq(65)
+              expect(result.first.first.greater_age).to eq(31)
+              expect(result.second.greater_age).to eq(64)
+              expect(result.second.first.greater_age).to eq(64)
             end
           end
         end

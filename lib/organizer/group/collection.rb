@@ -17,7 +17,31 @@ module Organizer
         self
       end
 
+      # Searches _group descendants and returns collection with the hierarchy.
+      # If _group has not children, the method returns _group inside a
+      # {Organizer::Group::Collection} instance.
+      #
+      # @param _group [Organizer::Group::Item]
+      # @return [Organizer::Group::Collection]
+      def hierarchy(_group)
+        collection = Organizer::Group::Collection.new
+        load_group_child(_group, collection)
+      end
+
       private
+
+      def load_group_child(_group, _collection)
+        _collection << _group
+
+        self.each do |group|
+          if group.is_a?(Organizer::Group::Item) &&
+            group.parent_name == _group.group_name
+            load_group_child(group, _collection)
+          end
+        end
+
+        _collection
+      end
 
       def build_recursively(_result, _collection, _nested_groups)
         nested_groups = _nested_groups.dup

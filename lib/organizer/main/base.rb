@@ -53,34 +53,34 @@ module Organizer
         filters_manager.add_filter_with_value(_name, &block)
       end
 
-      # Adds a new {Organizer::Operation::SourceItem} to {Organizer::Operation::Manager}
+      # Adds a new {Organizer::Operation::Simple} to {Organizer::Operation::Manager}
       #
       # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
       # @yield code that will return the operation's result
       # @yieldparam organizer_item [Organizer::Source::Item]
-      # @return [Organizer::Operation::SourceItem]
+      # @return [Organizer::Operation::Simple]
       def add_operation(_name, &block)
         operations_manager.add_operation(_name, &block)
       end
 
-      # Adds a new {Organizer::Operation::GroupCollection} to {Organizer::Operation::Manager}
+      # Adds a new {Organizer::Operation::Memo} to {Organizer::Operation::Manager}
       #
       # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
-      # @param _group_name [Symbol] to identify group related with this operation
       # @param _initial_value [Object]
       # @yield code that will return the operation's result
-      # @return [Organizer::Operation::SourceItem]
-      def add_group_operation(_name, _group_name, _initial_value = 0, &block)
-        operations_manager.add_group_operation(_name, _group_name, _initial_value, &block)
+      # @return [Organizer::Operation::Simple]
+      def add_group_operation(_name, _initial_value = 0, &block)
+        operations_manager.add_group_operation(_name, _initial_value, &block)
       end
 
       # Adds a new {Organizer::Group::Item} to {Organizer::Group::Manager}
       #
       # @param _name [Symbol] symbol to identify this particular group.
       # @param _group_by_attr attribute by which the items will be grouped. If nil, _name will be used insted.
+      # @param _parent_name stores the group parent name of the new group if has one.
       # @return [Organizer::Group::Item]
-      def add_group(_name, _group_by_attr = nil)
-        groups_manager.add_group(_name, _group_by_attr)
+      def add_group(_name, _group_by_attr = nil, _parent_name = nil)
+        groups_manager.add_group(_name, _group_by_attr, _parent_name)
       end
 
       # Returns manager to handle filter issues.
@@ -124,10 +124,12 @@ module Organizer
       # @param _options [Hash]
       # @return [Organizer::Source::Collection]
       def organize(_options = {})
-        result = filters_manager.apply(collection, _options)
-        result = operations_manager.execute(result)
-        result = groups_manager.build(result, _options)
-        operations_manager.execute(result) if result.is_a?(Organizer::Group::Collection)
+        filtered_collection = filters_manager.apply(collection, _options)
+        operations_manager.execute_over_source_items(filtered_collection)
+        result = groups_manager.build(filtered_collection, _options)
+        if result.is_a?(Organizer::Group::Collection)
+          operations_manager.execute_over_group_items(filtered_collection, result)
+        end
         result
       end
 
