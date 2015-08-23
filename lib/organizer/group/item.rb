@@ -27,6 +27,13 @@ module Organizer
       def particularize_group(_group_value)
         @item_name = _group_value.to_s
       end
+
+      # Checks if instace has parent name.
+      #
+      # @return [Boolean]
+      def has_parent?
+        !!self.parent_name
+      end
     end
   end
 end

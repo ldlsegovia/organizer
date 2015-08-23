@@ -40,7 +40,8 @@ module Organizer
         group_by.each do |group_name|
           group = groups.find_by_name(group_name)
           raise_error(:unknown_group_given) unless group
-          selected_groups << group
+          hierarchy = groups.hierarchy(group)
+          hierarchy.each { |g| selected_groups << g }
         end
 
         selected_groups

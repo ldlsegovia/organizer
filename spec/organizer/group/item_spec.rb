@@ -24,6 +24,7 @@ describe Organizer::Group::Item do
     it "creates group with parent" do
       group = Organizer::Group::Item.new(:store, :store_id, :site)
       expect(group.parent_name).to eq(:site)
+      expect(group.has_parent?).to be_truthy
     end
   end
 
