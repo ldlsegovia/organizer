@@ -1,6 +1,6 @@
 # Organizer
 
-Organizer is a ruby gem that allows you to perform different actions like: filtering, ordering and default or custom operations over denormalized data, in order to produce a new data structure with the result.
+Organizer is a ruby gem that allows you to perform different actions like: filtering, ordering, grouping and operations over denormalized data, in order to produce a new data structure with the result.
 
 ## Installation
 
@@ -35,16 +35,18 @@ end
 To use it, you need to do:
 
 ```ruby
-organizer = MyOrganizer.new
+MyOrganizer.new.organize
 ```
 
 Inside define's method block, you can pass:
 
-### A Collection
+### On Root context
+
+#### A Collection
 
 This method takes a block containing a denormalized collection. The block's content will be executed later. So, you can pass anything that produces a collection.
 
-#### Definition Example
+##### Definition Example
 
 ```ruby
 Organizer.define("my_organizer") do
@@ -87,7 +89,7 @@ Organizer.define("my_organizer") do
 end
 ```
 
-#### Usage Example
+##### Usage Example
 
 ```ruby
 # with defined collection for the first example
@@ -97,15 +99,15 @@ MyOrganizer.new.organize
 MyOrganizer.new(age: 8).organize
 ```
 
-### A Default Filter
+#### Default Filters
 
 Allows you to define conditions that will be evaluated, over each collection item, at the beginning of the data generation, in order to perform an initial filter of the whole dataset.
 
-#### Definition Example
+##### Definition Example
 
 ```ruby
 Organizer.define("my_organizer") do
-  # collection and other definitions...
+  # root level definitions...
 
   default_filter do |item|
     item.age > 22
@@ -117,7 +119,7 @@ Organizer.define("my_organizer") do
 end
 ```
 
-#### Usage Example
+##### Usage Example
 
 ```ruby
 # with default filters
@@ -130,15 +132,15 @@ MyOrganizer.new.organize(skip_default_filters: :all)
 MyOrganizer.new.organize(skip_default_filters: [:named_default_filter])
 ```
 
-### A Filter
+#### Filters
 
 Allows you to define conditions that will not be initially evaluated but user may activate later.
 
-#### Definition Example
+##### Definition Example
 
 ```ruby
 Organizer.define("my_organizer") do
-  # collection and other definitions...
+  # root level definitions...
 
   filter(:filter1) do |item|
     item.age > 33
@@ -149,7 +151,7 @@ You can define filters that will accept user params, declaring a second block ar
 
 ```ruby
 Organizer.define("my_organizer") do
-  # collection and other definitions...
+  # root level definitions...
 
   filter(:filter2) do |item, value|
     item.age == value
@@ -157,7 +159,7 @@ Organizer.define("my_organizer") do
 end
 ```
 
-#### Usage Example
+##### Usage Example
 
 ```ruby
 # enabling filters
@@ -167,15 +169,15 @@ MyOrganizer.new.organize(enabled_filters: [:filter1])
 MyOrganizer.new.organize(filters: { filter2: 5 })
 ```
 
-### An Operation
+#### Operations
 
 You can perform operations between item's attribute values. The result of this operations will be added, as new attributes, to each collection item with the operation's name. For example:
 
-#### Definition Example
+##### Definition Example
 
 ```ruby
 Organizer.define("my_organizer") do
-  # collection and other definitions...
+  # root level definitions...
 
   operation(:attrs_sum) do |item|
     item.age * 2
@@ -187,7 +189,7 @@ You also can perform operations using the resulting attributes. For example:
 
 ```ruby
 Organizer.define("my_organizer") do
-  # collection and other definitions...
+  # root level definitions...
 
   operation(:newer_attribute) do |item|
     item.attrs_sum * 2
@@ -195,34 +197,48 @@ Organizer.define("my_organizer") do
 end
 ```
 
-#### Usage Example
+##### Usage Example
 
 ```ruby
 # with operations
 MyOrganizer.new.organize
 ```
 
-### A Group
+### On Groups context
 
-You can define groups. The data will be grouped by the attribute passed in params.
+#### Groups
 
-#### Definition Example
+You can define groups. The data will be grouped by the attribute passed in `group_by` param.
+
+##### Definition Example
 
 ```ruby
 Organizer.define("my_organizer") do
- # collection and other definitions...
+ # root level definitions...
 
-  group(:site_id)
+  groups do
+    group(:site_id)
+  end
 end
 ```
 
-You can define operations for a given group.
+##### Usage Example
+
+```ruby
+MyOrganizer.new.organize(group_by: :site_id)
+```
+
+#### Operations
+
+You can define operations that will be applied to groups only.
+
+##### Definition Example
 
 ```ruby
 Organizer.define("my_organizer") do
- # collection and other definitions...
+ # root level definitions...
 
-  group(:site_id) do
+  groups do
     operation(:age_sum) do |group_item, item|
       group_item.age_sum += item.age
     end
@@ -230,14 +246,66 @@ Organizer.define("my_organizer") do
     operation(:age_sum_with_initial_value, 10) do |group_item, item|
       group_item.age_sum_with_initial_value += item.age
     end
+
+    group(:site_id)
   end
 end
 ```
 
-#### Usage Example
+##### Usage Example
 
 ```ruby
 MyOrganizer.new.organize(group_by: :site_id)
+```
+
+#### Nested Groups on Definition
+
+You can define nested groups.
+
+##### Definition Example
+
+```ruby
+Organizer.define("my_organizer") do
+ # root level definitions...
+
+  groups do
+    group(:gender) do
+      group(:site_id) do
+        group(:section_id)
+      end
+    end
+  end
+end
+```
+
+##### Usage Example
+
+```ruby
+MyOrganizer.new.organize(group_by: :gender)
+```
+
+#### Nested Groups at Runtime
+
+You can nest groups calling `organize` method passing group names as array param.
+
+##### Definition Example
+
+```ruby
+Organizer.define("my_organizer") do
+ # root level definitions...
+
+  groups do
+    group(:gender)
+    group(:site_id)
+    group(:section_id)
+  end
+end
+```
+
+##### Usage Example
+
+```ruby
+MyOrganizer.new.organize(group_by: [:gender, :site_id, :section_id])
 ```
 
 ## Docs
