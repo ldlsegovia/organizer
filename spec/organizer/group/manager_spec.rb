@@ -27,7 +27,7 @@ describe Organizer::Group::Manager do
       end
 
       it "raises error with invalid parent" do
-        expect { group = subject.add_group(:section, :section_id, :invalid_parent) {} }.to(
+        expect { subject.add_group(:section, :section_id, :invalid_parent) {} }.to(
           raise_organizer_error(Organizer::Group::ManagerException, :invalid_parent))
       end
 

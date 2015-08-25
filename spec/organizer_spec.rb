@@ -262,8 +262,8 @@ describe Organizer do
             Organizer.define("my_organizer") do
               groups do
                 group(:g1) do
-                  group(:g2) {}
-                  group(:g3) {}
+                  group(:g2)
+                  group(:g3)
                 end
               end
             end
@@ -276,7 +276,7 @@ describe Organizer do
               groups do
                 group(:g1) do
                   group(:g2) do
-                    group(:g3) {}
+                    group(:g3)
                   end
                 end
               end
