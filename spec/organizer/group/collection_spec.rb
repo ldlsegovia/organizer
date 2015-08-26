@@ -1,42 +1,37 @@
 require 'spec_helper'
 
 describe Organizer::Group::Collection do
-  describe "#build" do
-    let_collection(:collection)
-    before { @group = Organizer::Group::Item.new(:store_id) }
-
-    it "raises error if collection items have not group_by_attr" do
-      group = Organizer::Group::Item.new(:undefined_attr)
-      expect { subject.build(collection, [group]) }.to(
-        raise_organizer_error(Organizer::Group::CollectionException, :group_by_attr_not_present_in_collection))
+  describe "#add_group" do
+    it "adds new group" do
+      expect { subject.add_group(:store_id) {} }.to change {
+        subject.count }.from(0).to(1)
     end
 
-    it "returns empty group collection" do
-      expect(subject.build(Organizer::Source::Collection.new, @group)).to be_a(Organizer::Group::Collection)
+    it "uses name to set group_by_attr if attr is nil" do
+      group = subject.add_group(:site_id) {}
+      expect(group.item_name).to eq(:site_id)
+      expect(group.group_by_attr).to eq(:site_id)
     end
 
-    context "with a built a group" do
-      before { @result = Organizer::Group::Collection.new.build(collection, [@group]) }
+    it "uses different name and group_by_attr" do
+      group = subject.add_group(:site, :site_id) {}
+      expect(group.item_name).to eq(:site)
+      expect(group.group_by_attr).to eq(:site_id)
+    end
 
-      it "returns same group with valid collection" do
-        expect(@result).to be_a(Organizer::Group::Collection)
+    context "with parent" do
+      before do
+        subject.add_group(:site, :site_id) {}
       end
 
-      it "contains group items" do
-        expect(@result.size).to eq(5)
-        0.upto(4).each { |i| expect(@result[i]).to be_a(Organizer::Group::Item) }
+      it "raises error with invalid parent" do
+        expect { subject.add_group(:section, :section_id, :invalid_parent) {} }.to(
+          raise_organizer_error(Organizer::Group::CollectionException, :invalid_parent))
       end
 
-      it "contains items inside group items" do
-        one = @result.first
-        two = @result.last
-        expect(one).to be_a(Organizer::Group::Item)
-        expect(two).to be_a(Organizer::Group::Item)
-        expect(one.size).to eq(2)
-        expect(two.size).to eq(1)
-        expect(one.first).to be_a(Organizer::Source::Item)
-        expect(one.last).to be_a(Organizer::Source::Item)
-        expect(two.first).to be_a(Organizer::Source::Item)
+      it "sets parent name into child group" do
+        group = subject.add_group(:section, :section_id, :site) {}
+        expect(group.parent_name).to eq(:site)
       end
     end
   end

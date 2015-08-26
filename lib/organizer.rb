@@ -24,7 +24,7 @@ require_relative "organizer/operation/manager"
 
 require_relative "organizer/group/item"
 require_relative "organizer/group/collection"
-require_relative "organizer/group/manager"
+require_relative "organizer/group/builder"
 
 require_relative "organizer/main/context_manager"
 require_relative "organizer/main/dsl"

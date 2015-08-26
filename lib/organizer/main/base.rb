@@ -73,14 +73,14 @@ module Organizer
         operations_manager.add_group_operation(_name, _initial_value, &block)
       end
 
-      # Adds a new {Organizer::Group::Item} to {Organizer::Group::Manager}
+      # Adds a new {Organizer::Group::Item} to {Organizer::Group::Builder}
       #
       # @param _name [Symbol] symbol to identify this particular group.
       # @param _group_by_attr attribute by which the items will be grouped. If nil, _name will be used insted.
       # @param _parent_name stores the group parent name of the new group if has one.
       # @return [Organizer::Group::Item]
       def add_group(_name, _group_by_attr = nil, _parent_name = nil)
-        groups_manager.add_group(_name, _group_by_attr, _parent_name)
+        groups.add_group(_name, _group_by_attr, _parent_name)
       end
 
       # Returns manager to handle filter issues.
@@ -97,18 +97,16 @@ module Organizer
         @operations_manager ||= Organizer::Operation::Manager.new
       end
 
-      # Returns manager to handle group issues.
-      #
-      # @return [Organizer::Group::Manager]
-      def groups_manager
-        @groups_manager ||= Organizer::Group::Manager.new
-      end
-
       # Returns a proc containing an array collection
       #
       # @return [Array]
       def collection_proc
         @collection_proc
+      end
+
+      # Returns groups collection
+      def groups
+        @groups ||= Organizer::Group::Collection.new
       end
     end
 
@@ -126,7 +124,7 @@ module Organizer
       def organize(_options = {})
         filtered_collection = filters_manager.apply(collection, _options)
         operations_manager.execute_over_source_items(filtered_collection)
-        result = groups_manager.build(filtered_collection, _options)
+        result = Organizer::Group::Builder.build(filtered_collection, groups, _options)
         if result.is_a?(Organizer::Group::Collection)
           operations_manager.execute_over_group_items(filtered_collection, result)
         end
@@ -145,7 +143,7 @@ module Organizer
 
       def filters_manager; self.class.filters_manager; end
       def operations_manager; self.class.operations_manager; end
-      def groups_manager; self.class.groups_manager; end
+      def groups; self.class.groups; end
       def collection_proc; self.class.collection_proc; end
       def collection_options; @collection_options ||= {}; end
     end

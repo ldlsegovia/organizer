@@ -40,8 +40,10 @@ module HelpfulVariables
     collection_name = "#{_name}_group_collection"
     let_collection(collection_name)
     let(_name) do
-      group = Organizer::Group::Item.new(group_attr)
-      Organizer::Group::Collection.new.build(send(collection_name), [group])
+      groups_collection = Organizer::Group::Collection.new
+      groups_collection << Organizer::Group::Item.new(group_attr)
+      Organizer::Group::Builder.build(
+        send(collection_name), groups_collection, { group_by: group_attr })
     end
   end
 end

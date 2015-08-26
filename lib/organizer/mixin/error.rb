@@ -98,16 +98,16 @@ module Organizer
   module Group
     class CollectionException < ::Exception
       ERRORS = {
+        invalid_parent: "Group not found in collection",
         invalid_item: "Invalid group collection item. Must be Organizer::Group::Item only",
-        repeated_item: "Repeated item. An Item with same name was added previously",
-        group_by_attr_not_present_in_collection: "group_by_attr is not present in collection Organizer::Source::Items"
+        repeated_item: "Repeated item. An Item with same name was added previously"
       }
     end
 
-    class ManagerException < ::Exception
+    class BuilderException < ::Exception
       ERRORS = {
         unknown_group_given: "Unknown group name given",
-        invalid_parent: "Group not found in collection"
+        group_by_attr_not_present_in_collection: "group_by_attr is not present in collection Organizer::Source::Items"
       }
     end
 

@@ -222,7 +222,7 @@ describe Organizer do
             end
           end
 
-          @groups = MyOrganizer.groups_manager.send(:groups)
+          @groups = MyOrganizer.groups
         end
 
         it "adds a group to MyOrganizer class" do
@@ -282,7 +282,7 @@ describe Organizer do
               end
             end
 
-            @groups = MyOrganizer.groups_manager.send(:groups)
+            @groups = MyOrganizer.groups
           end
 
           it "adds a group nested to another group" do
