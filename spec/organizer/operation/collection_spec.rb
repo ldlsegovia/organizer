@@ -1,6 +1,30 @@
 require 'spec_helper'
 
 describe Organizer::Operation::Collection do
+  describe "#add_simple_operation" do
+    it "adds new operation" do
+      expect { subject.add_simple_operation(:result_attr) {} }.to change {
+        subject.count }.from(0).to(1)
+    end
+
+    it "returns a new operation" do
+      operation = subject.add_simple_operation(:result_attr) {}
+      expect(operation).to be_a(Organizer::Operation::Simple)
+    end
+  end
+
+  describe "#add_memo_operation" do
+    it "adds new group operation" do
+      expect { subject.add_memo_operation(:result_attr, :my_group) {} }.to change {
+        subject.count }.from(0).to(1)
+    end
+
+    it "returns a new group operation" do
+      operation = subject.add_memo_operation(:result_attr, :my_group) {}
+      expect(operation).to be_a(Organizer::Operation::Memo)
+    end
+  end
+
   describe "collection mixin" do
     let!(:collection) { Organizer::Operation::Collection.new }
     let!(:collection_exception_class) { Organizer::Operation::CollectionException }

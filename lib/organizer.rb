@@ -20,7 +20,7 @@ require_relative "organizer/operation/item"
 require_relative "organizer/operation/simple"
 require_relative "organizer/operation/memo"
 require_relative "organizer/operation/collection"
-require_relative "organizer/operation/manager"
+require_relative "organizer/operation/executer"
 
 require_relative "organizer/group/item"
 require_relative "organizer/group/collection"

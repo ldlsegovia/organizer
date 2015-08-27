@@ -53,24 +53,24 @@ module Organizer
         filters_manager.add_filter_with_value(_name, &block)
       end
 
-      # Adds a new {Organizer::Operation::Simple} to {Organizer::Operation::Manager}
+      # Adds a new {Organizer::Operation::Simple} to {Organizer::Operation::Executer}
       #
       # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
       # @yield code that will return the operation's result
       # @yieldparam organizer_item [Organizer::Source::Item]
       # @return [Organizer::Operation::Simple]
-      def add_operation(_name, &block)
-        operations_manager.add_operation(_name, &block)
+      def add_simple_operation(_name, &block)
+        operations.add_simple_operation(_name, &block)
       end
 
-      # Adds a new {Organizer::Operation::Memo} to {Organizer::Operation::Manager}
+      # Adds a new {Organizer::Operation::Memo} to {Organizer::Operation::Executer}
       #
       # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
       # @param _initial_value [Object]
       # @yield code that will return the operation's result
       # @return [Organizer::Operation::Simple]
-      def add_group_operation(_name, _initial_value = 0, &block)
-        operations_manager.add_group_operation(_name, _initial_value, &block)
+      def add_memo_operation(_name, _initial_value = 0, &block)
+        group_operations.add_memo_operation(_name, _initial_value, &block)
       end
 
       # Adds a new {Organizer::Group::Item} to {Organizer::Group::Builder}
@@ -92,21 +92,25 @@ module Organizer
 
       # Returns manager to handle operation issues.
       #
-      # @return [Organizer::Operation::Manager]
+      # @return [Organizer::Operation::Executer]
       def operations_manager
-        @operations_manager ||= Organizer::Operation::Manager.new
+        @operations_manager ||= Organizer::Operation::Executer.new
       end
 
-      # Returns a proc containing an array collection
-      #
-      # @return [Array]
       def collection_proc
         @collection_proc
       end
 
-      # Returns groups collection
       def groups
         @groups ||= Organizer::Group::Collection.new
+      end
+
+      def operations
+        @operations ||= Organizer::Operation::Collection.new
+      end
+
+      def group_operations
+        @group_operations ||= Organizer::Operation::Collection.new
       end
     end
 
@@ -123,10 +127,11 @@ module Organizer
       # @return [Organizer::Source::Collection]
       def organize(_options = {})
         filtered_collection = filters_manager.apply(collection, _options)
-        operations_manager.execute_over_source_items(filtered_collection)
+        Organizer::Operation::Executer.execute_on_source_items(operations, filtered_collection)
         result = Organizer::Group::Builder.build(filtered_collection, groups, _options)
         if result.is_a?(Organizer::Group::Collection)
-          operations_manager.execute_over_group_items(filtered_collection, result)
+          Organizer::Operation::Executer.execute_on_group_items(
+            group_operations, filtered_collection, result)
         end
         result
       end
@@ -142,8 +147,9 @@ module Organizer
       private
 
       def filters_manager; self.class.filters_manager; end
-      def operations_manager; self.class.operations_manager; end
       def groups; self.class.groups; end
+      def operations; self.class.operations; end
+      def group_operations; self.class.group_operations; end
       def collection_proc; self.class.collection_proc; end
       def collection_options; @collection_options ||= {}; end
     end

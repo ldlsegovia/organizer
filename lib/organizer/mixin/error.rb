@@ -90,7 +90,7 @@ module Organizer
       }
     end
 
-    class ManagerException < ::Exception
+    class ExecuterException < ::Exception
       ERRORS = {}
     end
   end

@@ -147,7 +147,7 @@ describe Organizer do
       context "in root context" do
         before do
           Organizer.define("my_organizer") { operation(:my_operation) {} }
-          @operations = MyOrganizer.operations_manager.send(:operations)
+          @operations = MyOrganizer.operations
         end
 
         it "adds an operation to MyOrganizer class" do
@@ -165,7 +165,7 @@ describe Organizer do
             end
           end
 
-          @operations = MyOrganizer.operations_manager.send(:group_operations)
+          @operations = MyOrganizer.group_operations
           @operation1 = @operations.first
           @operation2 = @operations.last
         end
