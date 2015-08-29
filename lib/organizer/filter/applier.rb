@@ -12,7 +12,7 @@ module Organizer
       # @param _collection [Organizer::Source::Collection] the whole collection
       # @param _options [Hash]
       # @return [Organizer::Source::Collection] a filtered collection
-      def self.apply_default_fitlers(_filters, _collection, _options = {})
+      def self.apply_default_filters(_filters, _collection, _options = {})
         filter_by = _options.fetch(:skip_default_filters, [])
         selected_filters = (filter_by == :all) ? nil : _filters.reject_items(filter_by)
         apply_filters(selected_filters, _collection)

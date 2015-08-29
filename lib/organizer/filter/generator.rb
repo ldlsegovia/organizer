@@ -13,6 +13,11 @@ module Organizer
       #   * my_attr_contains: match attribute containing string...
       #   * my_attr_starts: match attribute starting with string...
       #   * my_attr_ends: match attribute ending with string...
+      #
+      # @param _item [Organizer::Source::Item]
+      # @return [Organizer::Filter::Collection]
+      #
+      # @raise [Organizer::Filter::GeneratorException]
       def self.generate(_item)
         filters = Organizer::Filter::Collection.new
         return filters unless _item
