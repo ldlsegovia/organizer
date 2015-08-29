@@ -75,13 +75,11 @@ describe Organizer::Base do
           result = BaseChild.new.organize(filters: { age_eq: 8 })
           expect(result).to be_a(Organizer::Source::Collection)
           expect(result.first.first_name).to eq("Francisco")
-          result = BaseChild.new.organize(filters: { first_name_contains: "Manu" })
-          expect(result.first.first_name).to eq("Juan Manuel")
         end
       end
 
       context "with operations" do
-        before { BaseChild.add_operation(:new_attr) { |item| item.age * 2 } }
+        before { BaseChild.add_simple_operation(:new_attr) { |item| item.age * 2 } }
 
         it "executes operations" do
           result = BaseChild.new.organize
@@ -104,7 +102,7 @@ describe Organizer::Base do
 
           context "with operations" do
             before do
-              BaseChild.add_group_operation(:attrs_sum, 10) do |memo, item|
+              BaseChild.add_memo_operation(:attrs_sum, 10) do |memo, item|
                 memo.attrs_sum + item.age
               end
             end
@@ -155,7 +153,7 @@ describe Organizer::Base do
           context "with operations" do
             before do
               BaseChild.add_group(:site_id)
-              BaseChild.add_group_operation(:greater_age) do |memo, item|
+              BaseChild.add_memo_operation(:greater_age) do |memo, item|
                 memo.greater_age > item.age ? memo.greater_age : item.age
               end
             end

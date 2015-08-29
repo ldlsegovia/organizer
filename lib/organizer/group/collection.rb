@@ -7,14 +7,16 @@ module Organizer
 
       collectable_classes Organizer::Group::Item
 
-      # Splits given collection into {Organizer::Group::Item}s based on group_by_attr
+      # Creates a new {Organizer::Group::Item} and adds to self.
       #
-      # @param _collection [Organizer::Source::Collection]
-      # @param _nested_groups [optional, Organizer::Group::Collection]
-      # @return [Organizer::Group::Collection]
-      def build(_collection, _nested_groups = Organizer::Group::Collection.new)
-        build_recursively(self, _collection, _nested_groups)
-        self
+      # @param _name [Symbol] symbol to identify this particular group.
+      # @param _group_by_attr attribute by which the items will be grouped. If nil, _name will be used insted.
+      # @param _parent_name stores the group parent name of the new group if has one.
+      # @return [Organizer::Group::Item]
+      def add_group(_name, _group_by_attr = nil, _parent_name = nil)
+        raise_error(:invalid_parent) if _parent_name && !self.find_by_name(_parent_name)
+        self << Organizer::Group::Item.new(_name, _group_by_attr, _parent_name)
+        self.last
       end
 
       # Searches _group descendants and returns collection with the hierarchy.
@@ -41,27 +43,6 @@ module Organizer
         end
 
         _collection
-      end
-
-      def build_recursively(_result, _collection, _nested_groups)
-        nested_groups = _nested_groups.dup
-        group = nested_groups.shift
-        return unless group
-
-        if !_collection.empty? && !_collection.first.include_attribute?(group.group_by_attr)
-          raise_error(:group_by_attr_not_present_in_collection)
-        end
-
-        grouped_collection = _collection.group_by { |item| item.send(group.group_by_attr) }
-        grouped_collection.each do |group_value_items|
-          group_value = group_value_items.first
-          items = group_value_items.last
-          group_result = group.dup
-          group_result.particularize_group(group_value)
-          _result << group_result
-          items.each { |source_item| group_result << source_item } if nested_groups.empty?
-          build_recursively(group_result, items, nested_groups)
-        end
       end
     end
   end

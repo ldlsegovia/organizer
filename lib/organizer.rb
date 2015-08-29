@@ -12,19 +12,20 @@ require_relative "organizer/mixin/explainer"
 require_relative "organizer/source/item"
 require_relative "organizer/source/collection"
 
+require_relative "organizer/filter/applier"
 require_relative "organizer/filter/item"
 require_relative "organizer/filter/collection"
-require_relative "organizer/filter/manager"
+require_relative "organizer/filter/generator"
 
 require_relative "organizer/operation/item"
 require_relative "organizer/operation/simple"
 require_relative "organizer/operation/memo"
 require_relative "organizer/operation/collection"
-require_relative "organizer/operation/manager"
+require_relative "organizer/operation/executer"
 
 require_relative "organizer/group/item"
 require_relative "organizer/group/collection"
-require_relative "organizer/group/manager"
+require_relative "organizer/group/builder"
 
 require_relative "organizer/main/context_manager"
 require_relative "organizer/main/dsl"

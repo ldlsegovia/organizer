@@ -80,9 +80,9 @@ module Organizer
     def operation(_name, _initial_value = 0, &block)
       in_context do
         if @ctx.root_parent?
-          @organizer_class.add_operation(_name, &block)
+          @organizer_class.add_simple_operation(_name, &block)
         elsif @ctx.groups_parent?
-          @organizer_class.add_group_operation(_name, _initial_value, &block)
+          @organizer_class.add_memo_operation(_name, _initial_value, &block)
         else
           raise_error(:forbidden_nesting)
         end

@@ -60,7 +60,13 @@ module Organizer
       }
     end
 
-    class ManagerException < ::Exception
+    class ApplierException < ::Exception
+      ERRORS = {
+        generate_over_organizer_items_only: "Can generate usual filters only based on Organizer::Source::Items only"
+      }
+    end
+
+    class GeneratorException < ::Exception
       ERRORS = {
         generate_over_organizer_items_only: "Can generate usual filters only based on Organizer::Source::Items only"
       }
@@ -90,7 +96,7 @@ module Organizer
       }
     end
 
-    class ManagerException < ::Exception
+    class ExecuterException < ::Exception
       ERRORS = {}
     end
   end
@@ -98,16 +104,16 @@ module Organizer
   module Group
     class CollectionException < ::Exception
       ERRORS = {
+        invalid_parent: "Group not found in collection",
         invalid_item: "Invalid group collection item. Must be Organizer::Group::Item only",
-        repeated_item: "Repeated item. An Item with same name was added previously",
-        group_by_attr_not_present_in_collection: "group_by_attr is not present in collection Organizer::Source::Items"
+        repeated_item: "Repeated item. An Item with same name was added previously"
       }
     end
 
-    class ManagerException < ::Exception
+    class BuilderException < ::Exception
       ERRORS = {
         unknown_group_given: "Unknown group name given",
-        invalid_parent: "Group not found in collection"
+        group_by_attr_not_present_in_collection: "group_by_attr is not present in collection Organizer::Source::Items"
       }
     end
 

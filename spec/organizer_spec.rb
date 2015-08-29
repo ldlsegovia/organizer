@@ -102,7 +102,7 @@ describe Organizer do
     describe "#default_filter" do
       before do
         Organizer.define("my_organizer") { default_filter {} }
-        @filters = MyOrganizer.filters_manager.send(:default_filters)
+        @filters = MyOrganizer.default_filters
       end
 
       it "adds a default filter to MyOrganizer class" do
@@ -118,7 +118,7 @@ describe Organizer do
             filter(:my_filter) {}
           end
 
-          @filters = MyOrganizer.filters_manager.send(:normal_filters)
+          @filters = MyOrganizer.normal_filters
         end
 
         it "adds a filter to MyOrganizer class" do
@@ -133,7 +133,7 @@ describe Organizer do
             filter(:my_filter) { |organizer_item, value| }
           end
 
-          @filters = MyOrganizer.filters_manager.send(:filters_with_values)
+          @filters = MyOrganizer.filters_with_value
         end
 
         it "adds a filter to MyOrganizer class" do
@@ -147,7 +147,7 @@ describe Organizer do
       context "in root context" do
         before do
           Organizer.define("my_organizer") { operation(:my_operation) {} }
-          @operations = MyOrganizer.operations_manager.send(:operations)
+          @operations = MyOrganizer.operations
         end
 
         it "adds an operation to MyOrganizer class" do
@@ -165,7 +165,7 @@ describe Organizer do
             end
           end
 
-          @operations = MyOrganizer.operations_manager.send(:group_operations)
+          @operations = MyOrganizer.group_operations
           @operation1 = @operations.first
           @operation2 = @operations.last
         end
@@ -222,7 +222,7 @@ describe Organizer do
             end
           end
 
-          @groups = MyOrganizer.groups_manager.send(:groups)
+          @groups = MyOrganizer.groups
         end
 
         it "adds a group to MyOrganizer class" do
@@ -282,7 +282,7 @@ describe Organizer do
               end
             end
 
-            @groups = MyOrganizer.groups_manager.send(:groups)
+            @groups = MyOrganizer.groups
           end
 
           it "adds a group nested to another group" do
