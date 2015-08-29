@@ -53,20 +53,24 @@ module Organizer
         filtered_collection = Organizer::Source::Collection.new
         _collection.each do |item|
           add_item = true
+
           _filters.each do |filter|
             value = get_filter_value(filter, _filters_values)
+
             if !filter.apply(item, value)
               add_item = false
               break
             end
           end
+
           filtered_collection << item if add_item
         end
+
         filtered_collection
       end
 
       def self.get_filter_value(_filter, _filters_values)
-        return if !_filter.accept_value || !_filters_values || !_filter.item_name
+        return if !_filters_values || !_filter.item_name
         _filters_values[_filter.item_name] || _filters_values[_filter.item_name.to_sym]
       end
     end

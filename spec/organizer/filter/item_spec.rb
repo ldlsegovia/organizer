@@ -12,10 +12,6 @@ describe Organizer::Filter::Item do
       expect(Organizer::Filter::Item.new(->{}, :filter_name).item_name).to eq(:filter_name)
     end
 
-    it "creates filter with value" do
-      expect(Organizer::Filter::Item.new(->{}, nil, "any true value will work").accept_value).to be_truthy
-    end
-
     it "ensures name, value and definition read only" do
       f = Organizer::Filter::Item.new(->{})
       expect { f.definition = "definition" }.to raise_error
@@ -63,7 +59,7 @@ describe Organizer::Filter::Item do
         (organizer_item.int_attr1 + organizer_item.int_attr2) == value
       end
 
-      expect(Organizer::Filter::Item.new(proc, :my_filter, true).apply(item, 666)).to be_truthy
+      expect(Organizer::Filter::Item.new(proc, :my_filter).apply(item, 666)).to be_truthy
     end
   end
 

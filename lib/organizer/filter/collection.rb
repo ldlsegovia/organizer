@@ -18,18 +18,6 @@ module Organizer
         add_normal_filter(_name, &block)
       end
 
-      # Creates a new {Organizer::Filter::Item} and adds to normal filters collection.
-      #
-      # @param _name [Symbol] filter's name.
-      # @yield code that must return a Boolean value.
-      # @yieldparam organizer_item [Organizer::Source::Item] you can use item's attributes in your conditions.
-      # @yieldreturn [Boolean]
-      # @return [Organizer::Filter::Item]
-      def add_normal_filter(_name, &block)
-        self << Organizer::Filter::Item.new(block, _name)
-        self.last
-      end
-
       # Creates a new {Organizer::Filter::Item} (with true accept_value) and adds to filters with values collection.
       #
       # @param _name [Symbol] filter's name.
@@ -39,7 +27,18 @@ module Organizer
       # @yieldreturn [Boolean]
       # @return [Organizer::Filter::Item]
       def add_filter_with_value(_name, &block)
-        self << Organizer::Filter::Item.new(block, _name, true)
+        add_normal_filter(_name, &block)
+      end
+
+      # Creates a new {Organizer::Filter::Item} and adds to normal filters collection.
+      #
+      # @param _name [Symbol] filter's name.
+      # @yield code that must return a Boolean value.
+      # @yieldparam organizer_item [Organizer::Source::Item] you can use item's attributes in your conditions.
+      # @yieldreturn [Boolean]
+      # @return [Organizer::Filter::Item]
+      def add_normal_filter(_name, &block)
+        self << Organizer::Filter::Item.new(block, _name)
         self.last
       end
     end

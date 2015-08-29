@@ -9,12 +9,10 @@ module Organizer
 
       # @param _definition [Proc] contains logic to decide if filter must be applied or not.
       # @param _name [Symbol] symbol to identify this particular filter.
-      # @param _accept_value sets true if you want to pass params to definition call.
-      def initialize(_definition, _name = nil, _accept_value = false)
+      def initialize(_definition, _name = nil)
         raise_error(:definition_must_be_a_proc) if !_definition.is_a?(Proc)
         @definition = _definition
         @item_name = _name
-        @accept_value = !!_accept_value
       end
 
       # Evaluates _item param against definition proc to know if item must be filtered or not.
@@ -33,11 +31,12 @@ module Organizer
       #     (organizer_item.attr1 + organizer_item.attr2) == value
       #   end
       #
-      #   Organizer::Filter::Item.new(proc, :my_filter, true).apply(item, 666)
+      #   Organizer::Filter::Item.new(proc, :my_filter).apply(item, 666)
       #   #=> true
+
       def apply(_item, _value = nil)
         raise_error(:apply_on_organizer_items_only) if !_item.is_a?(Organizer::Source::Item)
-        result = !!accept_value ? definition.call(_item, _value) : definition.call(_item)
+        result = definition.parameters.count == 2 ? definition.call(_item, _value) : definition.call(_item)
         raise_error(:definition_must_return_boolean) if !!result != result
         result
       end
