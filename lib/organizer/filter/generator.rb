@@ -42,7 +42,7 @@ module Organizer
 
       def self.generate_attr_filter(_filters, _attr, _sufix, &proc)
         filter_name = "#{_attr}_#{_sufix}"
-        _filters.add_filter_with_value(filter_name, &proc)
+        _filters.add_filter(filter_name, &proc)
       end
     end
   end

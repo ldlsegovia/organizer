@@ -9,8 +9,8 @@ describe Organizer::Filter::Applier do
 
     context "with default filters" do
       before do
-        @filters.add_default_filter { |item| item.age > 9 }
-        @filters.add_default_filter(:my_filter) { |item| item.age < 33 }
+        @filters.add_filter { |item| item.age > 9 }
+        @filters.add_filter(:my_filter) { |item| item.age < 33 }
       end
 
       it "returns filtered collection" do
@@ -30,8 +30,8 @@ describe Organizer::Filter::Applier do
 
     context "with normal filters" do
       before do
-        @filters.add_normal_filter(:filter1) { |item| item.age > 9 }
-        @filters.add_normal_filter(:filter2) { |item| item.age < 33 }
+        @filters.add_filter(:filter1) { |item| item.age > 9 }
+        @filters.add_filter(:filter2) { |item| item.age < 33 }
       end
 
       it { expect(subject.apply_normal_filters(@filters, collection).size).to eq(9) }
@@ -41,8 +41,8 @@ describe Organizer::Filter::Applier do
 
     context "with filters with value" do
       before do
-        @filters.add_filter_with_value(:filter1) { |item, value| item.age > value }
-        @filters.add_filter_with_value(:filter2) { |item, value| item.age < value }
+        @filters.add_filter(:filter1) { |item, value| item.age > value }
+        @filters.add_filter(:filter2) { |item, value| item.age < value }
       end
 
       it { expect(subject.apply_filters_with_values(@filters, collection).size).to eq(9) }

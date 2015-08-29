@@ -19,7 +19,7 @@ module Organizer
         return
       end
 
-      # Adds a default {Organizer::Filter::Item} to {Organizer::Filter::Applier}
+      # Adds a default {Organizer::Filter::Item} to default_filters
       #
       # @param _name [optional, Symbol] filter's name.
       # @yield code that must return a Boolean value.
@@ -27,10 +27,10 @@ module Organizer
       # @yieldreturn [Boolean]
       # @return [Organizer::Filter::Item]
       def add_default_filter(_name = nil, &block)
-        default_filters.add_default_filter(_name, &block)
+        default_filters.add_filter(_name, &block)
       end
 
-      # Adds a normal {Organizer::Filter::Item} to {Organizer::Filter::Applier}
+      # Adds a normal {Organizer::Filter::Item} to normal_filters
       #
       # @param _name [Symbol] filter's name.
       # @yield code that must return a Boolean value.
@@ -38,10 +38,10 @@ module Organizer
       # @yieldreturn [Boolean]
       # @return [Organizer::Filter::Item]
       def add_filter(_name, &block)
-        normal_filters.add_normal_filter(_name, &block)
+        normal_filters.add_filter(_name, &block)
       end
 
-      # Adds a {Organizer::Filter::Item} with value to {Organizer::Filter::Applier}
+      # Adds a {Organizer::Filter::Item} with value to filters_with_value
       #
       # @param _name [Symbol] filter's name.
       # @yield code that must return a Boolean value.
@@ -50,7 +50,7 @@ module Organizer
       # @yieldreturn [Boolean]
       # @return [Organizer::Filter::Item]
       def add_filter_with_value(_name, &block)
-        filters_with_value.add_filter_with_value(_name, &block)
+        filters_with_value.add_filter(_name, &block)
       end
 
       # Adds a new {Organizer::Operation::Simple} to {Organizer::Operation::Executer}
