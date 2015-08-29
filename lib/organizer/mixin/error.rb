@@ -60,7 +60,13 @@ module Organizer
       }
     end
 
-    class ManagerException < ::Exception
+    class ApplierException < ::Exception
+      ERRORS = {
+        generate_over_organizer_items_only: "Can generate usual filters only based on Organizer::Source::Items only"
+      }
+    end
+
+    class GeneratorException < ::Exception
       ERRORS = {
         generate_over_organizer_items_only: "Can generate usual filters only based on Organizer::Source::Items only"
       }

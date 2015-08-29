@@ -19,7 +19,7 @@ module Organizer
         return
       end
 
-      # Adds a default {Organizer::Filter::Item} to {Organizer::Filter::Manager}
+      # Adds a default {Organizer::Filter::Item} to {Organizer::Filter::Applier}
       #
       # @param _name [optional, Symbol] filter's name.
       # @yield code that must return a Boolean value.
@@ -27,10 +27,10 @@ module Organizer
       # @yieldreturn [Boolean]
       # @return [Organizer::Filter::Item]
       def add_default_filter(_name = nil, &block)
-        filters_manager.add_default_filter(_name, &block)
+        default_filters.add_default_filter(_name, &block)
       end
 
-      # Adds a normal {Organizer::Filter::Item} to {Organizer::Filter::Manager}
+      # Adds a normal {Organizer::Filter::Item} to {Organizer::Filter::Applier}
       #
       # @param _name [Symbol] filter's name.
       # @yield code that must return a Boolean value.
@@ -38,10 +38,10 @@ module Organizer
       # @yieldreturn [Boolean]
       # @return [Organizer::Filter::Item]
       def add_filter(_name, &block)
-        filters_manager.add_normal_filter(_name, &block)
+        normal_filters.add_normal_filter(_name, &block)
       end
 
-      # Adds a {Organizer::Filter::Item} with value to {Organizer::Filter::Manager}
+      # Adds a {Organizer::Filter::Item} with value to {Organizer::Filter::Applier}
       #
       # @param _name [Symbol] filter's name.
       # @yield code that must return a Boolean value.
@@ -50,7 +50,7 @@ module Organizer
       # @yieldreturn [Boolean]
       # @return [Organizer::Filter::Item]
       def add_filter_with_value(_name, &block)
-        filters_manager.add_filter_with_value(_name, &block)
+        filters_with_value.add_filter_with_value(_name, &block)
       end
 
       # Adds a new {Organizer::Operation::Simple} to {Organizer::Operation::Executer}
@@ -83,35 +83,16 @@ module Organizer
         groups.add_group(_name, _group_by_attr, _parent_name)
       end
 
-      # Returns manager to handle filter issues.
-      #
-      # @return [Organizer::Filter::Manager]
-      def filters_manager
-        @filters_manager ||= Organizer::Filter::Manager.new
-      end
+      def collection_proc; @collection_proc; end
 
-      # Returns manager to handle operation issues.
-      #
-      # @return [Organizer::Operation::Executer]
-      def operations_manager
-        @operations_manager ||= Organizer::Operation::Executer.new
-      end
+      def groups; @groups ||= Organizer::Group::Collection.new; end
 
-      def collection_proc
-        @collection_proc
-      end
+      def normal_filters; @normal_filters ||= Organizer::Filter::Collection.new; end
+      def default_filters; @default_filters ||= Organizer::Filter::Collection.new; end
+      def filters_with_value; @filters_with_value ||= Organizer::Filter::Collection.new; end
 
-      def groups
-        @groups ||= Organizer::Group::Collection.new
-      end
-
-      def operations
-        @operations ||= Organizer::Operation::Collection.new
-      end
-
-      def group_operations
-        @group_operations ||= Organizer::Operation::Collection.new
-      end
+      def operations; @operations ||= Organizer::Operation::Collection.new; end
+      def group_operations; @group_operations ||= Organizer::Operation::Collection.new; end
     end
 
     module ChildInstanceMethods
@@ -126,13 +107,19 @@ module Organizer
       # @param _options [Hash]
       # @return [Organizer::Source::Collection]
       def organize(_options = {})
-        filtered_collection = filters_manager.apply(collection, _options)
+        generated_filters = Organizer::Filter::Generator.generate(collection.first)
+        filtered_collection = Organizer::Filter::Applier.apply_default_fitlers(default_filters, collection, _options)
+        filtered_collection = Organizer::Filter::Applier.apply_normal_filters(normal_filters, filtered_collection, _options)
+        filtered_collection = Organizer::Filter::Applier.apply_filters_with_values(filters_with_value, filtered_collection, _options)
+        filtered_collection = Organizer::Filter::Applier.apply_filters_with_values(generated_filters, filtered_collection, _options)
         Organizer::Operation::Executer.execute_on_source_items(operations, filtered_collection)
         result = Organizer::Group::Builder.build(filtered_collection, groups, _options)
+
         if result.is_a?(Organizer::Group::Collection)
           Organizer::Operation::Executer.execute_on_group_items(
             group_operations, filtered_collection, result)
         end
+
         result
       end
 
@@ -146,10 +133,15 @@ module Organizer
 
       private
 
-      def filters_manager; self.class.filters_manager; end
+      def default_filters; self.class.default_filters; end
+      def normal_filters; self.class.normal_filters; end
+      def filters_with_value; self.class.filters_with_value; end
+
       def groups; self.class.groups; end
+
       def operations; self.class.operations; end
       def group_operations; self.class.group_operations; end
+
       def collection_proc; self.class.collection_proc; end
       def collection_options; @collection_options ||= {}; end
     end

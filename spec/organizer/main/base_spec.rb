@@ -75,8 +75,6 @@ describe Organizer::Base do
           result = BaseChild.new.organize(filters: { age_eq: 8 })
           expect(result).to be_a(Organizer::Source::Collection)
           expect(result.first.first_name).to eq("Francisco")
-          result = BaseChild.new.organize(filters: { first_name_contains: "Manu" })
-          expect(result.first.first_name).to eq("Juan Manuel")
         end
       end
 

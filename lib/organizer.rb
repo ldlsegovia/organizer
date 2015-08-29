@@ -12,9 +12,10 @@ require_relative "organizer/mixin/explainer"
 require_relative "organizer/source/item"
 require_relative "organizer/source/collection"
 
+require_relative "organizer/filter/applier"
 require_relative "organizer/filter/item"
 require_relative "organizer/filter/collection"
-require_relative "organizer/filter/manager"
+require_relative "organizer/filter/generator"
 
 require_relative "organizer/operation/item"
 require_relative "organizer/operation/simple"

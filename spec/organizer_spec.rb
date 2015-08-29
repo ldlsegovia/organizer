@@ -102,7 +102,7 @@ describe Organizer do
     describe "#default_filter" do
       before do
         Organizer.define("my_organizer") { default_filter {} }
-        @filters = MyOrganizer.filters_manager.send(:default_filters)
+        @filters = MyOrganizer.default_filters
       end
 
       it "adds a default filter to MyOrganizer class" do
@@ -118,7 +118,7 @@ describe Organizer do
             filter(:my_filter) {}
           end
 
-          @filters = MyOrganizer.filters_manager.send(:normal_filters)
+          @filters = MyOrganizer.normal_filters
         end
 
         it "adds a filter to MyOrganizer class" do
@@ -133,7 +133,7 @@ describe Organizer do
             filter(:my_filter) { |organizer_item, value| }
           end
 
-          @filters = MyOrganizer.filters_manager.send(:filters_with_values)
+          @filters = MyOrganizer.filters_with_value
         end
 
         it "adds a filter to MyOrganizer class" do
