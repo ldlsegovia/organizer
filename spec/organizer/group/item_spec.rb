@@ -6,25 +6,37 @@ describe Organizer::Group::Item do
       group = Organizer::Group::Item.new(:store_id)
       expect(group.item_name).to eq(:store_id)
       expect(group.group_by_attr).to eq(:store_id)
+      expect(group.grouping_condition).to be_nil
     end
 
-    it "creates a group with name and group_by_attr" do
+    it "creates a group with name and grouping_criteria representing an attribute" do
       group = Organizer::Group::Item.new(:store, :store_id)
       expect(group.item_name).to eq(:store)
       expect(group.group_by_attr).to eq(:store_id)
-      expect(group.parent_name).to be_nil
+      expect(group.grouping_condition).to be_nil
     end
 
-    it "ensures name and group_by_attr read only" do
-      group = Organizer::Group::Item.new(:store_id)
-      expect { group.item_name = "name" }.to raise_error
-      expect { group.group_by_attr = "group_by_attr" }.to raise_error
+    it "creates a group with name and grouping_criteria representing a condition" do
+      group = Organizer::Group::Item.new(:store, "item.age > 10")
+      expect(group.item_name).to eq(:store)
+      expect(group.group_by_attr).to be_nil
+      expect(group.grouping_condition).to be_a(Proc)
     end
 
-    it "creates group with parent" do
+    it "creates a group with parent" do
       group = Organizer::Group::Item.new(:store, :store_id, :site)
       expect(group.parent_name).to eq(:site)
       expect(group.has_parent?).to be_truthy
+    end
+
+    it "raises error trying to create a group with condition criteria and no name" do
+      expect { Organizer::Group::Item.new(nil, "item.age > 10") }.to(
+        raise_organizer_error(Organizer::Group::ItemException, :group_name_is_mandatory))
+    end
+
+    it "raises error trying to create a group without name and criteria" do
+      expect { Organizer::Group::Item.new(nil, nil) }.to(
+        raise_organizer_error(Organizer::Group::ItemException, :group_name_is_mandatory))
     end
   end
 

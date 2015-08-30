@@ -91,7 +91,7 @@ describe Organizer::Base do
       end
 
       context "with groups" do
-        context "with a single group" do
+        context "grouping by attribute" do
           before { BaseChild.add_group(:site_id) }
 
           it "groups collection items" do
@@ -114,6 +114,16 @@ describe Organizer::Base do
                 expect(group_item.attrs_sum).to eq(expected_sum)
               end
             end
+          end
+        end
+
+        context "grouping by condition" do
+          before { BaseChild.add_group(:age_greater_than_33, "item.age > 33") }
+
+          it "groups collection items" do
+            result = BaseChild.new.organize(group_by: :age_greater_than_33)
+            expect(result).to be_a(Organizer::Group::Collection)
+            expect(result.size).to eq(2)
           end
         end
 

@@ -5,7 +5,7 @@ describe Organizer::Group::Builder do
   subject { Organizer::Group::Builder }
 
   describe "#build" do
-    context "working with a single group" do
+    context "grouping by attribute" do
       before do
         @groups = Organizer::Group::Collection.new
         @groups.add_group(:store, :store_id)
@@ -15,12 +15,6 @@ describe Organizer::Group::Builder do
         result = subject.build(Organizer::Source::Collection.new, @groups, { group_by: :store })
         expect(result).to be_a(Organizer::Group::Collection)
         expect(result.size.zero?).to be_truthy
-      end
-
-      it "raises error if collection items have not group_by_attr" do
-        @groups << Organizer::Group::Item.new(:undefined_attr)
-        expect { subject.build(collection, @groups, { group_by: :undefined_attr }) }.to(
-          raise_organizer_error(Organizer::Group::BuilderException, :group_by_attr_not_present_in_collection))
       end
 
       it "returns ungrouped collection trying to group by nil" do
@@ -55,6 +49,25 @@ describe Organizer::Group::Builder do
           expect(two.first).to be_a(Organizer::Source::Item)
         end
       end
+    end
+
+    context "grouping by condition" do
+      before do
+        @groups = Organizer::Group::Collection.new
+        @groups.add_group(:age_greater_than_33, "item.age > 33")
+        @group = subject.build(collection, @groups, { group_by: :age_greater_than_33 })
+      end
+
+      it { expect(@group.size).to eq(2) }
+      it { expect(@group).to be_a(Organizer::Group::Collection) }
+
+      it { expect(@group.first).to be_a(Organizer::Group::Item) }
+      it { expect(@group.first.group_name).to eq(:age_greater_than_33) }
+      it { expect(@group.first.size).to eq(6) }
+
+      it { expect(@group.last).to be_a(Organizer::Group::Item) }
+      it { expect(@group.last.group_name).to eq(:age_greater_than_33) }
+      it { expect(@group.last.size).to eq(3) }
     end
 
     context "with nested groups" do
