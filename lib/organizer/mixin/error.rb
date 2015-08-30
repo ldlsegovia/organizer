@@ -113,12 +113,13 @@ module Organizer
     class BuilderException < ::Exception
       ERRORS = {
         unknown_group_given: "Unknown group name given",
-        group_by_attr_not_present_in_collection: "group_by_attr is not present in collection Organizer::Source::Items"
+        undefined_criteria: "Undefined criteria"
       }
     end
 
     class ItemException < ::Exception
       ERRORS = {
+        group_name_is_mandatory: "Group name is mandatory",
         invalid_item: "Invalid group item. Must be Organizer::Group::Item only",
         repeated_item: "Repeated item. An Item with same name was added previously",
         must_be_a_hash: "_hash parameter must be a Hash",

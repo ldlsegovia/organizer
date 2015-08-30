@@ -217,7 +217,9 @@ Organizer.define("my_organizer") do
  # root level definitions...
 
   groups do
-    group(:site_id)
+    group(my_group: :site_id) # named group
+    group(:site_id) # grouping by attribute
+    group(:age_greater_than_33, "item.age > 33") # grouping by condition
   end
 end
 ```
@@ -225,7 +227,9 @@ end
 ##### Usage Example
 
 ```ruby
+MyOrganizer.new.organize(group_by: :my_group)
 MyOrganizer.new.organize(group_by: :site_id)
+MyOrganizer.new.organize(group_by: :age_greater_than_33)
 ```
 
 #### Operations

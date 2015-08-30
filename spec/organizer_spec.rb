@@ -219,6 +219,7 @@ describe Organizer do
           Organizer.define("my_organizer") do
             groups do
               group(:store_id, :store) {}
+              group(:age_greater_than_33, "item.age > 30") {}
             end
           end
 
@@ -226,8 +227,9 @@ describe Organizer do
         end
 
         it "adds a group to MyOrganizer class" do
-          expect(@groups.count).to eq(1)
+          expect(@groups.count).to eq(2)
           expect(@groups.first).to be_a(Organizer::Group::Item)
+          expect(@groups.last).to be_a(Organizer::Group::Item)
         end
       end
 
