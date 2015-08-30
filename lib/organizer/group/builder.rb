@@ -43,11 +43,11 @@ module Organizer
         group = nested_groups.shift
         return unless group
 
-        if !_collection.empty? && !_collection.first.include_attribute?(group.group_by_attr)
+        if !_collection.empty? && !_collection.first.include_attribute?(group.grouping_criteria)
           raise_error(:group_by_attr_not_present_in_collection)
         end
 
-        grouped_collection = _collection.group_by { |item| item.send(group.group_by_attr) }
+        grouped_collection = _collection.group_by { |item| item.send(group.grouping_criteria) }
         grouped_collection.each do |group_value_items|
           group_value = group_value_items.first
           items = group_value_items.last

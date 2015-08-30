@@ -10,12 +10,12 @@ module Organizer
       # Creates a new {Organizer::Group::Item} and adds to self.
       #
       # @param _name [Symbol] symbol to identify this particular group.
-      # @param _group_by_attr attribute by which the items will be grouped. If nil, _name will be used insted.
+      # @param _grouping_criteria attribute by which the items will be grouped. If nil, _name will be used insted.
       # @param _parent_name stores the group parent name of the new group if has one.
       # @return [Organizer::Group::Item]
-      def add_group(_name, _group_by_attr = nil, _parent_name = nil)
+      def add_group(_name, _grouping_criteria = nil, _parent_name = nil)
         raise_error(:invalid_parent) if _parent_name && !self.find_by_name(_parent_name)
-        self << Organizer::Group::Item.new(_name, _group_by_attr, _parent_name)
+        self << Organizer::Group::Item.new(_name, _grouping_criteria, _parent_name)
         self.last
       end
 
