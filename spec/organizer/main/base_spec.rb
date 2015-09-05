@@ -59,8 +59,8 @@ describe Organizer::Base do
 
       context "with filters with values" do
         before do
-          BaseChild.add_filter_with_value(:filter1) { |item, value| item.age > value }
-          BaseChild.add_filter_with_value(:filter2) { |item, value| item.age < value }
+          BaseChild.add_filter(:filter1) { |item, value| item.age > value }
+          BaseChild.add_filter(:filter2) { |item, value| item.age < value }
         end
 
         it "applies filters" do

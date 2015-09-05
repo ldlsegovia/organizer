@@ -118,7 +118,7 @@ describe Organizer do
             filter(:my_filter) {}
           end
 
-          @filters = MyOrganizer.normal_filters
+          @filters = MyOrganizer.filters
         end
 
         it "adds a filter to MyOrganizer class" do
@@ -133,7 +133,7 @@ describe Organizer do
             filter(:my_filter) { |organizer_item, value| }
           end
 
-          @filters = MyOrganizer.filters_with_value
+          @filters = MyOrganizer.filters
         end
 
         it "adds a filter to MyOrganizer class" do
