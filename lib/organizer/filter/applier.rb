@@ -18,31 +18,26 @@ module Organizer
         apply_filters(selected_filters, _collection)
       end
 
-      # Applies normal filters to a given collection.
+      # Applies filters to a given collection.
       #   To apply a normal filter, need to pass filter names inside array in _options like this:
-      #   { enabled_filters: [my_filter] }.
+      #   { filters: [my_filter] }. or
+      #   need to pass filter_key filter_value pairs in _options like this:
+      #   { filters: { my_filter: 4, other_filter: 6 } }.
       #
-      # @param _filters [Organizer::Filter::Collection] normal filters collection
+      # @param _filters [Organizer::Filter::Collection] filters collection
       # @param _collection [Organizer::Source::Collection] the whole collection
       # @param _options [Hash]
       # @return [Organizer::Source::Collection] a filtered collection
-      def self.apply_normal_filters(_filters, _collection, _options = {})
-        filter_names = _options.fetch(:enabled_filters, [])
-        selected_filters = _filters.select_items(filter_names)
-        apply_filters(selected_filters, _collection)
-      end
+      def self.apply(_filters, _collection, _options = {})
+        filter_names = _options.fetch(:filters, [])
+        filter_pairs = {}
 
-      # Applies filters (with value) to a given collection.
-      #   To apply filters with values, need to pass filter_key filter_value pairs in _options like this:
-      #   { my_filter: 4, other_filter: 6 }.
-      #
-      # @param _filters [Organizer::Filter::Collection] filters with value collection
-      # @param _collection [Organizer::Source::Collection] the whole collection
-      # @param _options [Hash]
-      # @return [Organizer::Source::Collection] a filtered collection
-      def self.apply_filters_with_values(_filters, _collection, _options = {})
-        filter_pairs = _options.fetch(:filters, {})
-        selected_filters = _filters.select_items(filter_pairs.keys)
+        if filter_names.is_a?(Hash)
+          filter_pairs = filter_names
+          filter_names = filter_names.keys
+        end
+
+        selected_filters = _filters.select_items(filter_names)
         apply_filters(selected_filters, _collection, filter_pairs)
       end
 

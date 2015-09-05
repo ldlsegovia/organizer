@@ -51,7 +51,7 @@ describe Organizer::Base do
         end
 
         it "applies filters" do
-          result = BaseChild.new.organize(enabled_filters: [:filter1, :filter2])
+          result = BaseChild.new.organize(filters: [:filter1, :filter2])
           expect(result).to be_a(Organizer::Source::Collection)
           expect(result.size).to eq(3)
         end

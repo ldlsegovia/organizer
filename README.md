@@ -163,7 +163,7 @@ end
 
 ```ruby
 # enabling filters
-MyOrganizer.new.organize(enabled_filters: [:filter1])
+MyOrganizer.new.organize(filters: [:filter1])
 
 # passing values to filters
 MyOrganizer.new.organize(filters: { filter2: 5 })

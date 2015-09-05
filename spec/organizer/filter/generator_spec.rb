@@ -6,7 +6,7 @@ describe Organizer::Filter::Generator do
   def apply_filter(_key, _value)
     options = { filters: {} }
     options[:filters][_key] = _value
-    Organizer::Filter::Applier.apply_filters_with_values(@filters, collection, options)
+    Organizer::Filter::Applier.apply(@filters, collection, options)
   end
 
   describe "#generate" do
