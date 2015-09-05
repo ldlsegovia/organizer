@@ -14,16 +14,16 @@ describe Organizer::Filter::Applier do
       end
 
       it "returns filtered collection" do
-        expect(subject.apply_default_filters(@filters, collection).size).to eq(3)
+        expect(subject.apply_default(@filters, collection).size).to eq(3)
       end
 
       it "skips default filter passing filter to skip_default_filter option" do
-        expect(subject.apply_default_filters(@filters, collection,
+        expect(subject.apply_default(@filters, collection,
           { skip_default_filters: [:my_filter] }).size).to eq(8)
       end
 
       it "skips all default filters :all key to skip_default_filter option" do
-        expect(subject.apply_default_filters(@filters, collection,
+        expect(subject.apply_default(@filters, collection,
           { skip_default_filters: :all }).size).to eq(9)
       end
     end

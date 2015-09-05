@@ -96,7 +96,7 @@ module Organizer
       # @return [Organizer::Source::Collection]
       def organize(_options = {})
         generated_filters = Organizer::Filter::Generator.generate(collection.first)
-        filtered_collection = Organizer::Filter::Applier.apply_default_filters(default_filters, collection, _options)
+        filtered_collection = Organizer::Filter::Applier.apply_default(default_filters, collection, _options)
         filtered_collection = Organizer::Filter::Applier.apply(filters, filtered_collection, _options)
         filtered_collection = Organizer::Filter::Applier.apply(generated_filters, filtered_collection, _options)
         Organizer::Operation::Executer.execute_on_source_items(operations, filtered_collection)
