@@ -2,8 +2,9 @@ class Organizer::Executor
   include Organizer::Error
 
   CHAINABLE_METHODS = [
-    { method: :filter_by, chainable_with: [:filter_by] },
-    { method: :group_by, chainable_with: [:filter_by, :group_by] }
+    { method: :skip_default_filters, chainable_with: [:filter_by] },
+    { method: :filter_by, chainable_with: [:skip_default_filters, :filter_by] },
+    { method: :group_by, chainable_with: [:skip_default_filters, :filter_by, :group_by] }
   ]
 
   # @param _organizer [Organizer::Base]
@@ -62,7 +63,17 @@ class Organizer::Executor
   end
 
   def load_default_filters_executor(_executors)
-    # TODO
+    skip_method = chained_methods.select { |method| method[:method] == :skip_default_filters }.first
+    options = {}
+
+    if skip_method
+      options[:skip_default_filters] = skip_method[:args]
+      options[:skip_default_filters] = :all if skip_method[:args].empty?
+    end
+
+    _executors << Proc.new do |source|
+      Organizer::Filter::Applier.apply_default(@organizer.default_filters, source, options)
+    end
   end
 
   def load_filters_executor(_executors)

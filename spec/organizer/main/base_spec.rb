@@ -200,7 +200,7 @@ describe Organizer::Base do
           BaseChild.add_filter(:filter2) { |item, value| item.age < value }
         end
 
-        it "organizes applying a filter" do
+        it "returns filtered collection" do
           result = @organizer.filter_by(:filter1).organize_data
           expect(result).to be_a(Organizer::Source::Collection)
           expect(result.size).to eq(8)
@@ -211,14 +211,57 @@ describe Organizer::Base do
             raise_organizer_error(Organizer::ExecutorException, :invalid_chaining))
         end
 
-        it "organizes applying chained filters" do
+        it "applies chained filters" do
           result = @organizer.filter_by(:filter1).filter_by(filter2: 33).organize_data
           expect(result).to be_a(Organizer::Source::Collection)
           expect(result.size).to eq(3)
         end
 
         context "with default filters" do
+          before do
+            BaseChild.add_default_filter { |item| item.age > 9 }
+            BaseChild.add_default_filter(:my_filter) { |item| item.age < 33 }
+          end
 
+          it "returns filtered collection" do
+            result = @organizer.organize_data
+            expect(result).to be_a(Organizer::Source::Collection)
+            expect(result.size).to eq(3)
+          end
+
+          it "skips default filter passing filter to skip_default_filter option" do
+            result = @organizer.skip_default_filters(:my_filter).organize_data
+            expect(result).to be_a(Organizer::Source::Collection)
+            expect(result.size).to eq(8)
+          end
+
+          it "chains skip_default_filter with filter_by method" do
+            result = @organizer.skip_default_filters(:my_filter).filter_by(:filter1).organize_data
+            expect(result).to be_a(Organizer::Source::Collection)
+            expect(result.size).to eq(8)
+          end
+
+          it "chains filter_by with skip_default_filter method" do
+            result = @organizer.filter_by(:filter1).skip_default_filters(:my_filter).organize_data
+            expect(result).to be_a(Organizer::Source::Collection)
+            expect(result.size).to eq(8)
+          end
+
+          it "skips all default filters" do
+            result = @organizer.skip_default_filters.organize_data
+            expect(result).to be_a(Organizer::Source::Collection)
+            expect(result.size).to eq(9)
+          end
+
+          it "raises error chaning skip filter to group by method" do
+            expect { @organizer.group_by(:gender).skip_default_filters }.to(
+              raise_organizer_error(Organizer::ExecutorException, :invalid_chaining))
+          end
+
+          it "raises error chaning skip filter to another skip filter" do
+            expect { @organizer.skip_default_filters.skip_default_filters }.to(
+              raise_organizer_error(Organizer::ExecutorException, :invalid_chaining))
+          end
         end
       end
     end
