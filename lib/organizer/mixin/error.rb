@@ -18,6 +18,12 @@ module Organizer
     end
   end
 
+  class Exception < ::Exception
+    ERRORS = {
+      undefined_collection_method: "Undefined collection method. You need to add collection(){} into Organizer.define block"
+    }
+  end
+
   class DSLException < ::Exception
     ERRORS = {
       invalid_organizer_name: "Invalid organizer name. Needs to be a constantizable string",
@@ -25,9 +31,9 @@ module Organizer
     }
   end
 
-  class Exception < ::Exception
+  class ExecutorException < ::Exception
     ERRORS = {
-      undefined_collection_method: "Undefined collection method. You need to add collection(){} into Organizer.define block"
+      invalid_chaining: "Invalid chaining",
     }
   end
 

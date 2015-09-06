@@ -118,7 +118,25 @@ module Organizer
         Organizer::Source::Collection.new.fill(collection_proc.call(collection_options))
       end
 
-      private
+      def method_missing(_method, *_args, &_block)
+        if executor.chainable_method?(_method)
+          return executor.chain(_method, _args)
+        end
+
+        super
+      end
+
+      def organize_data
+        executor.organize_data
+      end
+
+      def executor
+        @executor ||= Organizer::Executor.new(self)
+      end
+
+      def reset_executor
+        @executor = nil
+      end
 
       def default_filters; self.class.default_filters; end
       def filters; self.class.filters; end

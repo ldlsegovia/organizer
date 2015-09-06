@@ -6,6 +6,7 @@ describe Organizer::Base do
   before do
     Object.send(:remove_const, :BaseChild) rescue nil
     class BaseChild < Organizer::Base; end
+    @organizer = BaseChild.new
   end
 
   describe "#organize" do
@@ -176,6 +177,48 @@ describe Organizer::Base do
               expect(result.second.first.greater_age).to eq(64)
             end
           end
+        end
+      end
+    end
+  end
+
+  describe "#organize" do
+    context "with undefined collection" do
+      it "raises error with undefined collection" do
+        expect { BaseChild.new.organize_data }.to(
+          raise_organizer_error(Organizer::Exception, :undefined_collection_method))
+      end
+    end
+
+    context "with a valid collection" do
+      let_collection(:collection)
+      before { BaseChild.add_collection { raw_collection } }
+
+      context "working with filters" do
+        before do
+          BaseChild.add_filter(:filter1) { |item| item.age > 9 }
+          BaseChild.add_filter(:filter2) { |item, value| item.age < value }
+        end
+
+        it "organizes applying a filter" do
+          result = @organizer.filter_by(:filter1).organize_data
+          expect(result).to be_a(Organizer::Source::Collection)
+          expect(result.size).to eq(8)
+        end
+
+        it "raises error chaning filter to invalid methods" do
+          expect { @organizer.group_by(:gender).filter_by(:my_filter) }.to(
+            raise_organizer_error(Organizer::ExecutorException, :invalid_chaining))
+        end
+
+        it "organizes applying chained filters" do
+          result = @organizer.filter_by(:filter1).filter_by(filter2: 33).organize_data
+          expect(result).to be_a(Organizer::Source::Collection)
+          expect(result.size).to eq(3)
+        end
+
+        context "with default filters" do
+
         end
       end
     end
