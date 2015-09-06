@@ -79,6 +79,11 @@ class Organizer::Executor
   def load_filters_executor(_executors)
     args = {}
 
+    generated_filters = Organizer::Filter::Generator.generate(@organizer.collection.first)
+    filters = Organizer::Filter::Collection.new
+    generated_filters.each { |gf| filters << gf }
+    @organizer.filters.each { |f| filters << f }
+
     chained_methods.each do |method|
       if [:filter_by].include?(method[:method])
         if method[:args].is_a?(Hash)
@@ -94,7 +99,7 @@ class Organizer::Executor
 
     if !args.keys.empty?
       _executors << Proc.new do |source|
-        Organizer::Filter::Applier.apply(@organizer.filters, source, { filters: args })
+        Organizer::Filter::Applier.apply(filters, source, { filters: args })
       end
     end
   end
