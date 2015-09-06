@@ -59,6 +59,7 @@ class Organizer::Executor
     executors = []
     load_default_filters_executor(executors)
     load_filters_executor(executors)
+    load_operations_executor(executors)
     executors
   end
 
@@ -101,6 +102,12 @@ class Organizer::Executor
       _executors << Proc.new do |source|
         Organizer::Filter::Applier.apply(filters, source, { filters: args })
       end
+    end
+  end
+
+  def load_operations_executor(_executors)
+    _executors << Proc.new do |source|
+      Organizer::Operation::Executer.execute_on_source_items(@organizer.operations, source)
     end
   end
 

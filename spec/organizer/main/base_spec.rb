@@ -272,6 +272,18 @@ describe Organizer::Base do
           end
         end
       end
+
+      context "with operations" do
+        before { BaseChild.add_simple_operation(:new_attr) { |item| item.age * 2 } }
+
+        it "executes operations" do
+          result = BaseChild.new.organize_data
+          expect(result).to be_a(Organizer::Source::Collection)
+          expect(result.first.new_attr).to eq(44)
+          expect(result.second.new_attr).to eq(62)
+          expect(result.third.new_attr).to eq(128)
+        end
+      end
     end
   end
 end
