@@ -211,8 +211,14 @@ describe Organizer::Base do
             raise_organizer_error(Organizer::ExecutorException, :invalid_chaining))
         end
 
-        it "applies chained filters" do
+        it "applies chained filters calling filter_by several times" do
           result = @organizer.filter_by(:filter1).filter_by(filter2: 33).organize_data
+          expect(result).to be_a(Organizer::Source::Collection)
+          expect(result.size).to eq(3)
+        end
+
+        it "applies chained filter calling filter by once" do
+          result = @organizer.filter_by(:filter1, filter2: 33).organize_data
           expect(result).to be_a(Organizer::Source::Collection)
           expect(result.size).to eq(3)
         end
@@ -273,7 +279,7 @@ describe Organizer::Base do
         end
       end
 
-      context "with operations" do
+      context "working with operations" do
         before { BaseChild.add_simple_operation(:new_attr) { |item| item.age * 2 } }
 
         it "executes operations" do
@@ -282,6 +288,79 @@ describe Organizer::Base do
           expect(result.first.new_attr).to eq(44)
           expect(result.second.new_attr).to eq(62)
           expect(result.third.new_attr).to eq(128)
+        end
+      end
+
+      context "working with groups" do
+        context "grouping by attribute" do
+          before { BaseChild.add_group(:site_id) }
+
+          it "groups collection items" do
+            result = @organizer.group_by(:site_id).organize_data
+            expect(result).to be_a(Organizer::Group::Collection)
+            expect(result.size).to eq(3)
+          end
+
+          it "allows to chain group after skip_default_filters method" do
+            BaseChild.add_default_filter(:my_filter) { true }
+            expect { @organizer.skip_default_filters(:my_filter).group_by(:site_id).organize_data }.to_not raise_error
+          end
+
+          it "allows to chain group after filter_by method" do
+            BaseChild.add_filter(:my_filter) { true }
+            expect { @organizer.filter_by(:my_filter).group_by(:site_id).organize_data }.to_not raise_error
+          end
+        end
+
+        context "grouping by condition" do
+          before { BaseChild.add_group(:age_greater_than_33, "item.age > 33") }
+
+          it "groups collection items" do
+            result = @organizer.group_by(:age_greater_than_33).organize_data
+            expect(result).to be_a(Organizer::Group::Collection)
+            expect(result.size).to eq(2)
+          end
+        end
+
+        context "with nested groups" do
+          before { BaseChild.add_group(:gender) }
+
+          shared_examples :nested_group do
+            it "groups collection by gender and site" do
+              expect(@group).to be_a(Organizer::Group::Collection)
+              expect(@group.size).to eq(2)
+              expect(@group.first).to be_a(Organizer::Group::Item)
+              expect(@group.first.size).to eq(3)
+              expect(@group.first.first).to be_a(Organizer::Group::Item)
+              expect(@group.first.first.size).to eq(2)
+              expect(@group.first.first.first).to be_a(Organizer::Source::Item)
+            end
+          end
+
+          context "nested through params" do
+            before { BaseChild.add_group(:site_id) }
+
+            context "calling group by once" do
+              before { @group = @organizer.group_by(:gender, :site_id).organize_data }
+
+              it_should_behave_like(:nested_group)
+            end
+
+            context "calling group by several times" do
+              before { @group = @organizer.group_by(:gender).group_by(:site_id).organize_data }
+
+              it_should_behave_like(:nested_group)
+            end
+          end
+
+          context "nested on definition" do
+            before do
+              BaseChild.add_group(:site, :site_id, :gender)
+              @group = @organizer.group_by(:gender).organize_data
+            end
+
+            it_should_behave_like(:nested_group)
+          end
         end
       end
     end

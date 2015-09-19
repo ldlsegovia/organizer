@@ -13,8 +13,8 @@ class Organizer::Executor
   end
 
   def chain(_method, _args)
-    _args = _args.first if _args.first.is_a?(Hash)
-    chained_methods << { method: _method, args: _args }
+    #_args = _args.first if _args.first.is_a?(Hash)
+    chained_methods << { method: _method, args: _args.flatten }
     self
   end
 
@@ -50,7 +50,7 @@ class Organizer::Executor
   end
 
   def chainable_with(_method)
-    chainable = CHAINABLE_METHODS.select { |chainable| chainable[:method] == _method }.first
+    chainable = CHAINABLE_METHODS.select { |cm| cm[:method] == _method }.first
     return [] unless chainable
     chainable[:chainable_with]
   end
@@ -60,6 +60,7 @@ class Organizer::Executor
     load_default_filters_executor(executors)
     load_filters_executor(executors)
     load_operations_executor(executors)
+    load_groups_executor(executors)
     executors
   end
 
@@ -87,12 +88,11 @@ class Organizer::Executor
 
     chained_methods.each do |method|
       if [:filter_by].include?(method[:method])
-        if method[:args].is_a?(Hash)
-          args.merge!(method[:args])
-
-        elsif method[:args].is_a?(Array)
-          method[:args].each do |filter_name|
-             args[filter_name] = nil
+        method[:args].each do |arg|
+          if arg.is_a?(Hash)
+            args.merge!(arg)
+          elsif arg.is_a?(Symbol) || arg.is_a?(String)
+            args[arg] = nil
           end
         end
       end
@@ -108,6 +108,26 @@ class Organizer::Executor
   def load_operations_executor(_executors)
     _executors << Proc.new do |source|
       Organizer::Operation::Executer.execute_on_source_items(@organizer.operations, source)
+    end
+  end
+
+  def load_groups_executor(_executors)
+    args = []
+
+    chained_methods.each do |method|
+      if [:group_by].include?(method[:method])
+        method[:args].each do |arg|
+          args << arg if arg.is_a?(Symbol) || arg.is_a?(String)
+        end
+      end
+    end
+
+    args.uniq!
+
+    if !args.empty?
+      _executors << Proc.new do |source|
+        Organizer::Group::Builder.build(source, @organizer.groups, { group_by: args })
+      end
     end
   end
 
