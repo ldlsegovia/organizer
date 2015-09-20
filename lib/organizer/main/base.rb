@@ -90,26 +90,6 @@ module Organizer
         @collection_options = _collection_options
       end
 
-      # Applies filters, operations, groups, etc. to defined collection.
-      #
-      # @param _options [Hash]
-      # @return [Organizer::Source::Collection]
-      def organize(_options = {})
-        generated_filters = Organizer::Filter::Generator.generate(collection.first)
-        filtered_collection = Organizer::Filter::Applier.apply_default(default_filters, collection, _options)
-        filtered_collection = Organizer::Filter::Applier.apply(filters, filtered_collection, _options)
-        filtered_collection = Organizer::Filter::Applier.apply(generated_filters, filtered_collection, _options)
-        Organizer::Operation::Executer.execute_on_source_items(operations, filtered_collection)
-        result = Organizer::Group::Builder.build(filtered_collection, groups, _options)
-
-        if result.is_a?(Organizer::Group::Collection)
-          Organizer::Operation::Executer.execute_on_group_items(
-            group_operations, filtered_collection, result)
-        end
-
-        result
-      end
-
       # It returns collection stored as proc in collection_proc var converted to {Organizer::Source::Collection}
       #
       # @return [Organizer::Source::Collection] or [Organizer::Group::Item]
@@ -126,12 +106,11 @@ module Organizer
         super
       end
 
-      def organize_data
-        executor.organize_data
-      end
-
-      def executor
-        @executor ||= Organizer::Executor.new(self)
+      # Applies filters, operations, groups, etc. to defined collection.
+      #
+      # @return [Organizer::Source::Collection, Organizer::Group::Collection]
+      def organize
+        executor.organize
       end
 
       def reset_executor
@@ -148,6 +127,12 @@ module Organizer
 
       def collection_proc; self.class.collection_proc; end
       def collection_options; @collection_options ||= {}; end
+
+      private
+
+      def executor
+        @executor ||= Organizer::Executor.new(self)
+      end
     end
   end
 end

@@ -30,7 +30,7 @@ class Organizer::Executor
     super
   end
 
-  def organize_data
+  def organize
     executors = build_executors
     result = execute(executors.shift, @organizer.collection, executors)
     @organizer.reset_executor
