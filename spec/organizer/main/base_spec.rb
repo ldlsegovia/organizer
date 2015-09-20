@@ -310,6 +310,22 @@ describe Organizer::Base do
             BaseChild.add_filter(:my_filter) { true }
             expect { @organizer.filter_by(:my_filter).group_by(:site_id).organize_data }.to_not raise_error
           end
+
+          context "with operations" do
+            before do
+              BaseChild.add_memo_operation(:attrs_sum, 10) do |memo, item|
+                memo.attrs_sum + item.age
+              end
+            end
+
+            it "groups collection items" do
+              result = @organizer.group_by(:site_id).organize_data
+              result.each do |group_item|
+                expected_sum = group_item.inject(10){ |memo, source_item| memo += source_item.age }
+                expect(group_item.attrs_sum).to eq(expected_sum)
+              end
+            end
+          end
         end
 
         context "grouping by condition" do
@@ -360,6 +376,23 @@ describe Organizer::Base do
             end
 
             it_should_behave_like(:nested_group)
+          end
+
+          context "with operations" do
+            before do
+              BaseChild.add_group(:site_id)
+              BaseChild.add_memo_operation(:greater_age) do |memo, item|
+                memo.greater_age > item.age ? memo.greater_age : item.age
+              end
+            end
+
+            it "applies operations to full group hierarchy" do
+              result = @organizer.group_by(:gender, :site_id).organize_data
+              expect(result.first.greater_age).to eq(65)
+              expect(result.first.first.greater_age).to eq(31)
+              expect(result.second.greater_age).to eq(64)
+              expect(result.second.first.greater_age).to eq(64)
+            end
           end
         end
       end

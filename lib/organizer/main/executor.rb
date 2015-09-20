@@ -13,7 +13,6 @@ class Organizer::Executor
   end
 
   def chain(_method, _args)
-    #_args = _args.first if _args.first.is_a?(Hash)
     chained_methods << { method: _method, args: _args.flatten }
     self
   end
@@ -38,6 +37,8 @@ class Organizer::Executor
     result
   end
 
+  private
+
   def chainable_methods
     CHAINABLE_METHODS.collect { |chainable| chainable[:method] }
   end
@@ -61,6 +62,7 @@ class Organizer::Executor
     load_filters_executor(executors)
     load_operations_executor(executors)
     load_groups_executor(executors)
+    load_group_operations_executor(executors)
     executors
   end
 
@@ -111,6 +113,17 @@ class Organizer::Executor
     end
   end
 
+  def load_group_operations_executor(_executors)
+    _executors << Proc.new do |source|
+      if source.is_a?(Hash) && source.has_key?(:grouped_source)
+        Organizer::Operation::Executer.execute_on_group_items(
+          @organizer.group_operations, source[:source], source[:grouped_source])
+      else
+        source
+      end
+    end
+  end
+
   def load_groups_executor(_executors)
     args = []
 
@@ -126,7 +139,8 @@ class Organizer::Executor
 
     if !args.empty?
       _executors << Proc.new do |source|
-        Organizer::Group::Builder.build(source, @organizer.groups, { group_by: args })
+        result = Organizer::Group::Builder.build(source, @organizer.groups, { group_by: args })
+        { grouped_source: result, source: source }
       end
     end
   end
