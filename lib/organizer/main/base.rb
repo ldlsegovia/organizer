@@ -30,27 +30,16 @@ module Organizer
         default_filters.add_filter(_name, &block)
       end
 
-      # Adds a normal {Organizer::Filter::Item} to normal_filters
+      # Adds a {Organizer::Filter::Item} to filters
       #
       # @param _name [Symbol] filter's name.
       # @yield code that must return a Boolean value.
       # @yieldparam organizer_item [Organizer::Source::Item]
+      # @yieldparam value [optiona, Object]
       # @yieldreturn [Boolean]
       # @return [Organizer::Filter::Item]
       def add_filter(_name, &block)
-        normal_filters.add_filter(_name, &block)
-      end
-
-      # Adds a {Organizer::Filter::Item} with value to filters_with_value
-      #
-      # @param _name [Symbol] filter's name.
-      # @yield code that must return a Boolean value.
-      # @yieldparam organizer_item [Organizer::Source::Item]
-      # @yieldparam value [Object]
-      # @yieldreturn [Boolean]
-      # @return [Organizer::Filter::Item]
-      def add_filter_with_value(_name, &block)
-        filters_with_value.add_filter(_name, &block)
+        filters.add_filter(_name, &block)
       end
 
       # Adds a new {Organizer::Operation::Simple} to {Organizer::Operation::Executer}
@@ -87,9 +76,8 @@ module Organizer
 
       def groups; @groups ||= Organizer::Group::Collection.new; end
 
-      def normal_filters; @normal_filters ||= Organizer::Filter::Collection.new; end
+      def filters; @filters ||= Organizer::Filter::Collection.new; end
       def default_filters; @default_filters ||= Organizer::Filter::Collection.new; end
-      def filters_with_value; @filters_with_value ||= Organizer::Filter::Collection.new; end
 
       def operations; @operations ||= Organizer::Operation::Collection.new; end
       def group_operations; @group_operations ||= Organizer::Operation::Collection.new; end
@@ -102,27 +90,6 @@ module Organizer
         @collection_options = _collection_options
       end
 
-      # Applies filters, operations, groups, etc. to defined collection.
-      #
-      # @param _options [Hash]
-      # @return [Organizer::Source::Collection]
-      def organize(_options = {})
-        generated_filters = Organizer::Filter::Generator.generate(collection.first)
-        filtered_collection = Organizer::Filter::Applier.apply_default_filters(default_filters, collection, _options)
-        filtered_collection = Organizer::Filter::Applier.apply_normal_filters(normal_filters, filtered_collection, _options)
-        filtered_collection = Organizer::Filter::Applier.apply_filters_with_values(filters_with_value, filtered_collection, _options)
-        filtered_collection = Organizer::Filter::Applier.apply_filters_with_values(generated_filters, filtered_collection, _options)
-        Organizer::Operation::Executer.execute_on_source_items(operations, filtered_collection)
-        result = Organizer::Group::Builder.build(filtered_collection, groups, _options)
-
-        if result.is_a?(Organizer::Group::Collection)
-          Organizer::Operation::Executer.execute_on_group_items(
-            group_operations, filtered_collection, result)
-        end
-
-        result
-      end
-
       # It returns collection stored as proc in collection_proc var converted to {Organizer::Source::Collection}
       #
       # @return [Organizer::Source::Collection] or [Organizer::Group::Item]
@@ -131,11 +98,27 @@ module Organizer
         Organizer::Source::Collection.new.fill(collection_proc.call(collection_options))
       end
 
-      private
+      def method_missing(_method, *_args, &_block)
+        if executor.chainable_method?(_method)
+          return executor.chain(_method, _args)
+        end
+
+        super
+      end
+
+      # Applies filters, operations, groups, etc. to defined collection.
+      #
+      # @return [Organizer::Source::Collection, Organizer::Group::Collection]
+      def organize
+        executor.organize
+      end
+
+      def reset_executor
+        @executor = nil
+      end
 
       def default_filters; self.class.default_filters; end
-      def normal_filters; self.class.normal_filters; end
-      def filters_with_value; self.class.filters_with_value; end
+      def filters; self.class.filters; end
 
       def groups; self.class.groups; end
 
@@ -144,6 +127,12 @@ module Organizer
 
       def collection_proc; self.class.collection_proc; end
       def collection_options; @collection_options ||= {}; end
+
+      private
+
+      def executor
+        @executor ||= Organizer::Executor.new(self)
+      end
     end
   end
 end

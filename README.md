@@ -126,10 +126,10 @@ end
 MyOrganizer.new.organize
 
 # skiping all default filters
-MyOrganizer.new.organize(skip_default_filters: :all)
+MyOrganizer.new.skip_default_filters(:all).organize
 
-# skiping default filters by name
-MyOrganizer.new.organize(skip_default_filters: [:named_default_filter])
+# skiping default filters using filter name
+MyOrganizer.new..skip_default_filters(:named_default_filter).organize
 ```
 
 #### Filters
@@ -163,10 +163,10 @@ end
 
 ```ruby
 # enabling filters
-MyOrganizer.new.organize(enabled_filters: [:filter1])
+MyOrganizer.new.filter_by(:filter1).organize
 
 # passing values to filters
-MyOrganizer.new.organize(filters: { filter2: 5 })
+MyOrganizer.new.filter_by(filter2: 5).organize
 ```
 
 #### Operations
@@ -227,9 +227,9 @@ end
 ##### Usage Example
 
 ```ruby
-MyOrganizer.new.organize(group_by: :my_group)
-MyOrganizer.new.organize(group_by: :site_id)
-MyOrganizer.new.organize(group_by: :age_greater_than_33)
+MyOrganizer.new.group_by(:my_group).organize
+MyOrganizer.new.group_by(:site_id).organize
+MyOrganizer.new.group_by(:age_greater_than_33).organize
 ```
 
 #### Operations
@@ -259,7 +259,7 @@ end
 ##### Usage Example
 
 ```ruby
-MyOrganizer.new.organize(group_by: :site_id)
+MyOrganizer.new.group_by(:site_id).organize
 ```
 
 #### Nested Groups on Definition
@@ -285,7 +285,7 @@ end
 ##### Usage Example
 
 ```ruby
-MyOrganizer.new.organize(group_by: :gender)
+MyOrganizer.new.group_by(:gender).organize
 ```
 
 #### Nested Groups at Runtime
@@ -309,7 +309,60 @@ end
 ##### Usage Example
 
 ```ruby
-MyOrganizer.new.organize(group_by: [:gender, :site_id, :section_id])
+MyOrganizer.new.group_by(:gender, :site_id, :section_id).organize
+```
+
+### Putting all together
+
+Filters, groups, etc. can be chained to produce more accurate results...
+
+#### filter_by
+
+Can be chained to:
+
+* `skip_default_filters`:
+
+```ruby
+MyOrganizer.new.skip_default_filters(:some_default_filter).filter_by(:section_id).organize
+```
+
+* `filter_by`:
+
+```ruby
+MyOrganizer.new.filter_by(:gender).filter_by(:section_id).organize
+MyOrganizer.new.filter_by(:gender, :section_id).organize
+```
+
+#### skip_default_filters
+
+Can be chained to:
+
+* `filter_by`:
+
+```ruby
+MyOrganizer.new.filter_by(:gender).skip_default_filters(:section_id).organize
+```
+
+#### group_by
+
+Can be chained to:
+
+* `group_by`:
+
+```ruby
+MyOrganizer.new.group_by(:my_group).group_by(:other_group).organize
+```
+
+* `filter_by`:
+
+```ruby
+MyOrganizer.new.filter_by(:gender).group_by(:my_group).organize
+```
+
+* `skip_default_filters`:
+
+```ruby
+MyOrganizer.new.skip_default_filters(:all).group_by(:my_group).organize
 ```
 
 ## Docs
