@@ -1,6 +1,6 @@
 module Organizer
   module Operation
-    class Executer
+    class Executor
       include Organizer::Error
 
       # Each source collection item will be evaluated against _operations. The operation's results
@@ -10,7 +10,7 @@ module Organizer
       # @param _collection [Organizer::Source::Collection]
       # @return [Organizer::Source::Collection] the collection with new attached attributes.
       #
-      # @raise [Organizer::Operation::ExecuterException]
+      # @raise [Organizer::Operation::ExecutorException]
       def self.execute_on_source_items(_operations, _collection)
         return unless _collection.is_a?(Organizer::Source::Collection)
         return _collection if _operations.count <= 0

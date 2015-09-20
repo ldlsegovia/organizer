@@ -102,7 +102,7 @@ module Organizer
       }
     end
 
-    class ExecuterException < ::Exception
+    class ExecutorException < ::Exception
       ERRORS = {}
     end
   end

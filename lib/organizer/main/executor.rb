@@ -109,14 +109,14 @@ class Organizer::Executor
 
   def load_operations_executor(_executors)
     _executors << Proc.new do |source|
-      Organizer::Operation::Executer.execute_on_source_items(@organizer.operations, source)
+      Organizer::Operation::Executor.execute_on_source_items(@organizer.operations, source)
     end
   end
 
   def load_group_operations_executor(_executors)
     _executors << Proc.new do |source|
       if source.is_a?(Hash) && source.has_key?(:grouped_source)
-        Organizer::Operation::Executer.execute_on_group_items(
+        Organizer::Operation::Executor.execute_on_group_items(
           @organizer.group_operations, source[:source], source[:grouped_source])
       else
         source

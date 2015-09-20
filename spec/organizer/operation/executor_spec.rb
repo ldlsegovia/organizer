@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Organizer::Operation::Executer do
-  subject { Organizer::Operation::Executer }
+describe Organizer::Operation::Executor do
+  subject { Organizer::Operation::Executor }
   before { @operations = Organizer::Operation::Collection.new }
 
   describe "#execute_on_source_items" do
@@ -38,7 +38,7 @@ describe Organizer::Operation::Executer do
 
         it "raise exception" do
           expect { subject.execute_on_source_items(@operations, collection) }.to(
-            raise_error(Organizer::Operation::ExecuterException))
+            raise_error(Organizer::Operation::ExecutorException))
         end
       end
     end

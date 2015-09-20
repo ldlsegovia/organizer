@@ -42,7 +42,7 @@ module Organizer
         filters.add_filter(_name, &block)
       end
 
-      # Adds a new {Organizer::Operation::Simple} to {Organizer::Operation::Executer}
+      # Adds a new {Organizer::Operation::Simple} to {Organizer::Operation::Executor}
       #
       # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
       # @yield code that will return the operation's result
@@ -52,7 +52,7 @@ module Organizer
         operations.add_simple_operation(_name, &block)
       end
 
-      # Adds a new {Organizer::Operation::Memo} to {Organizer::Operation::Executer}
+      # Adds a new {Organizer::Operation::Memo} to {Organizer::Operation::Executor}
       #
       # @param _name [Symbol] name of the new item's attribute resulting of the operation execution.
       # @param _initial_value [Object]
