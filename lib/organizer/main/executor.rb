@@ -51,7 +51,7 @@ class Organizer::Executor
   end
 
   def chainable_with(_method)
-    chainable = CHAINABLE_METHODS.select { |cm| cm[:method] == _method }.first
+    chainable = CHAINABLE_METHODS.find { |cm| cm[:method] == _method }
     return [] unless chainable
     chainable[:chainable_with]
   end
@@ -67,7 +67,7 @@ class Organizer::Executor
   end
 
   def load_default_filters_executor(_executors)
-    skip_method = chained_methods.select { |method| method[:method] == :skip_default_filters }.first
+    skip_method = chained_methods.find { |method| method[:method] == :skip_default_filters }
     options = {}
 
     if skip_method
@@ -102,7 +102,7 @@ class Organizer::Executor
 
     if !args.keys.empty?
       _executors << Proc.new do |source|
-        Organizer::Filter::Applier.apply(filters, source, { filters: args })
+        Organizer::Filter::Applier.apply(filters, source, filters: args)
       end
     end
   end
@@ -139,7 +139,7 @@ class Organizer::Executor
 
     if !args.empty?
       _executors << Proc.new do |source|
-        result = Organizer::Group::Builder.build(source, @organizer.groups, { group_by: args })
+        result = Organizer::Group::Builder.build(source, @organizer.groups, group_by: args)
         { grouped_source: result, source: source }
       end
     end

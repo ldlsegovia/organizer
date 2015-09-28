@@ -11,13 +11,13 @@ module Organizer
       #
       # @param _name [optional, Symbol] filter's name. Can be nil for default filters
       # @yield code that must return a Boolean value.
-      # @yieldparam organizer_item [Organizer::Source::Item] you can use item's attributes in your conditions.
-      # @yieldparam value [optional, Object] you can use this value in your conditions. Can be anything.
+      # @yieldparam organizer_item [Organizer::Source::Item] to build your conditions.
+      # @yieldparam value [optional, Object] to use in your conditions. Can be anything.
       # @yieldreturn [Boolean]
       # @return [Organizer::Filter::Item]
       def add_filter(_name = nil, &block)
         self << Organizer::Filter::Item.new(block, _name)
-        self.last
+        last
       end
     end
   end

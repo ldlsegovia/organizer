@@ -3,8 +3,7 @@ require 'spec_helper'
 describe Organizer::Group::Collection do
   describe "#add_group" do
     it "adds new group" do
-      expect { subject.add_group(:store_id) {} }.to change {
-        subject.count }.from(0).to(1)
+      expect { subject.add_group(:store_id) {} }.to change { subject.count }.from(0).to(1)
     end
 
     it "uses name to set group_by_attr if attr is nil" do

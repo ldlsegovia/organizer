@@ -7,7 +7,7 @@ module Organizer
 
       collectable_classes Organizer::Source::Item
 
-      # Loads this collection instance with {Organizer::Source::Item}s created from _raw_collection param.
+      # Loads this collection instance with {Organizer::Source::Item}s created from _raw_collection.
       #
       # @param _raw_collection [Array] it must return an Array containing Hash items.
       # @return [Organizer::Source::Collection]

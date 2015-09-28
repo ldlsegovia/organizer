@@ -70,13 +70,13 @@ shared_examples :collection do
     end
   end
 
-  describe "#is_collectable_item?" do
+  describe "#collectable_item?" do
     it "returns false with non collectable item" do
-      expect(collection.is_collectable_item?("non collectable item")).to be_falsy
+      expect(collection.collectable_item?("non collectable item")).to be_falsy
     end
 
     it "returns true with collectable item" do
-      expect(collection.is_collectable_item?(item)).to be_truthy
+      expect(collection.collectable_item?(item)).to be_truthy
     end
   end
 

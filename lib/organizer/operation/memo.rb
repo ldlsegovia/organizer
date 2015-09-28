@@ -11,19 +11,19 @@ module Organizer
         super(_definition, _name)
       end
 
-      # Evaluates definition proc to build a new attribute. This attribute will be added to _item param.
+      # Evaluates definition proc to build a new attribute. This attribute will be added to _item.
       #
       # @param _memo_item [Object] attribute holding the accumulated result
       # @param _item [Object] needs to include [Organizer::AttributesHandler] mixin
       # @return [void]
       def execute(_memo_item, _item)
-        if !_memo_item.respond_to?(self.item_name)
-          _memo_item.define_attribute(self.item_name, self.initial_value, false)
+        if !_memo_item.respond_to?(item_name)
+          _memo_item.define_attribute(item_name, initial_value, false)
         end
 
         result = definition.call(_memo_item, _item)
-        _memo_item.send("#{self.item_name}=", result)
-        return
+        _memo_item.send("#{item_name}=", result)
+        nil
       end
     end
   end

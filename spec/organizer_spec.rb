@@ -126,21 +126,6 @@ describe Organizer do
           expect(@filters.first).to be_a(Organizer::Filter::Item)
         end
       end
-
-      context "with filters accepting params" do
-        before do
-          Organizer.define("my_organizer") do
-            filter(:my_filter) { |organizer_item, value| }
-          end
-
-          @filters = MyOrganizer.filters
-        end
-
-        it "adds a filter to MyOrganizer class" do
-          expect(@filters.count).to eq(1)
-          expect(@filters.first).to be_a(Organizer::Filter::Item)
-        end
-      end
     end
 
     describe "#operation" do

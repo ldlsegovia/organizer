@@ -41,7 +41,7 @@ describe Organizer::Operation::Memo do
   end
 
   describe "explainer mixin" do
-    let!(:explainer) { Organizer::Operation::Memo.new(->{}, :my_operation, :my_group) }
+    let!(:explainer) { Organizer::Operation::Memo.new(-> {}, :my_operation, :my_group) }
     it_should_behave_like(:explainer)
   end
 end

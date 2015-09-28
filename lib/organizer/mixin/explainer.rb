@@ -11,7 +11,7 @@ module Organizer
     # @param _collection_limit [Integer]
     def explain(_colorize = true, _collection_limit = 10)
       result = explain_item(0, "", _collection_limit)
-      result = result.uncolorize.gsub("\s\n","\n") unless _colorize
+      result = result.uncolorize.gsub("\s\n", "\n") unless _colorize
       puts result
     end
 
@@ -28,9 +28,9 @@ module Organizer
       _indent += 1
       return if load_empty_items_output(_indent, _output)
 
-      self.each_with_index do |item, idx|
+      each_with_index do |item, idx|
         if _collection_limit == idx
-          diff = self.size - _collection_limit
+          diff = size - _collection_limit
           text = "and #{diff} more collection items...".colorize(get_class_color(item.class))
           _output << indented_value(text, _indent)
           break
@@ -54,12 +54,12 @@ module Organizer
       parts = [formatted_class_name]
 
       if self.is_a?(Organizer::Group::Item)
-        parts << self.group_name.to_s.magenta
-        parts << self.grouping_criteria.to_s.magenta if self.group_name.to_s != self.grouping_criteria.to_s
-        parts << self.item_name.to_s.magenta if self.group_name.to_s != self.item_name.to_s
+        parts << group_name.to_s.magenta
+        parts << grouping_criteria.to_s.magenta if group_name.to_s != grouping_criteria.to_s
+        parts << item_name.to_s.magenta if group_name.to_s != item_name.to_s
 
-      elsif self.class.include?(Organizer::CollectionItem) && !self.item_name.blank?
-        parts << self.item_name.to_s.magenta
+      elsif self.class.include?(Organizer::CollectionItem) && !item_name.blank?
+        parts << item_name.to_s.magenta
       end
 
       if self.class.include?(Organizer::AttributesHandler)
@@ -72,8 +72,8 @@ module Organizer
 
     def get_formatted_attributes
       output = ""
-      self.attribute_names.each_with_index do |attr_name, idx|
-        value = self.send(attr_name)
+      attribute_names.each_with_index do |attr_name, idx|
+        value = send(attr_name)
         value = "\"#{value}\"" if value.is_a?(String)
         formatted_attr_name = "#{attr_name}=#{value}#{SPACE}"
         output << (idx.odd? ? formatted_attr_name.light_blue : formatted_attr_name.cyan)

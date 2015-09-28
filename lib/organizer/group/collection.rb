@@ -10,13 +10,13 @@ module Organizer
       # Creates a new {Organizer::Group::Item} and adds to self.
       #
       # @param _name [Symbol] symbol to identify this particular group.
-      # @param _grouping_criteria attribute by which the items will be grouped. If nil, _name will be used insted.
+      # @param _grouping_criteria If nil, _name will be used.
       # @param _parent_name stores the group parent name of the new group if has one.
       # @return [Organizer::Group::Item]
       def add_group(_name, _grouping_criteria = nil, _parent_name = nil)
-        raise_error(:invalid_parent) if _parent_name && !self.find_by_name(_parent_name)
+        raise_error(:invalid_parent) if _parent_name && !find_by_name(_parent_name)
         self << Organizer::Group::Item.new(_name, _grouping_criteria, _parent_name)
-        self.last
+        last
       end
 
       # Searches _group descendants and returns collection with the hierarchy.
@@ -35,9 +35,9 @@ module Organizer
       def load_group_child(_group, _collection)
         _collection << _group
 
-        self.each do |group|
+        each do |group|
           if group.is_a?(Organizer::Group::Item) &&
-            group.parent_name == _group.group_name
+              group.parent_name == _group.group_name
             load_group_child(group, _collection)
           end
         end

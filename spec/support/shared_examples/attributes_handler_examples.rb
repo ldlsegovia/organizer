@@ -18,7 +18,7 @@ shared_examples :attributes_handler do
 
     it "converts each attribute hash into class instance attribute readers" do
       instance.define_attributes(valid_attributes)
-      valid_attributes.each do |attribute, value|
+      valid_attributes.each do |attribute, _|
         expect(instance).to respond_to(attribute)
       end
     end
@@ -94,7 +94,7 @@ shared_examples :attributes_handler do
     end
 
     it "copies attributes from param" do
-      obj_to_clone_hash_keys.each { |attribute, value| expect(instance).to respond_to(attribute) }
+      obj_to_clone_hash_keys.each { |attribute, _| expect(instance).to respond_to(attribute) }
     end
   end
 end

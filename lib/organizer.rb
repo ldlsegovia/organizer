@@ -42,6 +42,6 @@ module Organizer
   # @return [void]
   def self.define(_organizer_name, &block)
     Organizer::DSL.new(_organizer_name, &block)
-    return
+    nil
   end
 end

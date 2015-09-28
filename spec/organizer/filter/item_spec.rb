@@ -9,11 +9,11 @@ describe Organizer::Filter::Item do
     end
 
     it "creates filter with name" do
-      expect(Organizer::Filter::Item.new(->{}, :filter_name).item_name).to eq(:filter_name)
+      expect(Organizer::Filter::Item.new(-> {}, :filter_name).item_name).to eq(:filter_name)
     end
 
     it "ensures name, value and definition read only" do
-      f = Organizer::Filter::Item.new(->{})
+      f = Organizer::Filter::Item.new(-> {})
       expect { f.definition = "definition" }.to raise_error
       expect { f.item_name = "name" }.to raise_error
       expect { f.value = "value" }.to raise_error
@@ -29,7 +29,7 @@ describe Organizer::Filter::Item do
     let_item(:item)
 
     it "raise exception if _item is not an Organizer::Source::Item" do
-      expect { Organizer::Filter::Item.new(->{}).apply("not an item") }.to(
+      expect { Organizer::Filter::Item.new(-> {}).apply("not an item") }.to(
         raise_organizer_error(Organizer::Filter::ItemException, :apply_on_organizer_items_only))
     end
 
@@ -43,7 +43,7 @@ describe Organizer::Filter::Item do
     end
 
     it "returns true when definiton block call resolves true" do
-      expect(Organizer::Filter::Item.new(Proc.new { 1 == 1 }).apply(item)).to be_truthy
+      expect(Organizer::Filter::Item.new(Proc.new { true }).apply(item)).to be_truthy
     end
 
     it "uses Organizer::Source::Item instance on definition call" do
@@ -64,12 +64,12 @@ describe Organizer::Filter::Item do
   end
 
   describe "collection item mixin" do
-    let!(:item) { Organizer::Filter::Item.new(->{}, :item_name) }
+    let!(:item) { Organizer::Filter::Item.new(-> {}, :item_name) }
     it_should_behave_like(:collection_item)
   end
 
   describe "explainer mixin" do
-    let!(:explainer) { Organizer::Filter::Item.new(->{}, :item_name) }
+    let!(:explainer) { Organizer::Filter::Item.new(-> {}, :item_name) }
     it_should_behave_like(:explainer)
   end
 end

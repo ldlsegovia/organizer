@@ -12,17 +12,17 @@ describe Organizer::Group::Builder do
       end
 
       it "returns empty group with empty source" do
-        result = subject.build(Organizer::Source::Collection.new, @groups, { group_by: :store })
+        result = subject.build(Organizer::Source::Collection.new, @groups, group_by: :store)
         expect(result).to be_a(Organizer::Group::Collection)
         expect(result.size.zero?).to be_truthy
       end
 
       it "returns ungrouped collection trying to group by nil" do
-        expect(subject.build(collection, @groups, { group_by: nil })).to eq(collection)
+        expect(subject.build(collection, @groups, group_by: nil)).to eq(collection)
       end
 
       it "returns error trying to group by unknown group" do
-        expect { subject.build(collection, @groups, { group_by: :unknown_group }) }.to(
+        expect { subject.build(collection, @groups, group_by: :unknown_group) }.to(
           raise_organizer_error(Organizer::Group::BuilderException, :unknown_group_given))
       end
 
@@ -31,7 +31,7 @@ describe Organizer::Group::Builder do
       end
 
       context "with grouped collection" do
-        before { @group = subject.build(collection, @groups, { group_by: :store }) }
+        before { @group = subject.build(collection, @groups, group_by: :store) }
 
         it { expect(@group.size).to eq(5) }
         it { expect(@group).to be_a(Organizer::Group::Collection) }
@@ -55,7 +55,7 @@ describe Organizer::Group::Builder do
       before do
         @groups = Organizer::Group::Collection.new
         @groups.add_group(:age_greater_than_33, "item.age > 33")
-        @group = subject.build(collection, @groups, { group_by: :age_greater_than_33 })
+        @group = subject.build(collection, @groups, group_by: :age_greater_than_33)
       end
 
       it { expect(@group.size).to eq(2) }
@@ -99,7 +99,7 @@ describe Organizer::Group::Builder do
           groups.add_group(:gender)
           groups.add_group(:site, :site_id)
           groups.add_group(:store, :store_id)
-          @group = subject.build(collection, groups, { group_by: [:gender, :site, :store] } )
+          @group = subject.build(collection, groups, group_by: [:gender, :site, :store])
         end
 
         it_should_behave_like(:nested_group)
@@ -111,7 +111,7 @@ describe Organizer::Group::Builder do
           groups.add_group(:gender)
           groups.add_group(:site, :site_id, :gender)
           groups.add_group(:store, :store_id, :site)
-          @group = subject.build(collection, groups, { group_by: :gender } )
+          @group = subject.build(collection, groups, group_by: :gender)
         end
 
         it_should_behave_like(:nested_group)

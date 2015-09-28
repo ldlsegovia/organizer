@@ -3,8 +3,7 @@ require 'spec_helper'
 describe Organizer::Operation::Collection do
   describe "#add_simple_operation" do
     it "adds new operation" do
-      expect { subject.add_simple_operation(:result_attr) {} }.to change {
-        subject.count }.from(0).to(1)
+      expect { subject.add_simple_operation(:result_attr) {} }.to change { subject.count }.from(0).to(1)
     end
 
     it "returns a new operation" do
@@ -15,8 +14,7 @@ describe Organizer::Operation::Collection do
 
   describe "#add_memo_operation" do
     it "adds new group operation" do
-      expect { subject.add_memo_operation(:result_attr, :my_group) {} }.to change {
-        subject.count }.from(0).to(1)
+      expect { subject.add_memo_operation(:result_attr, :my_group) {} }.to change { subject.count }.from(0).to(1)
     end
 
     it "returns a new group operation" do
@@ -30,12 +28,12 @@ describe Organizer::Operation::Collection do
     let!(:collection_exception_class) { Organizer::Operation::CollectionException }
 
     context "with source item operations" do
-      let!(:item) { Organizer::Operation::Simple.new(->{}, :item_name) }
+      let!(:item) { Organizer::Operation::Simple.new(-> {}, :item_name) }
       it_should_behave_like(:collection)
     end
 
     context "with group item operations" do
-      let!(:item) { Organizer::Operation::Memo.new(->{}, :item_name, :my_group) }
+      let!(:item) { Organizer::Operation::Memo.new(-> {}, :item_name, :my_group) }
       it_should_behave_like(:collection)
     end
   end

@@ -39,8 +39,6 @@ module Organizer
         _group_collection
       end
 
-      private
-
       def self.eval_operations_against_groups(_operations, _source_item, _group_items_hierarchy)
         group_item = _group_items_hierarchy.last
         return unless group_item.is_a?(Organizer::Group::Item)
@@ -54,7 +52,7 @@ module Organizer
         end
 
         group_item.each do |child|
-          return unless child.is_a?(Organizer::Group::Item)
+          break unless child.is_a?(Organizer::Group::Item)
           new_hierarchy = _group_items_hierarchy.clone
           new_hierarchy << child
           eval_operations_against_groups(_operations, _source_item, new_hierarchy)
@@ -63,10 +61,7 @@ module Organizer
 
       def self.execute_recursively(_item, _operations, _previous_operations_count = 0)
         return _item if _operations.size.zero?
-
-        if _previous_operations_count == _operations.size
-          raise_error(_operations.get_errors)
-        end
+        raise_error(_operations.get_errors) if _previous_operations_count == _operations.size
 
         _non_executed_operations = Organizer::Operation::Collection.new
         _previous_operations_count = _operations.size

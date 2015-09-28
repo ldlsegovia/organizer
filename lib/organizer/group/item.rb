@@ -16,7 +16,7 @@ module Organizer
       attr_reader :grouping_criteria
 
       # @param _name [Symbol] symbol to identify this particular group.
-      # @param _grouping_criteria [String, Symbol] attribute or string condition items will be grouped.
+      # @param _grouping_criteria [String, Symbol] attr or string condition items will be grouped.
       # @param _parent_name [String] stores the group parent name of this instance if has one.
       def initialize(_name, _grouping_criteria = nil, _parent_name = nil)
         set_grouping_criteria(_name, _grouping_criteria)
@@ -32,7 +32,7 @@ module Organizer
       #
       # @return [Boolean]
       def has_parent?
-        !!self.parent_name
+        !!parent_name
       end
 
       # Applies grouping criteria.
@@ -40,8 +40,8 @@ module Organizer
       # @param _item [Organizer::Source::Item]
       # @return [Object]
       def apply_grouping_criteria(_item)
-        return _item.send(self.group_by_attr) if self.group_by_attr
-        return self.grouping_condition.call(_item) if self.grouping_condition
+        return _item.send(group_by_attr) if group_by_attr
+        return grouping_condition.call(_item) if grouping_condition
         raise_error(:undefined_criteria)
       end
 
@@ -58,11 +58,11 @@ module Organizer
           @grouping_condition = Proc.new { |item| eval(_criteria) }
         end
 
-        @grouping_criteria = self.group_by_attr || _criteria
+        @grouping_criteria = group_by_attr || _criteria
       end
 
       def set_group_name(_name)
-        _name = self.group_by_attr if !_name && !!self.group_by_attr
+        _name = group_by_attr if !_name && !!group_by_attr
         raise_error(:group_name_is_mandatory) unless _name
         @item_name = _name
         @group_name = _name

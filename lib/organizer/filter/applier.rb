@@ -4,8 +4,8 @@ module Organizer
       include Organizer::Error
 
       # Applies default filters to given collection.
-      #   To skip a default filter, need to pass default filter names inside array in _options like this:
-      #   { skip_default_filters: [my_filter] }.
+      #   To skip a default filter, need to pass default filter names inside array in _options
+      #   like this: { skip_default_filters: [my_filter] }.
       #   If you want to skip all default filters: { skip_default_filters: :all }.
       #
       # @param _filters [Organizer::Filter::Collection] default filters collection
@@ -40,8 +40,6 @@ module Organizer
         selected_filters = _filters.select_items(filter_names)
         apply_filters(selected_filters, _collection, filter_pairs)
       end
-
-      private
 
       def self.apply_filters(_filters, _collection, _filters_values = nil)
         return _collection unless _filters

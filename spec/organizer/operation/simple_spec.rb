@@ -13,7 +13,7 @@ describe Organizer::Operation::Simple do
   end
 
   describe "explainer mixin" do
-    let!(:explainer) { Organizer::Operation::Simple.new(->{}, :my_operation) }
+    let!(:explainer) { Organizer::Operation::Simple.new(-> {}, :my_operation) }
     it_should_behave_like(:explainer)
   end
 end

@@ -7,7 +7,7 @@ module Organizer
     # @param _name [String]
     # @return [Boolean]
     def has_name?(_name)
-      !!self.item_name && self.item_name.to_sym == _name.to_sym
+      !!item_name && item_name.to_sym == _name.to_sym
     end
   end
 end

@@ -2,8 +2,9 @@ module Organizer
   module Filter
     class Generator
       include Organizer::Error
-      # Generates common filters based on _item attributes. If you have an {Organizer::Source::Item} with a single
-      #   attribute named "my_attr". After run this method you will have these filters:
+      # Generates common filters based on _item attributes.
+      #   If you have an {Organizer::Source::Item} with a single  attribute named "my_attr".
+      #   After run this method you will have these filters:
       #   * my_attr_eq: match attribute equals to...
       #   * my_attr_not_eq: match attribute different to...
       #   * my_attr_gt: match attribute greater than...
@@ -37,8 +38,6 @@ module Organizer
 
         filters
       end
-
-      private
 
       def self.generate_attr_filter(_filters, _attr, _sufix, &proc)
         filter_name = "#{_attr}_#{_sufix}"

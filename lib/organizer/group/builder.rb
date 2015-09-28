@@ -20,8 +20,6 @@ module Organizer
         groups
       end
 
-      private
-
       def self.groups_from_options(_groups, _options)
         group_by = _options.fetch(:group_by, nil)
         selected_groups = Organizer::Group::Collection.new

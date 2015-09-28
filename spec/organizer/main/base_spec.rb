@@ -148,7 +148,7 @@ describe Organizer::Base do
             it "groups collection items" do
               result = @organizer.group_by(:site_id).organize
               result.each do |group_item|
-                expected_sum = group_item.inject(10){ |memo, source_item| memo += source_item.age }
+                expected_sum = group_item.inject(10) { |memo, source_item| memo + source_item.age }
                 expect(group_item.attrs_sum).to eq(expected_sum)
               end
             end

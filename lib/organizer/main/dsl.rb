@@ -16,8 +16,8 @@ module Organizer
     def initialize(_organizer_name, &block)
       @organizer_class = create_organizer_class(_organizer_name)
       @ctx = Organizer::ContextManager.new
-      self.instance_eval(&block)
-      return
+      instance_eval(&block)
+      nil
     end
 
     # Defines a collection in the Organizer class context.
@@ -31,8 +31,8 @@ module Organizer
       in_root_context { @organizer_class.add_collection(&block) }
     end
 
-    # Adds a default filter to Organizer class.
-    # Default filters intend to be applied by default. You will not need to call this filters explicitly.
+    # Adds a default filter to Organizer class. Default filters intend to be applied by default.
+    #   You will not need to call this filters explicitly.
     #
     # @param _name [optional, Symbol] filter's name.
     # @yield code that must return a Boolean value.
@@ -100,7 +100,7 @@ module Organizer
     # You can group collection items based on attribute param values.
     #
     # @param _name [Symbol] symbol to identify this particular group.
-    # @param _group_by_attr attribute by which the items will be grouped. If nil, _name will be used insted.
+    # @param _group_by_attr attribute by which the items will be grouped. If nil, _name will be used
     # @yield nested definitions.
     # @return [void]
     #
@@ -127,7 +127,7 @@ module Organizer
     def in_context(_nested_definition = nil, &action)
       caller_method_name = caller[0][/`.*'/][1..-2]
       @ctx.open(self, caller_method_name, _nested_definition, &action)
-      return
+      nil
     end
 
     def in_root_context

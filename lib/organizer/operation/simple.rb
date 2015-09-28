@@ -1,7 +1,7 @@
 module Organizer
   module Operation
     class Simple < Organizer::Operation::Item
-      # Evaluates definition proc to build a new attribute. This attribute will be added to _item param.
+      # Evaluates definition proc to build a new attribute. This attribute will be added to _item.
       #
       # @param _item [Object] needs to include [Organizer::AttributesHandler] mixin
       # @return [Object] with the new attribute added
@@ -20,8 +20,8 @@ module Organizer
       #   #=> 666
       def execute(_item)
         result = definition.call(_item)
-        _item.define_attribute(self.item_name, result)
-        return
+        _item.define_attribute(item_name, result)
+        nil
       end
     end
   end

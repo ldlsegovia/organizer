@@ -171,9 +171,9 @@ EOS
           context "with defined attributes" do
             before do
               collection.each do |item|
-                item.define_attributes({ site_id: 2, title: "item title" })
+                item.define_attributes(site_id: 2, title: "item title")
                 item.each do |sub_item|
-                  sub_item.define_attributes({ section_id: 4, title: "sub item title" })
+                  sub_item.define_attributes(section_id: 4, title: "sub item title")
                 end
               end
             end

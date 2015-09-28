@@ -18,7 +18,7 @@ describe Organizer::Source::Collection do
 
   describe "#fill" do
     it "raises error when collection method does not return an Array" do
-      expect { Organizer::Source::Collection.new.fill("I'm not an array" ) }.to(
+      expect { Organizer::Source::Collection.new.fill("I'm not an array") }.to(
         raise_organizer_error(Organizer::Source::CollectionException, :invalid_collection_structure))
     end
 

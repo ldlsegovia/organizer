@@ -16,7 +16,7 @@ module Organizer
       # @return [void]
       def add_collection(&block)
         @collection_proc = block
-        return
+        nil
       end
 
       # Adds a default {Organizer::Filter::Item} to default_filters
@@ -65,7 +65,7 @@ module Organizer
       # Adds a new {Organizer::Group::Item} to {Organizer::Group::Builder}
       #
       # @param _name [Symbol] symbol to identify this particular group.
-      # @param _group_by_attr attribute by which the items will be grouped. If nil, _name will be used insted.
+      # @param _group_by_attr attr by which the items will be grouped. If nil, _name will be used.
       # @param _parent_name stores the group parent name of the new group if has one.
       # @return [Organizer::Group::Item]
       def add_group(_name, _group_by_attr = nil, _parent_name = nil)
@@ -77,20 +77,22 @@ module Organizer
       def groups; @groups ||= Organizer::Group::Collection.new; end
 
       def filters; @filters ||= Organizer::Filter::Collection.new; end
+
       def default_filters; @default_filters ||= Organizer::Filter::Collection.new; end
 
       def operations; @operations ||= Organizer::Operation::Collection.new; end
+
       def group_operations; @group_operations ||= Organizer::Operation::Collection.new; end
     end
 
     module ChildInstanceMethods
-      # @param _collection_options this data will be used to get the desired raw collection. Usually,
-      # filters will be passed here.
+      # @param _collection_options this data will be used to get the desired raw collection.
       def initialize(_collection_options = {})
         @collection_options = _collection_options
       end
 
-      # It returns collection stored as proc in collection_proc var converted to {Organizer::Source::Collection}
+      # It returns collection stored as proc in collection_proc var converted to
+      #   {Organizer::Source::Collection}
       #
       # @return [Organizer::Source::Collection] or [Organizer::Group::Item]
       def collection
@@ -118,14 +120,17 @@ module Organizer
       end
 
       def default_filters; self.class.default_filters; end
+
       def filters; self.class.filters; end
 
       def groups; self.class.groups; end
 
       def operations; self.class.operations; end
+
       def group_operations; self.class.group_operations; end
 
       def collection_proc; self.class.collection_proc; end
+
       def collection_options; @collection_options ||= {}; end
 
       private
