@@ -101,8 +101,9 @@ module Organizer
       end
 
       def method_missing(_method, *_args, &_block)
-        if executor.chainable_method?(_method)
-          return executor.chain(_method, _args)
+        if chainer.chainable_method?(_method)
+          chainer.chain(_method, _args)
+          return self
         end
 
         super
@@ -112,11 +113,15 @@ module Organizer
       #
       # @return [Organizer::Source::Collection, Organizer::Group::Collection]
       def organize
-        executor.organize
+        executor.run
       end
 
       def reset_executor
-        @executor = nil
+        @chainer = nil
+      end
+
+      def chainer
+        @chainer ||= Organizer::Chainer.new
       end
 
       def default_filters; self.class.default_filters; end

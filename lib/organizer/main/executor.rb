@@ -1,36 +1,15 @@
 class Organizer::Executor
   include Organizer::Error
 
-  CHAINABLE_METHODS = [
-    { method: :skip_default_filters, chainable_with: [:filter_by] },
-    { method: :filter_by, chainable_with: [:skip_default_filters, :filter_by] },
-    { method: :group_by, chainable_with: [:skip_default_filters, :filter_by, :group_by] }
-  ]
-
   # @param _organizer [Organizer::Base]
   def initialize(_organizer)
     @organizer = _organizer
   end
 
-  def chain(_method, _args)
-    chained_methods << { method: _method, args: _args.flatten }
-    self
-  end
-
-  def chainable_method?(_method)
-    chainable_methods.include?(_method)
-  end
-
-  def method_missing(_method, *_args, &_block)
-    if chainable_method?(_method)
-      raise_error(:invalid_chaining) unless can_chain?(_method)
-      return chain(_method, _args)
-    end
-
-    super
-  end
-
-  def organize
+  # It executes all methods (built as executors) loaded into @organizer's chainer.
+  #
+  # @return [Organizer::Source::Collection] or [Organizer::Group::Collection]
+  def run
     executors = build_executors
     result = execute(executors.shift, @organizer.collection, executors)
     @organizer.reset_executor
@@ -38,23 +17,6 @@ class Organizer::Executor
   end
 
   private
-
-  def chainable_methods
-    CHAINABLE_METHODS.collect { |chainable| chainable[:method] }
-  end
-
-  def can_chain?(_method)
-    return true if chained_methods.empty?
-    last_method = chained_methods.last
-    methods = chainable_with(_method)
-    methods.include?(last_method[:method])
-  end
-
-  def chainable_with(_method)
-    chainable = CHAINABLE_METHODS.find { |cm| cm[:method] == _method }
-    return [] unless chainable
-    chainable[:chainable_with]
-  end
 
   def build_executors
     executors = []
@@ -145,15 +107,15 @@ class Organizer::Executor
     end
   end
 
-  def chained_methods
-    @chained_methods ||= []
-  end
-
   def execute(_proc, _source, _next_procs)
     return _source unless _proc
     result = _proc.call(_source)
     next_proc = _next_procs.shift
     return result unless next_proc
     execute(next_proc, result, _next_procs)
+  end
+
+  def chained_methods
+    @organizer.chainer.chained_methods
   end
 end

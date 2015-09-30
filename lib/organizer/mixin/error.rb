@@ -31,7 +31,7 @@ module Organizer
     }
   end
 
-  class ExecutorException < ::Exception
+  class ChainerException < ::Exception
     ERRORS = {
       invalid_chaining: "Invalid chaining",
     }

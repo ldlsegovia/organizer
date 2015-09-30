@@ -35,7 +35,7 @@ describe Organizer::Base do
 
         it "raises error chaning filter to invalid methods" do
           expect { @organizer.group_by(:gender).filter_by(:my_filter) }.to(
-            raise_organizer_error(Organizer::ExecutorException, :invalid_chaining))
+            raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
         end
 
         it "applies chained filters calling filter_by several times" do
@@ -96,12 +96,12 @@ describe Organizer::Base do
 
           it "raises error chaning skip filter to group by method" do
             expect { @organizer.group_by(:gender).skip_default_filters }.to(
-              raise_organizer_error(Organizer::ExecutorException, :invalid_chaining))
+              raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
           end
 
           it "raises error chaning skip filter to another skip filter" do
             expect { @organizer.skip_default_filters.skip_default_filters }.to(
-              raise_organizer_error(Organizer::ExecutorException, :invalid_chaining))
+              raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
           end
         end
       end

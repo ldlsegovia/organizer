@@ -812,7 +812,7 @@ Style/RedundantSelf:
 Style/RescueModifier:
   Description: Avoid using rescue in its modifier form.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers
-  Enabled: true
+  Enabled: false
 Style/SelfAssignment:
   Description: Checks for places where self-assignment shorthand should have been
     used.

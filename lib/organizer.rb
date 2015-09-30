@@ -29,6 +29,7 @@ require_relative "organizer/group/builder"
 
 require_relative "organizer/main/context_manager"
 require_relative "organizer/main/dsl"
+require_relative "organizer/main/chainer"
 require_relative "organizer/main/executor"
 require_relative "organizer/main/base"
 
