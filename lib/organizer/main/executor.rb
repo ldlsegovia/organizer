@@ -11,9 +11,7 @@ class Organizer::Executor
   # @return [Organizer::Source::Collection] or [Organizer::Group::Collection]
   def run
     executors = build_executors
-    result = execute(executors.shift, @organizer.collection, executors)
-    @organizer.reset_executor
-    result
+    execute(executors.shift, @organizer.collection, executors)
   end
 
   private

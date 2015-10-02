@@ -113,11 +113,9 @@ module Organizer
       #
       # @return [Organizer::Source::Collection, Organizer::Group::Collection]
       def organize
-        executor.run
-      end
-
-      def reset_executor
+        result = executor.run
         @chainer = nil
+        result
       end
 
       def chainer
