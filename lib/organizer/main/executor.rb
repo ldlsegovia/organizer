@@ -42,28 +42,28 @@ class Organizer::Executor
   def load_filters_executor(_executors)
     args = {}
 
-    generated_filters = Organizer::Filter::Generator.generate(@organizer.collection.first)
-    filters = Organizer::Filter::Collection.new
-    generated_filters.each { |gf| filters << gf }
-    @organizer.filters.each { |f| filters << f }
-
     chained_methods.each do |method|
-      if [:filter_by].include?(method.name)
-        method.args.each do |arg|
-          if arg.is_a?(Hash)
-            args.merge!(arg)
-          elsif arg.is_a?(Symbol) || arg.is_a?(String)
-            args[arg] = nil
-          end
+      next unless [:filter_by].include?(method.name)
+      method.args.each do |arg|
+        if arg.is_a?(Hash)
+          args.merge!(arg)
+        elsif arg.is_a?(Symbol) || arg.is_a?(String)
+          args[arg] = nil
         end
       end
     end
 
-    if !args.keys.empty?
-      _executors << Proc.new do |source|
-        Organizer::Filter::Applier.apply(filters, source, filters: args)
-      end
-    end
+    _executors << Proc.new do |source|
+      Organizer::Filter::Applier.apply(get_filters, source, filters: args)
+    end unless args.keys.empty?
+  end
+
+  def get_filters
+    generated_filters = Organizer::Filter::Generator.generate(@organizer.collection.first)
+    filters = Organizer::Filter::Collection.new
+    generated_filters.each { |gf| filters << gf }
+    @organizer.filters.each { |f| filters << f }
+    filters
   end
 
   def load_operations_executor(_executors)
@@ -96,12 +96,10 @@ class Organizer::Executor
 
     args.uniq!
 
-    if !args.empty?
-      _executors << Proc.new do |source|
-        result = Organizer::Group::Builder.build(source, @organizer.groups, group_by: args)
-        { grouped_source: result, source: source }
-      end
-    end
+    _executors << Proc.new do |source|
+      result = Organizer::Group::Builder.build(source, @organizer.groups, group_by: args)
+      { grouped_source: result, source: source }
+    end unless args.empty?
   end
 
   def execute(_proc, _source, _next_procs)
