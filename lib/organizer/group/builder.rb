@@ -3,30 +3,29 @@ module Organizer
     class Builder
       include Organizer::Error
 
-      # Searches inside _groups collection the group named as { group_by: :my_group } in _options.
+      # Searches inside _groups collection the group(s) passed on _group_by param.
       # If found, it groups _collection according the group definition.
       #
       # @param _collection [Organizer::Source::Collection]
       # @param _groups [Organizer::Group::Collection]
-      # @param _options [Hash]
+      # @param _group_by [String, Symbol, Array]
       # @return [Organizer::Group::Item] or [Organizer::Source::Collection] when group is not found
       #
       # @raise [Organizer::Group::BuilderException]
-      def self.build(_collection, _groups, _options)
-        selected_groups = groups_from_options(_groups, _options)
+      def self.build(_collection, _groups, _group_by)
+        selected_groups = get_selected_groups(_groups, _group_by)
         return _collection if selected_groups.size.zero?
         groups = Organizer::Group::Collection.new
         build_recursively(groups, _collection, selected_groups)
         groups
       end
 
-      def self.groups_from_options(_groups, _options)
-        group_by = _options.fetch(:group_by, nil)
+      def self.get_selected_groups(_groups, _group_by)
         selected_groups = Organizer::Group::Collection.new
-        return selected_groups unless group_by
-        group_by = [group_by] unless group_by.is_a?(Array)
+        return selected_groups unless _group_by
+        _group_by = [_group_by] unless _group_by.is_a?(Array)
 
-        group_by.each do |group_name|
+        _group_by.each do |group_name|
           group = _groups.find_by_name(group_name)
           raise_error(:unknown_group_given) unless group
           hierarchy = _groups.hierarchy(group)

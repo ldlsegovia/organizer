@@ -97,7 +97,7 @@ class Organizer::Executor
     args.uniq!
 
     _executors << Proc.new do |source|
-      result = Organizer::Group::Builder.build(source, @organizer.groups, group_by: args)
+      result = Organizer::Group::Builder.build(source, @organizer.groups, args)
       { grouped_source: result, source: source }
     end unless args.empty?
   end
