@@ -1,3 +1,23 @@
+class Organizer::ChainedMethod
+  attr_reader :name
+  attr_reader :args
+
+  # @param _method_name [Symbol] can be: :group_by, :filter_by, etc.
+  # @param _method_args [Symbol] params _method was called. For example: if I call group_by(:site), _args will store :site symbol
+  def initialize(_method_name, _method_args)
+    @name = _method_name
+    @args = _method_args
+  end
+
+  def is?(_method_name)
+    name.to_s == _method_name.to_s
+  end
+
+  def args?
+    !args.blank?
+  end
+end
+
 class Organizer::Chainer
   include Organizer::Error
 
@@ -11,7 +31,7 @@ class Organizer::Chainer
   # @param _args params _method was called. For example: if I call group_by(:site), _args will store :site symbol
   # @return [Boolean]
   def chain(_method, _args)
-    chained_methods << { method: _method, args: _args.flatten }
+    chained_methods << Organizer::ChainedMethod.new(_method, _args.flatten)
     self
   end
 
@@ -44,7 +64,7 @@ class Organizer::Chainer
     return true if chained_methods.empty?
     last_method = chained_methods.last
     methods = chainable_with(_method)
-    methods.include?(last_method[:method])
+    methods.include?(last_method.name)
   end
 
   def chainable_with(_method)

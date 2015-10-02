@@ -27,12 +27,11 @@ class Organizer::Executor
   end
 
   def load_default_filters_executor(_executors)
-    skip_method = chained_methods.find { |method| method[:method] == :skip_default_filters }
+    skip_method = chained_methods.find { |method| method.is?(:skip_default_filters) }
     options = {}
 
     if skip_method
-      options[:skip_default_filters] = skip_method[:args]
-      options[:skip_default_filters] = :all if skip_method[:args].empty?
+      options[:skip_default_filters] = skip_method.args? ? skip_method.args : :all
     end
 
     _executors << Proc.new do |source|
@@ -49,8 +48,8 @@ class Organizer::Executor
     @organizer.filters.each { |f| filters << f }
 
     chained_methods.each do |method|
-      if [:filter_by].include?(method[:method])
-        method[:args].each do |arg|
+      if [:filter_by].include?(method.name)
+        method.args.each do |arg|
           if arg.is_a?(Hash)
             args.merge!(arg)
           elsif arg.is_a?(Symbol) || arg.is_a?(String)
@@ -88,8 +87,8 @@ class Organizer::Executor
     args = []
 
     chained_methods.each do |method|
-      if [:group_by].include?(method[:method])
-        method[:args].each do |arg|
+      if [:group_by].include?(method.name)
+        method.args.each do |arg|
           args << arg if arg.is_a?(Symbol) || arg.is_a?(String)
         end
       end
