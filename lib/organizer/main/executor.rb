@@ -54,7 +54,7 @@ class Organizer::Executor
     end
 
     _executors << Proc.new do |source|
-      Organizer::Filter::Applier.apply(get_filters, source, filters: args)
+      Organizer::Filter::Applier.apply(get_filters, source, args)
     end unless args.keys.empty?
   end
 

@@ -4,13 +4,12 @@ module Organizer
       include Organizer::Error
 
       # Applies default filters to given collection.
-      #   To skip a default filter, need to pass default filter names inside array in _options
-      #   like this: { skip_default_filters: [my_filter] }.
-      #   If you want to skip all default filters: { skip_default_filters: :all }.
+      #   To skip a default filter, need to pass default filter names inside array in _filter_by.
+      #   If you want to skip all default filters, _filter_by need to be :all symbol.
       #
       # @param _filters [Organizer::Filter::Collection] default filters collection
       # @param _collection [Organizer::Source::Collection] the whole collection
-      # @param _filter_by [Array] :all symbol or Array with filter names
+      # @param _filter_by [Array, Symbol] :all symbol or Array with filter names
       # @return [Organizer::Source::Collection] a filtered collection
       def self.apply_default(_filters, _collection, _filter_by = [])
         selected_filters = (_filter_by == :all) ? nil : _filters.reject_items(_filter_by)
@@ -18,25 +17,24 @@ module Organizer
       end
 
       # Applies filters to a given collection.
-      #   To apply a normal filter, need to pass filter names inside array in _options like this:
-      #   { filters: [my_filter] }. or
-      #   need to pass filter_key filter_value pairs in _options like this:
-      #   { filters: { my_filter: 4, other_filter: 6 } }.
+      #   To apply a normal filter, need to pass filter names inside array in _filter_by like this:
+      #   [:my_filter, :other_filter]. or
+      #   need to pass filter_key filter_value pairs in _filter_by like this:
+      #   { my_filter: 4, other_filter: 6 }.
       #
       # @param _filters [Organizer::Filter::Collection] filters collection
       # @param _collection [Organizer::Source::Collection] the whole collection
-      # @param _options [Hash]
+      # @param _filter_by [Array, Hash]
       # @return [Organizer::Source::Collection] a filtered collection
-      def self.apply(_filters, _collection, _options = {})
-        filter_names = _options.fetch(:filters, [])
+      def self.apply(_filters, _collection, _filter_by = [])
         filter_pairs = {}
 
-        if filter_names.is_a?(Hash)
-          filter_pairs = filter_names
-          filter_names = filter_names.keys
+        if _filter_by.is_a?(Hash)
+          filter_pairs = _filter_by
+          _filter_by = _filter_by.keys
         end
 
-        selected_filters = _filters.select_items(filter_names)
+        selected_filters = _filters.select_items(_filter_by)
         apply_filters(selected_filters, _collection, filter_pairs)
       end
 

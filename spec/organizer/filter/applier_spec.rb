@@ -33,8 +33,8 @@ describe Organizer::Filter::Applier do
       end
 
       it { expect(subject.apply(@filters, collection).size).to eq(9) }
-      it { expect(subject.apply(@filters, collection, filters: [:filter1]).size).to eq(8) }
-      it { expect(subject.apply(@filters, collection, filters: [:filter1, :filter2]).size).to eq(3) }
+      it { expect(subject.apply(@filters, collection, [:filter1]).size).to eq(8) }
+      it { expect(subject.apply(@filters, collection, [:filter1, :filter2]).size).to eq(3) }
     end
 
     context "with filters with value" do
@@ -44,8 +44,8 @@ describe Organizer::Filter::Applier do
       end
 
       it { expect(subject.apply(@filters, collection).size).to eq(9) }
-      it { expect(subject.apply(@filters, collection, filters: { filter1: 9 }).size).to eq(8) }
-      it { expect(subject.apply(@filters, collection, filters: { filter1: 9, filter2: 33 }).size).to eq(3) }
+      it { expect(subject.apply(@filters, collection, filter1: 9).size).to eq(8) }
+      it { expect(subject.apply(@filters, collection, filter1: 9, filter2: 33).size).to eq(3) }
     end
   end
 end
