@@ -28,14 +28,14 @@ class Organizer::Executor
 
   def load_default_filters_executor(_executors)
     skip_method = chained_methods.find { |method| method.is?(:skip_default_filters) }
-    options = {}
+    filter_by = []
 
     if skip_method
-      options[:skip_default_filters] = skip_method.args? ? skip_method.args : :all
+      filter_by = skip_method.args? ? skip_method.args : :all
     end
 
     _executors << Proc.new do |source|
-      Organizer::Filter::Applier.apply_default(@organizer.default_filters, source, options)
+      Organizer::Filter::Applier.apply_default(@organizer.default_filters, source, filter_by)
     end
   end
 

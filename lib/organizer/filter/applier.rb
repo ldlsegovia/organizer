@@ -10,11 +10,10 @@ module Organizer
       #
       # @param _filters [Organizer::Filter::Collection] default filters collection
       # @param _collection [Organizer::Source::Collection] the whole collection
-      # @param _options [Hash]
+      # @param _filter_by [Array] :all symbol or Array with filter names
       # @return [Organizer::Source::Collection] a filtered collection
-      def self.apply_default(_filters, _collection, _options = {})
-        filter_by = _options.fetch(:skip_default_filters, [])
-        selected_filters = (filter_by == :all) ? nil : _filters.reject_items(filter_by)
+      def self.apply_default(_filters, _collection, _filter_by = [])
+        selected_filters = (_filter_by == :all) ? nil : _filters.reject_items(_filter_by)
         apply_filters(selected_filters, _collection)
       end
 
