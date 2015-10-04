@@ -1,38 +1,8 @@
+require 'require_all'
 require "active_support/all"
 require "colorize"
 
-require "organizer/version"
-
-require_relative "organizer/mixin/error"
-require_relative "organizer/mixin/attributes_handler"
-require_relative "organizer/mixin/collection"
-require_relative "organizer/mixin/collection_item"
-require_relative "organizer/mixin/explainer"
-
-require_relative "organizer/source/item"
-require_relative "organizer/source/collection"
-
-require_relative "organizer/filter/applier"
-require_relative "organizer/filter/item"
-require_relative "organizer/filter/collection"
-require_relative "organizer/filter/generator"
-
-require_relative "organizer/operation/item"
-require_relative "organizer/operation/simple"
-require_relative "organizer/operation/memo"
-require_relative "organizer/operation/collection"
-require_relative "organizer/operation/executor"
-
-require_relative "organizer/group/item"
-require_relative "organizer/group/collection"
-require_relative "organizer/group/builder"
-
-require_relative "organizer/main/context_manager"
-require_relative "organizer/main/dsl"
-require_relative "organizer/main/definitions_keeper"
-require_relative "organizer/main/chainer"
-require_relative "organizer/main/executor"
-require_relative "organizer/main/base"
+require_all 'lib'
 
 module Organizer
   include Organizer::Error
