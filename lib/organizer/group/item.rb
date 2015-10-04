@@ -15,9 +15,6 @@ module Organizer
       attr_reader :grouping_condition
       attr_reader :grouping_criteria
 
-      # @param _name [Symbol] symbol to identify this particular group.
-      # @param _grouping_criteria [String, Symbol] attr or string condition items will be grouped.
-      # @param _parent_name [String] stores the group parent name of this instance if has one.
       def initialize(_name, _grouping_criteria = nil, _parent_name = nil)
         set_grouping_criteria(_name, _grouping_criteria)
         set_group_name(_name)
@@ -28,17 +25,10 @@ module Organizer
         @item_name = _group_value.to_s
       end
 
-      # Checks if instace has parent name.
-      #
-      # @return [Boolean]
       def has_parent?
         !!parent_name
       end
 
-      # Applies grouping criteria.
-      #
-      # @param _item [Organizer::Source::Item]
-      # @return [Object]
       def apply_grouping_criteria(_item)
         return _item.send(group_by_attr) if group_by_attr
         return grouping_condition.call(_item) if grouping_condition

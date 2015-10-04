@@ -365,22 +365,6 @@ MyOrganizer.new.filter_by(:gender).group_by(:my_group).organize
 MyOrganizer.new.skip_default_filters(:all).group_by(:my_group).organize
 ```
 
-## Docs
-
-We are using [YARD](http://yardoc.org/) in this project.
-
-To generate documentation
-
-```bash
-$ yard doc
-```
-
-To see documentation on `http://localhost:8808/`
-
-```bash
-$ yard server --reload
-```
-
 ## Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/organizer/fork )

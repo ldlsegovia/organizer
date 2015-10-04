@@ -1,14 +1,10 @@
 class Organizer::Executor
   include Organizer::Error
 
-  # @param _organizer [Organizer::Base]
   def initialize(_organizer)
     @organizer = _organizer
   end
 
-  # It executes all methods (built as executors) loaded into @organizer's chainer.
-  #
-  # @return [Organizer::Source::Collection] or [Organizer::Group::Collection]
   def run
     executors = build_executors
     execute(executors.shift, @organizer.collection, executors)

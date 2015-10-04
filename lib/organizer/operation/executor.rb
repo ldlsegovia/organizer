@@ -3,14 +3,6 @@ module Organizer
     class Executor
       include Organizer::Error
 
-      # Each source collection item will be evaluated against _operations. The operation's results
-      # will be attached to items as new attributes.
-      #
-      # @param _operations [Organizer::Operation::Collection]
-      # @param _collection [Organizer::Source::Collection]
-      # @return [Organizer::Source::Collection] the collection with new attached attributes.
-      #
-      # @raise [Organizer::Operation::ExecutorException]
       def self.execute_on_source_items(_operations, _collection)
         return unless _collection.is_a?(Organizer::Source::Collection)
         return _collection if _operations.count <= 0
@@ -18,13 +10,6 @@ module Organizer
         _collection
       end
 
-      # Each group collection item (and descendants) will be evaluated against _operations.
-      # The operation's results will be attached to items as new attributes.
-      #
-      # @param _operations [Organizer::Operation::Collection]
-      # @param _source_collection [Organizer::Source::Collection]
-      # @param _group_collection [Organizer::Group::Collection]
-      # @return [Organizer::Group::Collection] the collection with new attached attributes.
       def self.execute_on_group_items(_operations, _source_collection, _group_collection)
         return unless _source_collection.is_a?(Organizer::Source::Collection)
         return unless _group_collection.is_a?(Organizer::Group::Collection)

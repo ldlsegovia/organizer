@@ -5,10 +5,6 @@ module Organizer
     TAB = "\s\s"
     DIVIDER = "\s|\s"
 
-    # It returns a nice output for Organizer entities
-    #
-    # @param _colorize [Boolean]
-    # @param _collection_limit [Integer]
     def explain(_colorize = true, _collection_limit = 10)
       result = explain_item(0, "", _collection_limit)
       result = result.uncolorize.gsub("\s\n", "\n") unless _colorize
