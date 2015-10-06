@@ -64,15 +64,15 @@ class Organizer::Executor
 
   def load_operations_executor(_executors)
     _executors << Proc.new do |source|
-      Organizer::Operation::Executor.execute_on_source_items(@organizer.operations, source)
+      Organizer::Operation::Executor.execute(@organizer.operations, source)
     end
   end
 
   def load_group_operations_executor(_executors)
     _executors << Proc.new do |source|
-      if source.is_a?(Hash) && source.has_key?(:grouped_source)
-        Organizer::Operation::Executor.execute_on_group_items(
-          @organizer.group_operations, source[:source], source[:grouped_source])
+      if source.is_a?(Organizer::Group::Collection)
+        Organizer::Operation::Executor.execute(
+          @organizer.group_operations, @organizer.collection, source)
       else
         source
       end
@@ -93,8 +93,7 @@ class Organizer::Executor
     args.uniq!
 
     _executors << Proc.new do |source|
-      result = Organizer::Group::Builder.build(source, @organizer.groups, args)
-      { grouped_source: result, source: source }
+      Organizer::Group::Builder.build(source, @organizer.groups, args)
     end unless args.empty?
   end
 
