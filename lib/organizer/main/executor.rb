@@ -31,7 +31,7 @@ class Organizer::Executor
     end
 
     _executors << Proc.new do |source|
-      Organizer::Filter::Applier.apply_default(@organizer.default_filters, source, filter_by)
+      Organizer::Filter::Applier.apply(@organizer.default_filters, source, skipped_filters: filter_by)
     end
   end
 
@@ -50,7 +50,7 @@ class Organizer::Executor
     end
 
     _executors << Proc.new do |source|
-      Organizer::Filter::Applier.apply(get_filters, source, args)
+      Organizer::Filter::Applier.apply(get_filters, source, selected_filters: args)
     end unless args.keys.empty?
   end
 

@@ -3,21 +3,39 @@ module Organizer
     class Applier
       include Organizer::Error
 
-      def self.apply_default(_filters, _collection, _filter_by = [])
-        selected_filters = (_filter_by == :all) ? nil : _filters.reject_items(_filter_by)
+      def self.apply(_filters, _collection, _options = {})
+        if _options.has_key?(:skipped_filters)
+          return apply_skipping_filters(_filters, _collection, _options[:skipped_filters])
+
+        elsif _options.has_key?(:selected_filters)
+          return apply_selecting_filters(_filters, _collection, _options[:selected_filters])
+
+        elsif _options.has_key?(:groups_filters)
+          return apply_groups_filters(_filters, _collection, _options[:groups_filters])
+        end
+
+        _collection
+      end
+
+      def self.apply_skipping_filters(_filters, _collection, _skipped_filters)
+        selected_filters = (_skipped_filters == :all) ? nil : _filters.reject_items(_skipped_filters)
         apply_filters(selected_filters, _collection)
       end
 
-      def self.apply(_filters, _collection, _filter_by = [])
+      def self.apply_selecting_filters(_filters, _collection, _selected_filters)
         filter_pairs = {}
 
-        if _filter_by.is_a?(Hash)
-          filter_pairs = _filter_by
-          _filter_by = _filter_by.keys
+        if _selected_filters.is_a?(Hash)
+          filter_pairs = _selected_filters
+          _selected_filters = _selected_filters.keys
         end
 
-        selected_filters = _filters.select_items(_filter_by)
+        selected_filters = _filters.select_items(_selected_filters)
         apply_filters(selected_filters, _collection, filter_pairs)
+      end
+
+      def self.apply_groups_filters(_filters, _collection, _groups_filters)
+        # TODO
       end
 
       def self.apply_filters(_filters, _collection, _filters_values = nil)
