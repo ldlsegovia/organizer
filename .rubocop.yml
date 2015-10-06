@@ -7,7 +7,7 @@ AllCops:
   - "vendor/**/*"
   - "db/**/*"
   - "bin/**/*"
-  RunRailsCops: true
+  RunRailsCops: false
   DisplayCopNames: false
   StyleGuideCopsOnly: false
 Style/AccessModifierIndentation:

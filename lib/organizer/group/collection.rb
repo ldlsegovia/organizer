@@ -24,8 +24,7 @@ module Organizer
         _collection << _group
 
         each do |group|
-          if group.is_a?(Organizer::Group::Item) &&
-              group.parent_name == _group.group_name
+          if group.is_a?(Organizer::Group::Item) && group.parent_name == _group.group_name
             load_group_child(group, _collection)
           end
         end
