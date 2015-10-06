@@ -14,9 +14,9 @@ class Organizer::Executor
 
   def build_executors
     executors = []
+    load_operations_executor(executors)
     load_default_filters_executor(executors)
     load_filters_executor(executors)
-    load_operations_executor(executors)
     load_groups_executor(executors)
     load_group_operations_executor(executors)
     executors

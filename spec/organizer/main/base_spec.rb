@@ -116,6 +116,16 @@ describe Organizer::Base do
           expect(result.second.new_attr).to eq(62)
           expect(result.third.new_attr).to eq(128)
         end
+
+        context "working with filters" do
+          before { BaseChild.add_filter(:filter1) { |item| item.new_attr > 66 } }
+
+          it "filters by generated attribute" do
+            result = BaseChild.new.filter_by(:filter1).organize
+            expect(result).to be_a(Organizer::Source::Collection)
+            expect(result.size).to eq(3)
+          end
+        end
       end
 
       context "working with groups" do
