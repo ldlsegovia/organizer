@@ -29,7 +29,7 @@ module Organizer
         return unless group_item.is_a?(Organizer::Group::Item)
 
         result = _group_items_hierarchy.map do |gi|
-          _source_item.send(gi.grouping_criteria).to_s === gi.item_name.to_s
+          gi.apply_grouping_criteria(_source_item).to_s === gi.item_name.to_s
         end.uniq
 
         if result.size == 1 && !!result.first
