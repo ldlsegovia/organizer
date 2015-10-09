@@ -14,7 +14,7 @@ module Organizer
       end
 
       def apply(_item, _value = nil)
-        raise_error(:apply_on_organizer_items_only) if !_item.is_a?(Organizer::Source::Item)
+        raise_error(:apply_on_collection_items_only) if !_item.is_a?(Organizer::CollectionItem)
         result = definition.parameters.count == 2 ? definition.call(_item, _value) : definition.call(_item)
         raise_error(:definition_must_return_boolean) if !!result != result
         result

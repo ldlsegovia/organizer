@@ -30,7 +30,7 @@ describe Organizer::Filter::Item do
 
     it "raise exception if _item is not an Organizer::Source::Item" do
       expect { Organizer::Filter::Item.new(-> {}).apply("not an item") }.to(
-        raise_organizer_error(Organizer::Filter::ItemException, :apply_on_organizer_items_only))
+        raise_organizer_error(Organizer::Filter::ItemException, :apply_on_collection_items_only))
     end
 
     it "raise exception if filter's definition does not return a boolean value" do

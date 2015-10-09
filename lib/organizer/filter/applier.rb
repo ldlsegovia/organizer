@@ -11,7 +11,8 @@ module Organizer
           return apply_selecting_filters(_filters, _collection, _options[:selected_filters])
 
         elsif _options.has_key?(:groups_filters)
-          return apply_groups_filters(_filters, _collection, _options[:groups_filters])
+          apply_groups_filters(_filters, _collection, _options[:groups_filters])
+          return _collection
         end
 
         _collection
@@ -35,28 +36,33 @@ module Organizer
       end
 
       def self.apply_groups_filters(_filters, _collection, _groups_filters)
-        # TODO
+        return if _collection.empty?
+        return unless _collection.first.is_a?(Organizer::Group::Item)
+        group_filters = _groups_filters[_collection.first.group_name]
+        selected_filters = !!group_filters ? _filters.select_items(group_filters.keys) : []
+        apply_filters(selected_filters, _collection, group_filters)
+        _collection.each { |item| apply_groups_filters(_filters, item, _groups_filters) }
       end
 
       def self.apply_filters(_filters, _collection, _filters_values = nil)
         return _collection unless _filters
-        filtered_collection = Organizer::Source::Collection.new
-        _collection.each do |item|
-          add_item = true
+
+        _collection.reject! do |item|
+          keep_item = true
 
           _filters.each do |filter|
             value = get_filter_value(filter, _filters_values)
 
             if !filter.apply(item, value)
-              add_item = false
+              keep_item = false
               break
             end
           end
 
-          filtered_collection << item if add_item
+          !keep_item
         end
 
-        filtered_collection
+        _collection
       end
 
       def self.get_filter_value(_filter, _filters_values)

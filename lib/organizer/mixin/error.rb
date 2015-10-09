@@ -61,7 +61,7 @@ module Organizer
     class ItemException < ::Exception
       ERRORS = {
         definition_must_be_a_proc: "Filter definition must be a Proc",
-        apply_on_organizer_items_only: "Filters can be applied on Organizer::Source::Items only",
+        apply_on_collection_items_only: "Filters can be applied on Organizer::CollectionItem only",
         definition_must_return_boolean: "Invalid filter definition result. The definition bock call must return a boolean value"
       }
     end

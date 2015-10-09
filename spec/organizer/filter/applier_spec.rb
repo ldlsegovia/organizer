@@ -43,5 +43,73 @@ describe Organizer::Filter::Applier do
       it { expect(subject.apply(@filters, collection, selected_filters: { filter1: 9 }).size).to eq(8) }
       it { expect(subject.apply(@filters, collection, selected_filters: { filter1: 9, filter2: 33 }).size).to eq(3) }
     end
+
+    context "working with groups" do
+      before do
+        groups = Organizer::Group::Collection.new
+        groups.add_group(:site, :site_id)
+        groups.add_group(:store, :store_id)
+        result = Organizer::Group::Builder.build(collection, groups, [:site, :store])
+
+        @operations = Organizer::Operation::Collection.new
+        @operations.add_memo_operation(:age_sum) do |memo, item|
+          memo.age_sum + item.age
+        end
+        @operations.add_memo_operation(:greatest_savings) do |memo, item|
+          (memo.greatest_savings > item.savings) ? memo.greatest_savings : item.savings
+        end
+        @group = Organizer::Operation::Executor.execute(@operations, collection, result)
+
+        @filters.add_filter(:filter2) { |item, value| item.age_sum < value }
+      end
+
+      it "filters parent group items" do
+        options = {
+          groups_filters: {
+            site: {
+              filter2: 150
+            }
+          }
+        }
+
+        subject.apply(@filters, @group, options)
+        expect(@group.count).to eq(2)
+      end
+
+      it "filters child groups items" do
+        options = {
+          groups_filters: {
+            store: {
+              filter2: 50
+            }
+          }
+        }
+
+        subject.apply(@filters, @group, options)
+
+        expect(@group.count).to eq(3)
+        expect(@group.first.count).to eq(0)
+        expect(@group.second.count).to eq(1)
+        expect(@group.third.count).to eq(1)
+      end
+
+      it "filters groups items in the complete hierarchy" do
+        options = {
+          groups_filters: {
+            site: {
+              filter2: 150
+            },
+            store: {
+              filter2: 50
+            }
+          }
+        }
+
+        subject.apply(@filters, @group, options)
+        expect(@group.count).to eq(2)
+        expect(@group.first.count).to eq(0)
+        expect(@group.second.count).to eq(1)
+      end
+    end
   end
 end
