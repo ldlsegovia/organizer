@@ -1,16 +1,3 @@
-class Organizer::ChainedMethod
-  attr_reader :name, :args
-
-  def initialize(_method_name, _method_args)
-    @name = _method_name
-    @args = _method_args
-  end
-
-  def is?(_method_name)
-    name.to_s == _method_name.to_s
-  end
-end
-
 class Organizer::Chainer
   include Organizer::Error
 
@@ -33,6 +20,15 @@ class Organizer::Chainer
 
   def chained_methods
     @chained_methods ||= []
+  end
+
+  def skip_default_filters_args
+    skip_methods = chained_methods.select(&:skip_default_filters?)
+    return if skip_methods.empty?
+    skip_all = skip_methods.find { |m| m.array_args_include?(:all) }
+    args = skip_methods.map(&:args).flatten
+    return :all if skip_all || args.blank?
+    args
   end
 
   private

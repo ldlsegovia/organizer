@@ -1,9 +1,9 @@
 class Organizer::Executor
   include Organizer::Error
 
-  def initialize(_definitons_keeper, _chained_methods)
+  def initialize(_definitons_keeper, _chainer)
     @definitions = _definitons_keeper
-    @chained_methods = _chained_methods
+    @chainer = _chainer
   end
 
   def run
@@ -24,23 +24,16 @@ class Organizer::Executor
   end
 
   def load_default_filters_executor(_executors)
-    skip_method = @chained_methods.find { |method| method.is?(:skip_default_filters) }
-    filter_by = []
-
-    if skip_method
-      args = skip_method.args
-      filter_by = args.include?(:all) || args.empty? ? :all : args
-    end
-
+    args = @chainer.skip_default_filters_args
     _executors << Proc.new do |source|
-      Organizer::Filter::Applier.apply(@definitions.default_filters, source, skipped_filters: filter_by)
+      Organizer::Filter::Applier.apply(@definitions.default_filters, source, skipped_filters: args)
     end
   end
 
   def load_filters_executor(_executors)
     args = {}
 
-    @chained_methods.each do |method|
+    @chainer.chained_methods.each do |method|
       next unless [:filter_by].include?(method.name)
       method.args.each do |arg|
         if arg.is_a?(Hash)
@@ -84,7 +77,7 @@ class Organizer::Executor
   def load_groups_executor(_executors)
     args = []
 
-    @chained_methods.each do |method|
+    @chainer.chained_methods.each do |method|
       if [:group_by].include?(method.name)
         method.args.each do |arg|
           args << arg if arg.is_a?(Symbol) || arg.is_a?(String)

@@ -56,7 +56,7 @@ module Organizer
       end
 
       def executor
-        @executor ||= Organizer::Executor.new(definitions_keeper, chainer.chained_methods)
+        @executor ||= Organizer::Executor.new(definitions_keeper, chainer)
       end
     end
   end
