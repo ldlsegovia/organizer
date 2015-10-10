@@ -28,7 +28,8 @@ class Organizer::Executor
     filter_by = []
 
     if skip_method
-      filter_by = skip_method.args? ? skip_method.args : :all
+      args = skip_method.args
+      filter_by = args.include?(:all) || args.empty? ? :all : args
     end
 
     _executors << Proc.new do |source|

@@ -9,10 +9,6 @@ class Organizer::ChainedMethod
   def is?(_method_name)
     name.to_s == _method_name.to_s
   end
-
-  def args?
-    !args.blank?
-  end
 end
 
 class Organizer::Chainer
