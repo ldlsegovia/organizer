@@ -1,6 +1,5 @@
 class Organizer::ChainedMethod
-  attr_reader :name
-  attr_reader :args
+  attr_reader :name, :args
 
   def initialize(_method_name, _method_args)
     @name = _method_name

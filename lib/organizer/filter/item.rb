@@ -5,7 +5,7 @@ module Organizer
       include Organizer::CollectionItem
       include Organizer::Explainer
 
-      attr_reader :definition, :accept_value
+      attr_reader :definition
 
       def initialize(_definition, _name = nil)
         raise_error(:definition_must_be_a_proc) if !_definition.is_a?(Proc)
