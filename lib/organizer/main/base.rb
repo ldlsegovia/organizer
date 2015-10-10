@@ -28,13 +28,10 @@ module Organizer
       end
 
       def organize
-        result = executor.run
+        executor_args = Organizer::ExecutorArgs.new(chainer.chained_methods)
+        result = Organizer::Executor.run(definitions_keeper, executor_args)
         @chainer = nil
         result
-      end
-
-      def chainer
-        @chainer ||= Organizer::Chainer.new
       end
 
       private
@@ -51,12 +48,12 @@ module Organizer
         super
       end
 
-      def definitions_keeper
-        self.class.definitions_keeper
+      def chainer
+        @chainer ||= Organizer::Chainer.new
       end
 
-      def executor
-        @executor ||= Organizer::Executor.new(definitions_keeper, chainer)
+      def definitions_keeper
+        self.class.definitions_keeper
       end
     end
   end

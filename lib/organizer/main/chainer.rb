@@ -22,15 +22,6 @@ class Organizer::Chainer
     @chained_methods ||= []
   end
 
-  def skip_default_filters_args
-    skip_methods = chained_methods.select(&:skip_default_filters?)
-    return if skip_methods.empty?
-    skip_all = skip_methods.find { |m| m.array_args_include?(:all) }
-    args = skip_methods.map(&:args).flatten
-    return :all if skip_all || args.blank?
-    args
-  end
-
   private
 
   def chainable_methods

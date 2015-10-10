@@ -29,8 +29,4 @@ class Organizer::ChainedMethod
     return false unless array_args?
     args.include?(_value)
   end
-
-  def is?(_method_name)
-    name.to_s == _method_name.to_s
-  end
 end

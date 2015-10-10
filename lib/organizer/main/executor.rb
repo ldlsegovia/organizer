@@ -1,98 +1,88 @@
 class Organizer::Executor
   include Organizer::Error
 
-  def initialize(_definitons_keeper, _chainer)
-    @definitions = _definitons_keeper
-    @chainer = _chainer
+  def self.run(_definitions_keeper, _executor_args)
+    executors = build_executors(_definitions_keeper, _executor_args)
+    execute(executors.shift, _definitions_keeper.collection, executors)
   end
 
-  def run
-    executors = build_executors
-    execute(executors.shift, @definitions.collection, executors)
-  end
-
-  private
-
-  def build_executors
+  def self.build_executors(_definitions, _args)
     executors = []
-    load_operations_executor(executors)
-    load_default_filters_executor(executors)
-    load_filters_executor(executors)
-    load_groups_executor(executors)
-    load_group_operations_executor(executors)
+    load_operations_executor(executors, _definitions)
+    load_default_filters_executor(executors, _definitions, _args)
+    load_filters_executor(executors, _definitions, _args)
+    load_groups_executor(executors, _definitions, _args)
+    load_group_operations_executor(executors, _definitions)
     executors
   end
 
-  def load_default_filters_executor(_executors)
-    args = @chainer.skip_default_filters_args
-    _executors << Proc.new do |source|
-      Organizer::Filter::Applier.apply(@definitions.default_filters, source, skipped_filters: args)
+  def self.load_operations_executor(_executors, _definitions)
+    load_executor(_executors) do |source|
+      Organizer::Operation::Executor.execute(
+        _definitions.operations,
+        source
+      )
     end
   end
 
-  def load_filters_executor(_executors)
-    args = {}
-
-    @chainer.chained_methods.each do |method|
-      next unless [:filter_by].include?(method.name)
-      method.args.each do |arg|
-        if arg.is_a?(Hash)
-          args.merge!(arg)
-        elsif arg.is_a?(Symbol) || arg.is_a?(String)
-          args[arg] = nil
-        end
-      end
+  def self.load_default_filters_executor(_executors, _definitions, _args)
+    args = _args.default_filters_to_skip
+    load_executor(_executors) do |source|
+      Organizer::Filter::Applier.apply(
+        _definitions.default_filters,
+        source,
+        skipped_filters: args
+      )
     end
-
-    _executors << Proc.new do |source|
-      Organizer::Filter::Applier.apply(get_filters, source, selected_filters: args)
-    end unless args.keys.empty?
   end
 
-  def get_filters
-    generated_filters = Organizer::Filter::Generator.generate(@definitions.collection.first)
+  def self.load_filters_executor(_executors, _definitions, _args)
+    args = _args.filters
+    load_executor(_executors) do |source|
+      Organizer::Filter::Applier.apply(
+        get_filters(_definitions),
+        source,
+        selected_filters: args)
+    end if args
+  end
+
+  def self.get_filters(_definitions)
+    # TODO: build generated filters using DLS https://github.com/ldlsegovia/organizer/issues/40
+    generated_filters = Organizer::Filter::Generator.generate(_definitions.collection.first)
     filters = Organizer::Filter::Collection.new
     generated_filters.each { |gf| filters << gf }
-    @definitions.filters.each { |f| filters << f }
+    _definitions.filters.each { |f| filters << f }
     filters
   end
 
-  def load_operations_executor(_executors)
-    _executors << Proc.new do |source|
-      Organizer::Operation::Executor.execute(@definitions.operations, source)
-    end
+  def self.load_groups_executor(_executors, _definitions, _args)
+    args = _args.groups
+    load_executor(_executors) do |source|
+      Organizer::Group::Builder.build(
+        source,
+        _definitions.groups,
+        args)
+    end if args
   end
 
-  def load_group_operations_executor(_executors)
-    _executors << Proc.new do |source|
+  def self.load_group_operations_executor(_executors, _definitions)
+    load_executor(_executors) do |source|
       if source.is_a?(Organizer::Group::Collection)
         Organizer::Operation::Executor.execute(
-          @definitions.group_operations, @definitions.collection, source)
+          _definitions.group_operations, _definitions.collection, source)
       else
         source
       end
     end
   end
 
-  def load_groups_executor(_executors)
-    args = []
-
-    @chainer.chained_methods.each do |method|
-      if [:group_by].include?(method.name)
-        method.args.each do |arg|
-          args << arg if arg.is_a?(Symbol) || arg.is_a?(String)
-        end
-      end
-    end
-
-    args.uniq!
-
+  def self.load_executor(_executors)
     _executors << Proc.new do |source|
-      Organizer::Group::Builder.build(source, @definitions.groups, args)
-    end unless args.empty?
+      yield(source)
+    end
   end
 
-  def execute(_proc, _source, _next_procs)
+  def self.execute(_proc, _source, _next_procs)
     return _source unless _proc
     result = _proc.call(_source)
     next_proc = _next_procs.shift
