@@ -1,14 +1,14 @@
 class Organizer::Executor
   include Organizer::Error
 
-  def initialize(_organizer, _chained_methods)
-    @organizer = _organizer
+  def initialize(_definitons_keeper, _chained_methods)
+    @definitions = _definitons_keeper
     @chained_methods = _chained_methods
   end
 
   def run
     executors = build_executors
-    execute(executors.shift, @organizer.collection, executors)
+    execute(executors.shift, @definitions.collection, executors)
   end
 
   private
@@ -32,7 +32,7 @@ class Organizer::Executor
     end
 
     _executors << Proc.new do |source|
-      Organizer::Filter::Applier.apply(@organizer.default_filters, source, skipped_filters: filter_by)
+      Organizer::Filter::Applier.apply(@definitions.default_filters, source, skipped_filters: filter_by)
     end
   end
 
@@ -56,16 +56,16 @@ class Organizer::Executor
   end
 
   def get_filters
-    generated_filters = Organizer::Filter::Generator.generate(@organizer.collection.first)
+    generated_filters = Organizer::Filter::Generator.generate(@definitions.collection.first)
     filters = Organizer::Filter::Collection.new
     generated_filters.each { |gf| filters << gf }
-    @organizer.filters.each { |f| filters << f }
+    @definitions.filters.each { |f| filters << f }
     filters
   end
 
   def load_operations_executor(_executors)
     _executors << Proc.new do |source|
-      Organizer::Operation::Executor.execute(@organizer.operations, source)
+      Organizer::Operation::Executor.execute(@definitions.operations, source)
     end
   end
 
@@ -73,7 +73,7 @@ class Organizer::Executor
     _executors << Proc.new do |source|
       if source.is_a?(Organizer::Group::Collection)
         Organizer::Operation::Executor.execute(
-          @organizer.group_operations, @organizer.collection, source)
+          @definitions.group_operations, @definitions.collection, source)
       else
         source
       end
@@ -94,7 +94,7 @@ class Organizer::Executor
     args.uniq!
 
     _executors << Proc.new do |source|
-      Organizer::Group::Builder.build(source, @organizer.groups, args)
+      Organizer::Group::Builder.build(source, @definitions.groups, args)
     end unless args.empty?
   end
 
