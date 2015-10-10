@@ -1,8 +1,9 @@
 class Organizer::Executor
   include Organizer::Error
 
-  def initialize(_organizer)
+  def initialize(_organizer, _chained_methods)
     @organizer = _organizer
+    @chained_methods = _chained_methods
   end
 
   def run
@@ -23,7 +24,7 @@ class Organizer::Executor
   end
 
   def load_default_filters_executor(_executors)
-    skip_method = chained_methods.find { |method| method.is?(:skip_default_filters) }
+    skip_method = @chained_methods.find { |method| method.is?(:skip_default_filters) }
     filter_by = []
 
     if skip_method
@@ -38,7 +39,7 @@ class Organizer::Executor
   def load_filters_executor(_executors)
     args = {}
 
-    chained_methods.each do |method|
+    @chained_methods.each do |method|
       next unless [:filter_by].include?(method.name)
       method.args.each do |arg|
         if arg.is_a?(Hash)
@@ -82,7 +83,7 @@ class Organizer::Executor
   def load_groups_executor(_executors)
     args = []
 
-    chained_methods.each do |method|
+    @chained_methods.each do |method|
       if [:group_by].include?(method.name)
         method.args.each do |arg|
           args << arg if arg.is_a?(Symbol) || arg.is_a?(String)
@@ -103,9 +104,5 @@ class Organizer::Executor
     next_proc = _next_procs.shift
     return result unless next_proc
     execute(next_proc, result, _next_procs)
-  end
-
-  def chained_methods
-    @organizer.chainer.chained_methods
   end
 end
