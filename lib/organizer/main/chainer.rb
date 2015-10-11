@@ -3,7 +3,7 @@ class Organizer::Chainer
 
   CHAINABLE_METHODS = [
     { method: :skip_default_filters, chainable_with: [:filter_by] },
-    { method: :filter_by, chainable_with: [:skip_default_filters, :filter_by] },
+    { method: :filter_by, chainable_with: [:skip_default_filters, :filter_by, :group_by] },
     { method: :group_by, chainable_with: [:skip_default_filters, :filter_by, :group_by] }
   ]
 

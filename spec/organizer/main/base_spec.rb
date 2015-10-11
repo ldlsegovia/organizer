@@ -33,11 +33,6 @@ describe Organizer::Base do
           expect(result.size).to eq(8)
         end
 
-        it "raises error chaning filter to invalid methods" do
-          expect { @organizer.group_by(:gender).filter_by(:my_filter) }.to(
-            raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
-        end
-
         it "applies chained filters calling filter_by several times" do
           result = @organizer.filter_by(:filter1).filter_by(filter2: 33).organize
           expect(result).to be_a(Organizer::Source::Collection)
@@ -221,14 +216,60 @@ describe Organizer::Base do
               BaseChild.add_memo_operation(:greater_age) do |memo, item|
                 memo.greater_age > item.age ? memo.greater_age : item.age
               end
+              BaseChild.add_memo_operation(:lower_savings, nil) do |memo, item|
+                memo.lower_savings = item.savings if memo.lower_savings.nil?
+                memo.lower_savings < item.savings ? memo.lower_savings : item.savings
+              end
             end
 
             it "applies operations to full group hierarchy" do
               result = @organizer.group_by(:gender, :site_id).organize
-              expect(result.first.greater_age).to eq(65)
-              expect(result.first.first.greater_age).to eq(31)
+              expect(result.first.lower_savings).to eq(2.5)
+              expect(result.first.first.lower_savings).to eq(15.5)
               expect(result.second.greater_age).to eq(64)
               expect(result.second.first.greater_age).to eq(64)
+            end
+
+            context "filtering groups" do
+              before do
+                BaseChild.add_filter(:greater_age_greater_than) do |item, value|
+                  item.greater_age > value
+                end
+                BaseChild.add_filter(:lower_savings_lower_than) do |item, value|
+                  item.lower_savings < value
+                end
+              end
+
+              it "applies filters to first group passing group names as array" do
+                q = @organizer.group_by(:gender, :site_id)
+                q = q.filter_by(greater_age_greater_than: 64)
+                result = q.organize
+
+                expect(result.size).to eq(1)
+                expect(result.first.greater_age).to eq(65)
+                expect(result.first.size).to eq(3)
+              end
+
+              it "applies filters to previous group" do
+                q = @organizer.group_by(:gender).filter_by(greater_age_greater_than: 64)
+                q = q.group_by(:site_id).filter_by(lower_savings_lower_than: 10)
+                result = q.organize
+
+                expect(result.size).to eq(1)
+                expect(result.first.greater_age).to eq(65)
+                expect(result.first.size).to eq(1)
+                expect(result.first.first.lower_savings).to eq(2.5)
+              end
+
+              it "applies multiple filters to previous group" do
+                q = @organizer.group_by(:site_id)
+                q = q.filter_by(greater_age_greater_than: 64, lower_savings_lower_than: 3)
+                result = q.organize
+
+                expect(result.size).to eq(1)
+                expect(result.first.greater_age).to eq(65)
+                expect(result.first.lower_savings).to eq(2.5)
+              end
             end
           end
         end

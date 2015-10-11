@@ -21,10 +21,11 @@ class Organizer::ExecutorArgs
     args
   end
 
-  def filters
+  def filters(_methods = nil)
     args = {}
+    _methods ||= @collection_methods
 
-    @collection_methods.each do |method|
+    _methods.each do |method|
       next unless method.filter_by?
       method.args.each do |arg|
         if arg.is_a?(Hash)
@@ -49,5 +50,23 @@ class Organizer::ExecutorArgs
 
     return if args.empty?
     args.uniq
+  end
+
+  def groups_filters
+    args = {}
+    group_filters = []
+
+    @group_methods.reverse.each do |method|
+      if method.filter_by?
+        group_filters << method
+      elsif method.group_by? && !group_filters.empty?
+        group_filters_args = filters(group_filters)
+        args[method.args.first] = group_filters_args if group_filters_args
+        group_filters = []
+      end
+    end
+
+    return if args.keys.empty?
+    args
   end
 end

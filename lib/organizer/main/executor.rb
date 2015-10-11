@@ -13,6 +13,7 @@ class Organizer::Executor
     load_filters_executor(executors, _definitions, _args)
     load_groups_executor(executors, _definitions, _args)
     load_group_operations_executor(executors, _definitions)
+    load_group_filters_executor(executors, _definitions, _args)
     executors
   end
 
@@ -69,11 +70,29 @@ class Organizer::Executor
     load_executor(_executors) do |source|
       if source.is_a?(Organizer::Group::Collection)
         Organizer::Operation::Executor.execute(
-          _definitions.group_operations, _definitions.collection, source)
+          _definitions.group_operations,
+          _definitions.collection,
+          source
+        )
       else
         source
       end
     end
+  end
+
+  def self.load_group_filters_executor(_executors, _definitions, _args)
+    args = _args.groups_filters
+    load_executor(_executors) do |source|
+      if source.is_a?(Organizer::Group::Collection)
+        Organizer::Filter::Applier.apply(
+          _definitions.filters,
+          source,
+          groups_filters: args
+        )
+      else
+        source
+      end
+    end if args
   end
 
   def self.load_executor(_executors)
