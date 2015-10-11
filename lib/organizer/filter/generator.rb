@@ -3,12 +3,10 @@ module Organizer
     class Generator
       include Organizer::Error
 
-      def self.generate(_item)
+      def self.generate(_attribute_names)
         filters = Organizer::Filter::Collection.new
-        return filters unless _item
 
-        raise_error(:generate_over_organizer_items_only) unless _item.is_a? Organizer::Source::Item
-        _item.attribute_names.each do |attribute|
+        _attribute_names.each do |attribute|
           generate_attr_filter(filters, attribute, :eq) { |item, value| item.send(attribute) == value }
           generate_attr_filter(filters, attribute, :not_eq) { |item, value| item.send(attribute) != value }
           generate_attr_filter(filters, attribute, :gt) { |item, value| item.send(attribute) > value }
