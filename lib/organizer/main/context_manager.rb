@@ -1,8 +1,7 @@
 module Organizer
   class Context
-    attr_reader :type
+    attr_reader :type, :identifier
     attr_accessor :data
-    attr_reader :identifier
 
     def initialize(_type)
       @type = _type.to_sym

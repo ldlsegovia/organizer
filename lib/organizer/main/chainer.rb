@@ -1,27 +1,9 @@
-class Organizer::ChainedMethod
-  attr_reader :name
-  attr_reader :args
-
-  def initialize(_method_name, _method_args)
-    @name = _method_name
-    @args = _method_args
-  end
-
-  def is?(_method_name)
-    name.to_s == _method_name.to_s
-  end
-
-  def args?
-    !args.blank?
-  end
-end
-
 class Organizer::Chainer
   include Organizer::Error
 
   CHAINABLE_METHODS = [
     { method: :skip_default_filters, chainable_with: [:filter_by] },
-    { method: :filter_by, chainable_with: [:skip_default_filters, :filter_by] },
+    { method: :filter_by, chainable_with: [:skip_default_filters, :filter_by, :group_by] },
     { method: :group_by, chainable_with: [:skip_default_filters, :filter_by, :group_by] }
   ]
 

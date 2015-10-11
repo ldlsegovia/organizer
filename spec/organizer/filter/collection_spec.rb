@@ -26,7 +26,7 @@ describe Organizer::Filter::Collection do
     end
 
     it "adds filter without a name" do
-      expect { subject.add_filter(nil, &->{}) }.to change { subject.count }.from(0).to(1)
+      expect { subject.add_filter(nil, &-> {}) }.to change { subject.count }.from(0).to(1)
     end
   end
 end

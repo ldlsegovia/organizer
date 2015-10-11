@@ -333,6 +333,20 @@ MyOrganizer.new.filter_by(:gender).filter_by(:section_id).organize
 MyOrganizer.new.filter_by(:gender, :section_id).organize
 ```
 
+* `group_by`:
+
+```ruby
+# filter1 will be applied to :gender group.
+MyOrganizer.new.group_by(:gender, :site_id).filter_by(:filter1).organize
+# filter1 will be applied to :gender group and :filter2 to :site_id group
+MyOrganizer.new.group_by(:gender).filter_by(:filter1).group_by(:site_id).filter_by(:filter2).organize
+# filter1 and :filter2 will be applied to :gender group
+MyOrganizer.new.group_by(:gender).filter_by(:filter1).filter_by(:filter2).organize
+MyOrganizer.new.group_by(:gender).filter_by(:filter1, :filter2).organize
+```
+
+> `:filter1` and `:filter2` must be group operations
+
 #### skip_default_filters
 
 Can be chained to:
