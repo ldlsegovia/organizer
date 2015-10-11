@@ -111,6 +111,20 @@ describe Organizer do
       end
     end
 
+    describe "#generate_filters_for" do
+      before do
+        Organizer.define("my_organizer") do
+          generate_filters_for(:attr1, :attr2)
+        end
+
+        @filters = MyOrganizer.filters
+      end
+
+      it "adds generated filters for attrs" do
+        expect(@filters.size).to eq(18)
+      end
+    end
+
     describe "#filter" do
       context "with normal filters" do
         before do

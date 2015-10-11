@@ -56,7 +56,7 @@ class Organizer::ExecutorArgs
     args = {}
     group_filters = []
 
-    @group_methods.reverse.each do |method|
+    @group_methods.reverse_each do |method|
       if method.filter_by?
         group_filters << method
       elsif method.group_by? && !group_filters.empty?

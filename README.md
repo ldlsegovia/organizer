@@ -147,6 +147,7 @@ Organizer.define("my_organizer") do
   end
 end
 ```
+
 You can define filters that will accept user params, declaring a second block argument.
 
 ```ruby
@@ -159,6 +160,16 @@ Organizer.define("my_organizer") do
 end
 ```
 
+Also, you can generate common filters for certain attributes...
+
+```ruby
+Organizer.define("my_organizer") do
+  # root level definitions...
+
+  generate_filters_for(:name, :savings, :age)
+end
+```
+
 ##### Usage Example
 
 ```ruby
@@ -167,6 +178,11 @@ MyOrganizer.new.filter_by(:filter1).organize
 
 # passing values to filters
 MyOrganizer.new.filter_by(filter2: 5).organize
+
+# using auto generated common filters
+MyOrganizer.new.filter_by(name_contains: "Juan").organize
+MyOrganizer.new.filter_by(age_eq: 8).organize
+MyOrganizer.new.filter_by(savings_goet: 20).organize
 ```
 
 #### Operations

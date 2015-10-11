@@ -11,12 +11,7 @@ describe Organizer::Filter::Generator do
     subject { Organizer::Filter::Generator }
     let_collection(:collection)
     let(:item) { collection.first }
-    before { @filters = subject.generate(item) }
-
-    it "raise exception if _item is not an Organizer::Source::Item" do
-      expect { subject.generate("not an item") }.to(
-        raise_organizer_error(Organizer::Filter::GeneratorException, :generate_over_organizer_items_only))
-    end
+    before { @filters = subject.generate(item.attribute_names) }
 
     it "has generated filters" do
       item.attribute_names.each do |attribute|

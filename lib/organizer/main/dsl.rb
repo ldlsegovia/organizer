@@ -19,6 +19,13 @@ module Organizer
       in_root_context { @organizer_class.add_default_filter(_name, &block) }
     end
 
+    def generate_filters_for(*_attributes)
+      in_root_context do
+        filters = Organizer::Filter::Generator.generate(_attributes)
+        filters.each { |filter| @organizer_class.add_filter(filter.item_name, &filter.definition) }
+      end
+    end
+
     def filter(_name, &block)
       in_root_context do
         @organizer_class.add_filter(_name, &block)

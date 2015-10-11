@@ -41,19 +41,10 @@ class Organizer::Executor
     args = _args.filters
     load_executor(_executors) do |source|
       Organizer::Filter::Applier.apply(
-        get_filters(_definitions),
+        _definitions.filters,
         source,
         selected_filters: args)
     end if args
-  end
-
-  def self.get_filters(_definitions)
-    # TODO: build generated filters using DLS https://github.com/ldlsegovia/organizer/issues/40
-    generated_filters = Organizer::Filter::Generator.generate(_definitions.collection.first)
-    filters = Organizer::Filter::Collection.new
-    generated_filters.each { |gf| filters << gf }
-    _definitions.filters.each { |f| filters << f }
-    filters
   end
 
   def self.load_groups_executor(_executors, _definitions, _args)
