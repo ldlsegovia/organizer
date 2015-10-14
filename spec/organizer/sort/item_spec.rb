@@ -17,6 +17,11 @@ describe Organizer::Sort::Item do
       expect { item.descendant = false }.to raise_error
       expect { item.item_name = "name" }.to raise_error
     end
+
+    it "raise exception if _name is not defined" do
+      expect { Organizer::Sort::Item.new(nil) }.to(
+        raise_organizer_error(Organizer::Sort::ItemException, :blank_name))
+    end
   end
 
   describe "collection item mixin" do

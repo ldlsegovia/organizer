@@ -66,18 +66,6 @@ module Organizer
       }
     end
 
-    class ApplierException < ::Exception
-      ERRORS = {
-        generate_over_organizer_items_only: "Can generate usual filters only based on Organizer::Source::Items only"
-      }
-    end
-
-    class GeneratorException < ::Exception
-      ERRORS = {
-        generate_over_organizer_items_only: "Can generate usual filters only based on Organizer::Source::Items only"
-      }
-    end
-
     class CollectionException < ::Exception
       ERRORS = {
         invalid_item: "Invalid filter collection item. Must be Organizer:Filter only",
@@ -104,6 +92,21 @@ module Organizer
 
     class ExecutorException < ::Exception
       ERRORS = {}
+    end
+  end
+
+  module Sort
+    class CollectionException < ::Exception
+      ERRORS = {
+        invalid_item: "Invalid item for collection. Must be Organizer::Sort::Item instance",
+        repeated_item: "Repeated item. An Item with same name was added previously",
+      }
+    end
+
+    class ItemException < ::Exception
+      ERRORS = {
+        blank_name: "name param is mandatory",
+      }
     end
   end
 
