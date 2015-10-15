@@ -7,7 +7,7 @@ module Organizer
 
       attr_reader :descendant
 
-      def initialize(_name, _descendant = true)
+      def initialize(_name, _descendant = false)
         raise_error(:blank_name) if !_name
         @descendant = !!_descendant
         @item_name = _name

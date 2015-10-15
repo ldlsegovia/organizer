@@ -3,13 +3,13 @@ require 'spec_helper'
 describe Organizer::Sort::Item do
   describe "#initialize" do
     it "creates sort item" do
-      item = Organizer::Sort::Item.new(:item_name, "some true value")
+      item = Organizer::Sort::Item.new(:item_name)
       expect(item.item_name).to eq(:item_name)
-      expect(item.descendant).to be_truthy
+      expect(item.descendant).to be_falsy
     end
 
-    it "creates changes item descendant to false" do
-      expect(Organizer::Sort::Item.new(:item_name, nil).descendant).to be_falsy
+    it "creates changes item descendant to true" do
+      expect(Organizer::Sort::Item.new(:item_name, "some true value").descendant).to be_truthy
     end
 
     it "ensures read only for name and descendant attrs" do

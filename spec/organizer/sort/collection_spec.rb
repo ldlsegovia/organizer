@@ -23,7 +23,7 @@ describe Organizer::Sort::Collection do
       item = subject.add_item(:item_name)
       expect(item).to be_a(Organizer::Sort::Item)
       expect(item.item_name).to eq(:item_name)
-      expect(item.descendant).to be_truthy
+      expect(item.descendant).to be_falsey
     end
   end
 end
