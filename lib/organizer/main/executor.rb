@@ -19,7 +19,7 @@ class Organizer::Executor
 
   def self.load_operations_executor(_executors, _definitions)
     load_executor(_executors) do |source|
-      Organizer::Operation::Executor.execute(_definitions.operations, source)
+      Organizer::Operation::Executor.execute_on_source(_definitions.operations, source)
     end
   end
 
@@ -47,7 +47,7 @@ class Organizer::Executor
   def self.load_group_operations_executor(_executors, _definitions)
     load_executor(_executors) do |source|
       if source.is_a?(Organizer::Group::Collection)
-        Organizer::Operation::Executor.execute(
+        Organizer::Operation::Executor.execute_on_groups(
           _definitions.group_operations,
           _definitions.collection,
           source

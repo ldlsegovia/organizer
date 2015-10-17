@@ -59,7 +59,7 @@ describe Organizer::Filter::Applier do
       @operations.add_memo_operation(:greatest_savings) do |memo, item|
         (memo.greatest_savings > item.savings) ? memo.greatest_savings : item.savings
       end
-      @group = Organizer::Operation::Executor.execute(@operations, collection, result)
+      @group = Organizer::Operation::Executor.execute_on_groups(@operations, collection, result)
 
       @filters.add_filter(:filter2) { |item, value| item.age_sum < value }
     end
