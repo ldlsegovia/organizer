@@ -20,13 +20,13 @@ module Organizer
         apply_filters(selected_filters, _source_collection, filter_pairs)
       end
 
-      def self.apply_selected_on_groups(_filters, _groups_collection, _selected_filters)
+      def self.apply_selected_on_groups(_filters, _groups_collection, _groups_filters)
         return if _groups_collection.empty?
         return unless _groups_collection.first.is_a?(Organizer::Group::Item)
-        group_filters = _selected_filters[_groups_collection.first.group_name]
+        group_filters = _groups_filters[_groups_collection.first.group_name]
         selected_filters = !!group_filters ? _filters.select_items(group_filters.keys) : []
         apply_filters(selected_filters, _groups_collection, group_filters)
-        _groups_collection.each { |item| apply_selected_on_groups(_filters, item, _selected_filters) }
+        _groups_collection.each { |item| apply_selected_on_groups(_filters, item, _groups_filters) }
       end
 
       def self.apply_filters(_filters, _collection, _filters_values = {})

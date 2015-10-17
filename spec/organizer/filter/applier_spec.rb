@@ -45,7 +45,7 @@ describe Organizer::Filter::Applier do
     end
   end
 
-  context "working with groups" do
+  context "#apply_selected_on_groups" do
     before do
       groups = Organizer::Group::Collection.new
       groups.add_group(:site, :site_id)
@@ -53,12 +53,15 @@ describe Organizer::Filter::Applier do
       result = Organizer::Group::Builder.build(collection, groups, [:site, :store])
 
       @operations = Organizer::Operation::Collection.new
+
       @operations.add_memo_operation(:age_sum) do |memo, item|
         memo.age_sum + item.age
       end
+
       @operations.add_memo_operation(:greatest_savings) do |memo, item|
         (memo.greatest_savings > item.savings) ? memo.greatest_savings : item.savings
       end
+
       @group = Organizer::Operation::Executor.execute_on_groups(@operations, collection, result)
 
       @filters.add_filter(:filter2) { |item, value| item.age_sum < value }

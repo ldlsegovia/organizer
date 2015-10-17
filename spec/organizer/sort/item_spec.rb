@@ -5,16 +5,16 @@ describe Organizer::Sort::Item do
     it "creates sort item" do
       item = Organizer::Sort::Item.new(:item_name)
       expect(item.item_name).to eq(:item_name)
-      expect(item.descendant).to be_falsy
+      expect(item.descending).to be_falsy
     end
 
-    it "creates changes item descendant to true" do
-      expect(Organizer::Sort::Item.new(:item_name, "some true value").descendant).to be_truthy
+    it "creates changes item descending to true" do
+      expect(Organizer::Sort::Item.new(:item_name, "some true value").descending).to be_truthy
     end
 
-    it "ensures read only for name and descendant attrs" do
+    it "ensures read only for name and descending attrs" do
       item = Organizer::Sort::Item.new(:item_name)
-      expect { item.descendant = false }.to raise_error
+      expect { item.descending = false }.to raise_error
       expect { item.item_name = "name" }.to raise_error
     end
 
