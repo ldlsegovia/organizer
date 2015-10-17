@@ -1,15 +1,9 @@
 class Organizer::ExecutorArgs
   include Organizer::Error
 
-  def initialize(_chained_methods)
-    @collection_methods = []
-    @group_methods = []
-    collection_method = true
-
-    _chained_methods.each do |method|
-      collection_method = false if method.group_by?
-      !!collection_method ? @collection_methods << method : @group_methods << method
-    end
+  def initialize(_collection_methods, _group_methods)
+    @collection_methods = _collection_methods
+    @group_methods = _group_methods
   end
 
   def default_filters_to_skip

@@ -63,31 +63,17 @@ describe Organizer::Base do
             expect(result.size).to eq(8)
           end
 
-          it "chains skip_default_filter with filter_by method" do
-            result = @organizer.skip_default_filters(:my_filter).filter_by(:filter1).organize
-            expect(result).to be_a(Organizer::Source::Collection)
-            expect(result.size).to eq(8)
-          end
-
-          it "chains filter_by with skip_default_filter method" do
-            result = @organizer.filter_by(:filter1).skip_default_filters(:my_filter).organize
-            expect(result).to be_a(Organizer::Source::Collection)
-            expect(result.size).to eq(8)
-          end
-
           it "skips all default filters" do
             result = @organizer.skip_default_filters.organize
             expect(result).to be_a(Organizer::Source::Collection)
             expect(result.size).to eq(9)
           end
 
-          it "raises error chaning skip filter to group by method" do
-            expect { @organizer.group_by(:gender).skip_default_filters }.to(
+          it "raises error chaning skip filter with other methods group by method" do
+            expect { @organizer.filter_by(:gender).skip_default_filters }.to(
               raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
-          end
 
-          it "raises error chaning skip filter to another skip filter" do
-            expect { @organizer.skip_default_filters.skip_default_filters }.to(
+            expect { @organizer.group_by(:gender).skip_default_filters }.to(
               raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
           end
         end
@@ -123,16 +109,6 @@ describe Organizer::Base do
             result = @organizer.group_by(:site_id).organize
             expect(result).to be_a(Organizer::Group::Collection)
             expect(result.size).to eq(3)
-          end
-
-          it "allows to chain group after skip_default_filters method" do
-            BaseChild.add_default_filter(:my_filter) { true }
-            expect { @organizer.skip_default_filters(:my_filter).group_by(:site_id).organize }.to_not raise_error
-          end
-
-          it "allows to chain group after filter_by method" do
-            BaseChild.add_filter(:my_filter) { true }
-            expect { @organizer.filter_by(:my_filter).group_by(:site_id).organize }.to_not raise_error
           end
 
           context "with operations" do

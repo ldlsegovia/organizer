@@ -1,43 +1,38 @@
 class Organizer::Chainer
   include Organizer::Error
 
+  attr_reader :group_methods, :collection_methods
+
   CHAINABLE_METHODS = [
-    { method: :skip_default_filters, chainable_with: [:filter_by] },
-    { method: :filter_by, chainable_with: [:skip_default_filters, :filter_by, :group_by] },
-    { method: :group_by, chainable_with: [:skip_default_filters, :filter_by, :group_by] }
+    :skip_default_filters,
+    :filter_by,
+    :group_by,
+    :sort_by
   ]
 
+  def initialize
+    @is_groups_context = false
+    @group_methods = []
+    @collection_methods = []
+  end
+
   def chain(_method, _args)
-    chained_methods << Organizer::ChainedMethod.new(_method, _args.flatten)
+    method = Organizer::ChainedMethod.new(_method, _args.flatten)
+    @is_groups_context = true if method.group_by?
+
+    if method.skip_default_filters? && (@is_groups_context || !collection_methods.empty?)
+      raise_error(:invalid_chaining)
+    end
+
+    @is_groups_context ? @group_methods << method : @collection_methods << method
     self
   end
 
   def chainable_method?(_method)
-    result = chainable_methods.include?(_method)
-    raise_error(:invalid_chaining) unless can_chain?(_method)
-    result
+    CHAINABLE_METHODS.include?(_method)
   end
 
   def chained_methods
-    @chained_methods ||= []
-  end
-
-  private
-
-  def chainable_methods
-    CHAINABLE_METHODS.collect { |chainable| chainable[:method] }
-  end
-
-  def can_chain?(_method)
-    return true if chained_methods.empty?
-    last_method = chained_methods.last
-    methods = chainable_with(_method)
-    methods.include?(last_method.name)
-  end
-
-  def chainable_with(_method)
-    chainable = CHAINABLE_METHODS.find { |cm| cm[:method] == _method }
-    return [] unless chainable
-    chainable[:chainable_with]
+    @collection_methods + @group_methods
   end
 end

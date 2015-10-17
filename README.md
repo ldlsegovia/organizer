@@ -1,6 +1,8 @@
 # Organizer
 
-Organizer is a ruby gem that allows you to perform different actions like: filtering, ordering, grouping and operations over denormalized data, in order to produce a new data structure with the result.
+Organizer is a ruby gem that allows you to build, through a DSL, definitions that later will be used, over denormalized data, to perform operations like: **filtering, ordering, grouping, complex attributes generation, etc** very easily.
+
+> Keep in mind, this gem is designed to facilitate data structures generation more than performance.
 
 ## Installation
 
@@ -42,9 +44,11 @@ Inside define's method block, you can pass:
 
 ### On Root context
 
-#### A Collection
+#### `#collection`
 
 This method takes a block containing a denormalized collection. The block's content will be executed later. So, you can pass anything that produces a collection.
+
+> Remember: this is the only mandatory method. All actions will be executed over the collection passed here.
 
 ##### Definition Example
 
@@ -99,22 +103,26 @@ MyOrganizer.new.organize
 MyOrganizer.new(age: 8).organize
 ```
 
-#### Default Filters
+#### `#operation`
 
-Allows you to define conditions that will be evaluated, over each collection item, at the beginning of the data generation, in order to perform an initial filter of the whole dataset.
+You can perform operations between item's attribute values. The result of this operations will be added, as new attributes, to each collection item with the operation's name. For example:
 
 ##### Definition Example
 
 ```ruby
 Organizer.define("my_organizer") do
-  # root level definitions...
-
-  default_filter do |item|
-    item.age > 22
+  operation(:attrs_sum) do |item|
+    item.age * 2
   end
+end
+```
 
-  default_filter(:named_default_filter) do |item|
-    item.age < 60
+You also can perform operations using the resulting attributes. For example:
+
+```ruby
+Organizer.define("my_organizer") do
+  operation(:newer_attribute) do |item|
+    item.attrs_sum * 2
   end
 end
 ```
@@ -122,17 +130,46 @@ end
 ##### Usage Example
 
 ```ruby
-# with default filters
+# You don't need nothing special to apply operations. It's enough with the definition
+MyOrganizer.new.organize
+```
+
+#### `#default_filter`
+
+Allows you to define conditions that will be evaluated, over each collection item, at the beginning of the data generation, in order to perform an initial filter of the whole dataset.
+
+##### Definition Example
+
+```ruby
+Organizer.define("my_organizer") do
+  default_filter do |item|
+    item.age > 22
+  end
+
+  default_filter(:filter1) do |item|
+    item.age < 60
+  end
+
+  default_filter(:filter2) do |item|
+    item.age > 10
+  end
+end
+```
+
+##### Usage Example
+
+```ruby
+# You don't need nothing special to apply default filters. It's enough with the definition
 MyOrganizer.new.organize
 
 # skiping all default filters
 MyOrganizer.new.skip_default_filters(:all).organize
 
 # skiping default filters using filter name
-MyOrganizer.new..skip_default_filters(:named_default_filter).organize
+MyOrganizer.new.skip_default_filters(:filter1, :filter2).organize
 ```
 
-#### Filters
+#### `#filter`
 
 Allows you to define conditions that will not be initially evaluated but user may activate later.
 
@@ -140,8 +177,6 @@ Allows you to define conditions that will not be initially evaluated but user ma
 
 ```ruby
 Organizer.define("my_organizer") do
-  # root level definitions...
-
   filter(:filter1) do |item|
     item.age > 33
   end
@@ -152,8 +187,6 @@ You can define filters that will accept user params, declaring a second block ar
 
 ```ruby
 Organizer.define("my_organizer") do
-  # root level definitions...
-
   filter(:filter2) do |item, value|
     item.age == value
   end
@@ -164,8 +197,6 @@ Also, you can generate common filters for certain attributes...
 
 ```ruby
 Organizer.define("my_organizer") do
-  # root level definitions...
-
   generate_filters_for(:name, :savings, :age)
 end
 ```
@@ -183,55 +214,24 @@ MyOrganizer.new.filter_by(filter2: 5).organize
 MyOrganizer.new.filter_by(name_contains: "Juan").organize
 MyOrganizer.new.filter_by(age_eq: 8).organize
 MyOrganizer.new.filter_by(savings_goet: 20).organize
+
+# passing multiple filters
+MyOrganizer.new.filter_by(:filter1, filter2: 5).organize
+MyOrganizer.new.filter_by(:filter1).filter_by(filter2: 5).organize
 ```
 
-#### Operations
-
-You can perform operations between item's attribute values. The result of this operations will be added, as new attributes, to each collection item with the operation's name. For example:
-
-##### Definition Example
-
-```ruby
-Organizer.define("my_organizer") do
-  # root level definitions...
-
-  operation(:attrs_sum) do |item|
-    item.age * 2
-  end
-end
-```
-
-You also can perform operations using the resulting attributes. For example:
-
-```ruby
-Organizer.define("my_organizer") do
-  # root level definitions...
-
-  operation(:newer_attribute) do |item|
-    item.attrs_sum * 2
-  end
-end
-```
-
-##### Usage Example
-
-```ruby
-# with operations
-MyOrganizer.new.organize
-```
+> Remember: filters will work with generated attributes (operation) too.
 
 ### On Groups context
 
-#### Groups
+#### `#group`
 
-You can define groups. The data will be grouped by the attribute passed in `group_by` param.
+You can define groups. The data will be grouped by the attribute passed in `group_by` method.
 
 ##### Definition Example
 
 ```ruby
 Organizer.define("my_organizer") do
- # root level definitions...
-
   groups do
     group(my_group: :site_id) # named group
     group(:site_id) # grouping by attribute
@@ -244,11 +244,13 @@ end
 
 ```ruby
 MyOrganizer.new.group_by(:my_group).organize
+
 MyOrganizer.new.group_by(:site_id).organize
+
 MyOrganizer.new.group_by(:age_greater_than_33).organize
 ```
 
-#### Operations
+#### `#operation`
 
 You can define operations that will be applied to groups only.
 
@@ -256,8 +258,6 @@ You can define operations that will be applied to groups only.
 
 ```ruby
 Organizer.define("my_organizer") do
- # root level definitions...
-
   groups do
     operation(:age_sum) do |group_item, item|
       group_item.age_sum += item.age
@@ -275,6 +275,7 @@ end
 ##### Usage Example
 
 ```ruby
+## You don't need nothing special to apply operations. It's enough with the definition
 MyOrganizer.new.group_by(:site_id).organize
 ```
 
@@ -286,8 +287,6 @@ You can define nested groups.
 
 ```ruby
 Organizer.define("my_organizer") do
- # root level definitions...
-
   groups do
     group(:gender) do
       group(:site_id) do
@@ -301,6 +300,7 @@ end
 ##### Usage Example
 
 ```ruby
+# this will group the collection by gender, then each gender by site and then each site by section.
 MyOrganizer.new.group_by(:gender).organize
 ```
 
@@ -312,8 +312,6 @@ You can nest groups calling `organize` method passing group names as array param
 
 ```ruby
 Organizer.define("my_organizer") do
- # root level definitions...
-
   groups do
     group(:gender)
     group(:site_id)
@@ -326,73 +324,44 @@ end
 
 ```ruby
 MyOrganizer.new.group_by(:gender, :site_id, :section_id).organize
+MyOrganizer.new.group_by(:gender).group_by(:site_id).group_by(:section_id).organize
+```
+
+#### `#filter`
+
+You can filter groups too. The filters **can be applied on attributes generated by group operations only**.
+Filters are defined at root level and can be applied on groups or simple collections.
+
+##### Usage Example
+
+```ruby
+# filter1 will be applied to :gender group.
+MyOrganizer.new.group_by(:gender, :site_id).filter_by(:filter1).organize
+
+# filter1 will be applied to :gender group and :filter2 to :site_id group
+MyOrganizer.new.group_by(:gender).filter_by(:filter1).group_by(:site_id).filter_by(:filter2).organize
+
+# filter1 and :filter2 will be applied to :gender group
+MyOrganizer.new.group_by(:gender).filter_by(:filter1).filter_by(:filter2).organize
+MyOrganizer.new.group_by(:gender).filter_by(:filter1, :filter2).organize
 ```
 
 ### Putting all together
 
 Filters, groups, etc. can be chained to produce more accurate results...
 
-#### filter_by
-
-Can be chained to:
-
-* `skip_default_filters`:
-
 ```ruby
-MyOrganizer.new.skip_default_filters(:some_default_filter).filter_by(:section_id).organize
-```
-
-* `filter_by`:
-
-```ruby
-MyOrganizer.new.filter_by(:gender).filter_by(:section_id).organize
-MyOrganizer.new.filter_by(:gender, :section_id).organize
-```
-
-* `group_by`:
-
-```ruby
-# filter1 will be applied to :gender group.
-MyOrganizer.new.group_by(:gender, :site_id).filter_by(:filter1).organize
-# filter1 will be applied to :gender group and :filter2 to :site_id group
-MyOrganizer.new.group_by(:gender).filter_by(:filter1).group_by(:site_id).filter_by(:filter2).organize
-# filter1 and :filter2 will be applied to :gender group
-MyOrganizer.new.group_by(:gender).filter_by(:filter1).filter_by(:filter2).organize
-MyOrganizer.new.group_by(:gender).filter_by(:filter1, :filter2).organize
-```
-
-> `:filter1` and `:filter2` must be group operations
-
-#### skip_default_filters
-
-Can be chained to:
-
-* `filter_by`:
-
-```ruby
-MyOrganizer.new.filter_by(:gender).skip_default_filters(:section_id).organize
-```
-
-#### group_by
-
-Can be chained to:
-
-* `group_by`:
-
-```ruby
-MyOrganizer.new.group_by(:my_group).group_by(:other_group).organize
-```
-
-* `filter_by`:
-
-```ruby
-MyOrganizer.new.filter_by(:gender).group_by(:my_group).organize
-```
-
-* `skip_default_filters`:
-
-```ruby
-MyOrganizer.new.skip_default_filters(:all).group_by(:my_group).organize
+q = MyOrganizer.new
+# apply default
+q = q.skip_default_filters(:some_default_filter)
+# filter collection by filter1
+q = q.filter_by(:filter1)
+# the result is grouped by site_id and each site by section_id
+q = q.group_by(:site_id, :section_id)
+# then, site group will by filtered by filter2
+q = q.filter_by(:filter2)
+# returns the result
+q.organize
 ```
 
 ## Contributing
