@@ -3,16 +3,8 @@ module Organizer
     class Applier
       include Organizer::Error
 
-      def self.apply(_sort_items, _collection)
-        if _collection.is_a?(Organizer::Source::Collection)
-          return sort(_sort_items, _collection)
-
-        elsif _collection.is_a?(Organizer::Group::Collection)
-          # TODO
-          return
-        end
-
-        _collection
+      def self.apply_on_source(_sort_items, _source_collection)
+        sort(_sort_items, _source_collection)
       end
 
       def self.sort(_sort_items, _collection)
