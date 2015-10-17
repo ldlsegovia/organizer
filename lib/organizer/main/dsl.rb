@@ -2,8 +2,6 @@ module Organizer
   class DSL
     include Organizer::Error
 
-    attr_reader :context
-
     def initialize(_organizer_name, &block)
       @organizer_class = create_organizer_class(_organizer_name)
       @ctx = Organizer::ContextManager.new

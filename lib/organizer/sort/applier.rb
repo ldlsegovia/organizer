@@ -23,19 +23,20 @@ module Organizer
           side_two = []
 
           _sort_items.each do |sort_item|
+            a = first_item.send(sort_item.item_name)
+            b = second_item.send(sort_item.item_name)
+
             if sort_item.descendant
-              side_one << second_item.send(sort_item.item_name)
-              side_two << first_item.send(sort_item.item_name)
+              side_one << b
+              side_two << a
             else
-              side_one << first_item.send(sort_item.item_name)
-              side_two << second_item.send(sort_item.item_name)
+              side_one << a
+              side_two << b
             end
           end
 
           side_one <=> side_two
         end
-
-        _collection
       end
     end
   end

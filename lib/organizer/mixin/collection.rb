@@ -36,8 +36,7 @@ module Organizer
     private
 
     def item_in_names?(_item, _item_names)
-      !!_item.item_name &&
-        _item_names.map(&:to_sym).include?(_item.item_name.to_sym)
+      !!_item.item_name && _item_names.map(&:to_sym).include?(_item.item_name.to_sym)
     end
 
     def empty_item_names?(_item_names)
