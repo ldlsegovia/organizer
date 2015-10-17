@@ -6,6 +6,7 @@ module Organizer
       include Organizer::Explainer
 
       attr_reader :definition
+      attr_accessor :value
 
       def initialize(_definition, _name = nil)
         raise_error(:definition_must_be_a_proc) if !_definition.is_a?(Proc)
@@ -13,9 +14,9 @@ module Organizer
         @item_name = _name
       end
 
-      def apply(_item, _value = nil)
+      def apply(_item)
         raise_error(:apply_on_collection_items_only) if !_item.is_a?(Organizer::CollectionItem)
-        result = definition.parameters.count == 2 ? definition.call(_item, _value) : definition.call(_item)
+        result = definition.parameters.count == 2 ? definition.call(_item, value) : definition.call(_item)
         raise_error(:definition_must_return_boolean) if !!result != result
         result
       end

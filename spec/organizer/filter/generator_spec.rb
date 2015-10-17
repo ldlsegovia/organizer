@@ -16,7 +16,7 @@ describe Organizer::Filter::Generator do
     it "has generated filters" do
       item.attribute_names.each do |attribute|
         [:eq, :not_eq, :gt, :lt, :goet, :loet, :starts, :ends, :contains].each do |sufix|
-          filter_name = "#{attribute}_#{sufix}"
+          filter_name = "#{attribute}_#{sufix}".to_sym
           expect(@filters.find_by_name(filter_name).item_name).to eq(filter_name)
         end
       end

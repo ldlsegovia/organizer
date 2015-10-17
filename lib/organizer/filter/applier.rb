@@ -29,16 +29,15 @@ module Organizer
         _groups_collection.each { |item| apply_selected_on_groups(_filters, item, _selected_filters) }
       end
 
-      def self.apply_filters(_filters, _collection, _filters_values = nil)
+      def self.apply_filters(_filters, _collection, _filters_values = {})
         return _collection unless _filters
+        load_filter_values(_filters, _filters_values)
 
         _collection.reject! do |item|
           keep_item = true
 
           _filters.each do |filter|
-            value = get_filter_value(filter, _filters_values)
-
-            if !filter.apply(item, value)
+            if !filter.apply(item)
               keep_item = false
               break
             end
@@ -50,9 +49,15 @@ module Organizer
         _collection
       end
 
-      def self.get_filter_value(_filter, _filters_values)
-        return if !_filters_values || !_filter.item_name
-        _filters_values[_filter.item_name] || _filters_values[_filter.item_name.to_sym]
+      def self.load_filter_values(_filters, _filters_values = {})
+        return unless _filters_values
+        _filters_values = _filters_values.with_indifferent_access
+
+        _filters.each do |filter|
+          next unless filter.item_name
+          value = _filters_values[filter.item_name]
+          filter.value = value if value
+        end
       end
     end
   end

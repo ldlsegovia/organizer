@@ -22,7 +22,7 @@ module Organizer
       end
 
       def self.generate_attr_filter(_filters, _attr, _sufix, &proc)
-        filter_name = "#{_attr}_#{_sufix}"
+        filter_name = "#{_attr}_#{_sufix}".to_sym
         _filters.add_filter(filter_name, &proc)
       end
     end
