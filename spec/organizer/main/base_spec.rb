@@ -101,6 +101,34 @@ describe Organizer::Base do
         end
       end
 
+      context "sorting" do
+        it "sorts collection ascending" do
+          result = BaseChild.new.sort_by(:age).organize
+          expect(result.first.age).to eq(8)
+          expect(result.last.age).to eq(65)
+
+          result = BaseChild.new.sort_by(age: :asc).organize
+          expect(result.first.age).to eq(8)
+          expect(result.last.age).to eq(65)
+        end
+
+        it "sorts collection descending" do
+          result = BaseChild.new.sort_by(age: :desc).organize
+          expect(result.first.age).to eq(65)
+          expect(result.last.age).to eq(8)
+        end
+
+        it "sorts by multiple attributes" do
+          result = BaseChild.new.sort_by(gender: :desc, age: :desc).organize
+          expect(result.first.first_name).to eq("Rodolfo")
+          expect(result.last.first_name).to eq("Virginia")
+
+          result = BaseChild.new.sort_by(gender: :desc).sort_by(age: :desc).organize
+          expect(result.first.first_name).to eq("Rodolfo")
+          expect(result.last.first_name).to eq("Virginia")
+        end
+      end
+
       context "working with groups" do
         context "grouping by attribute" do
           before { BaseChild.add_group(:site_id) }

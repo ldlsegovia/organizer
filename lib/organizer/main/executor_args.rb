@@ -22,15 +22,34 @@ class Organizer::ExecutorArgs
     _methods.each do |method|
       next unless method.filter_by?
       method.args.each do |arg|
-        if arg.is_a?(Hash)
+        if hash?(arg)
           args.merge!(arg)
-        elsif arg.is_a?(Symbol) || arg.is_a?(String)
+        elsif string?(arg)
           args[arg] = nil
         end
       end
     end
 
     return if args.keys.empty?
+    args
+  end
+
+  def sort_items(_methods = nil)
+    args = Organizer::Sort::Collection.new
+    _methods ||= @collection_methods
+
+    _methods.each do |method|
+      next unless method.sort_by?
+      method.args.each do |arg|
+        if hash?(arg)
+          arg.each { |attr_name, orientation| add_sort_item(args, attr_name, orientation) }
+        elsif string?(arg)
+          add_sort_item(args, arg)
+        end
+      end
+    end
+
+    return if args.empty?
     args
   end
 
@@ -62,5 +81,20 @@ class Organizer::ExecutorArgs
 
     return if args.keys.empty?
     args
+  end
+
+  private
+
+  def add_sort_item(_args, _attr_name, _orientation = nil)
+    descending = true if _orientation.to_s == "desc"
+    _args.add_item(_attr_name.to_sym, descending)
+  end
+
+  def string?(_arg)
+    _arg.is_a?(Symbol) || _arg.is_a?(String)
+  end
+
+  def hash?(_arg)
+    _arg.is_a?(Hash)
   end
 end

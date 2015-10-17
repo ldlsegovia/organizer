@@ -16,7 +16,7 @@ module Organizer
       end
 
       def self.sort(_sort_items, _collection)
-        return _collection unless _sort_items
+        return _collection unless _sort_items && !_sort_items.empty?
         _collection.sort! do |item, next_item|
           compare_items(_sort_items, item, next_item)
         end

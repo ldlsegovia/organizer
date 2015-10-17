@@ -11,6 +11,7 @@ class Organizer::Executor
     load_operations_executor(executors, _definitions)
     load_default_filters_executor(executors, _definitions, _args)
     load_filters_executor(executors, _definitions, _args)
+    load_sort_items_executor(executors, _args)
     load_groups_executor(executors, _definitions, _args)
     load_group_operations_executor(executors, _definitions)
     load_group_filters_executor(executors, _definitions, _args)
@@ -34,6 +35,13 @@ class Organizer::Executor
     args = _args.filters
     load_executor(_executors) do |source|
       Organizer::Filter::Applier.apply_selected(_definitions.filters, source, args)
+    end if args
+  end
+
+  def self.load_sort_items_executor(_executors, _args)
+    args = _args.sort_items
+    load_executor(_executors) do |source|
+      Organizer::Sort::Applier.apply_on_source(args, source)
     end if args
   end
 
