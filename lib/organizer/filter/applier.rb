@@ -3,27 +3,12 @@ module Organizer
     class Applier
       include Organizer::Error
 
-      def self.apply(_filters, _collection, _options = {})
-        if _options.has_key?(:skipped_filters)
-          return apply_skipping_filters(_filters, _collection, _options[:skipped_filters])
-
-        elsif _options.has_key?(:selected_filters)
-          return apply_selecting_filters(_filters, _collection, _options[:selected_filters])
-
-        elsif _options.has_key?(:groups_filters)
-          apply_groups_filters(_filters, _collection, _options[:groups_filters])
-          return _collection
-        end
-
-        _collection
+      def self.apply_except_skipped(_filters, _source_collection, _skipped_filter_names = nil)
+        selected_filters = _filters.reject_items(_skipped_filter_names) unless _skipped_filter_names == :all
+        apply_filters(selected_filters, _source_collection)
       end
 
-      def self.apply_skipping_filters(_filters, _collection, _skipped_filters)
-        selected_filters = (_skipped_filters == :all) ? nil : _filters.reject_items(_skipped_filters)
-        apply_filters(selected_filters, _collection)
-      end
-
-      def self.apply_selecting_filters(_filters, _collection, _selected_filters)
+      def self.apply_selected(_filters, _source_collection, _selected_filters = {})
         filter_pairs = {}
 
         if _selected_filters.is_a?(Hash)
@@ -32,16 +17,16 @@ module Organizer
         end
 
         selected_filters = _filters.select_items(_selected_filters)
-        apply_filters(selected_filters, _collection, filter_pairs)
+        apply_filters(selected_filters, _source_collection, filter_pairs)
       end
 
-      def self.apply_groups_filters(_filters, _collection, _groups_filters)
-        return if _collection.empty?
-        return unless _collection.first.is_a?(Organizer::Group::Item)
-        group_filters = _groups_filters[_collection.first.group_name]
+      def self.apply_selected_on_groups(_filters, _groups_collection, _selected_filters)
+        return if _groups_collection.empty?
+        return unless _groups_collection.first.is_a?(Organizer::Group::Item)
+        group_filters = _selected_filters[_groups_collection.first.group_name]
         selected_filters = !!group_filters ? _filters.select_items(group_filters.keys) : []
-        apply_filters(selected_filters, _collection, group_filters)
-        _collection.each { |item| apply_groups_filters(_filters, item, _groups_filters) }
+        apply_filters(selected_filters, _groups_collection, group_filters)
+        _groups_collection.each { |item| apply_selected_on_groups(_filters, item, _selected_filters) }
       end
 
       def self.apply_filters(_filters, _collection, _filters_values = nil)

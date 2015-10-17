@@ -19,41 +19,28 @@ class Organizer::Executor
 
   def self.load_operations_executor(_executors, _definitions)
     load_executor(_executors) do |source|
-      Organizer::Operation::Executor.execute(
-        _definitions.operations,
-        source
-      )
+      Organizer::Operation::Executor.execute(_definitions.operations, source)
     end
   end
 
   def self.load_default_filters_executor(_executors, _definitions, _args)
     args = _args.default_filters_to_skip
     load_executor(_executors) do |source|
-      Organizer::Filter::Applier.apply(
-        _definitions.default_filters,
-        source,
-        skipped_filters: args
-      )
+      Organizer::Filter::Applier.apply_except_skipped(_definitions.default_filters, source, args)
     end
   end
 
   def self.load_filters_executor(_executors, _definitions, _args)
     args = _args.filters
     load_executor(_executors) do |source|
-      Organizer::Filter::Applier.apply(
-        _definitions.filters,
-        source,
-        selected_filters: args)
+      Organizer::Filter::Applier.apply_selected(_definitions.filters, source, args)
     end if args
   end
 
   def self.load_groups_executor(_executors, _definitions, _args)
     args = _args.groups
     load_executor(_executors) do |source|
-      Organizer::Group::Builder.build(
-        source,
-        _definitions.groups,
-        args)
+      Organizer::Group::Builder.build(source, _definitions.groups, args)
     end if args
   end
 
@@ -75,11 +62,7 @@ class Organizer::Executor
     args = _args.groups_filters
     load_executor(_executors) do |source|
       if source.is_a?(Organizer::Group::Collection)
-        Organizer::Filter::Applier.apply(
-          _definitions.filters,
-          source,
-          groups_filters: args
-        )
+        Organizer::Filter::Applier.apply_selected_on_groups(_definitions.filters, source, args)
       else
         source
       end
