@@ -267,6 +267,26 @@ describe Organizer::Base do
                 expect(result.first.lower_savings).to eq(2.5)
               end
             end
+
+            context "sorting" do
+              it "sorts parent group" do
+                group = @organizer.group_by(:gender).sort_by(greater_age: :desc).group_by(:site_id).organize
+                expect(group.first.greater_age).to eq(65)
+                expect(group.last.greater_age).to eq(64)
+
+                group = @organizer.group_by(:gender, :site_id).sort_by(greater_age: :desc).organize
+                expect(group.first.greater_age).to eq(65)
+                expect(group.last.greater_age).to eq(64)
+              end
+
+              it "sorts child group" do
+                group = @organizer.group_by(:gender).group_by(:site_id).sort_by(:lower_savings).organize
+                expect(group.first.first.lower_savings).to eq(2.5)
+                expect(group.first.last.lower_savings).to eq(25.5)
+                expect(group.last.first.lower_savings).to eq(30.0)
+                expect(group.last.last.lower_savings).to eq(45.5)
+              end
+            end
           end
         end
       end

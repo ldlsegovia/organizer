@@ -53,6 +53,24 @@ class Organizer::ExecutorArgs
     args
   end
 
+  def groups_sort_items
+    args = {}
+    group_sort_items = []
+
+    @group_methods.reverse_each do |method|
+      if method.sort_by?
+        group_sort_items << method
+      elsif method.group_by? && !group_sort_items.empty?
+        group_sort_items_args = sort_items(group_sort_items)
+        args[method.args.first] = group_sort_items_args if group_sort_items_args
+        group_sort_items = []
+      end
+    end
+
+    return if args.keys.empty?
+    args
+  end
+
   def groups
     args = []
 

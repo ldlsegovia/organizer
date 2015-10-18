@@ -15,6 +15,7 @@ class Organizer::Executor
     load_groups_executor(executors, _definitions, _args)
     load_group_operations_executor(executors, _definitions)
     load_group_filters_executor(executors, _definitions, _args)
+    load_group_sort_items_executor(executors, _args)
     executors
   end
 
@@ -71,6 +72,17 @@ class Organizer::Executor
     load_executor(_executors) do |source|
       if source.is_a?(Organizer::Group::Collection)
         Organizer::Filter::Applier.apply_selected_on_groups(_definitions.filters, source, args)
+      else
+        source
+      end
+    end if args
+  end
+
+  def self.load_group_sort_items_executor(_executors, _args)
+    args = _args.groups_sort_items
+    load_executor(_executors) do |source|
+      if source.is_a?(Organizer::Group::Collection)
+        Organizer::Sort::Applier.apply_on_groups(args, source)
       else
         source
       end
