@@ -45,7 +45,7 @@ describe Organizer::Filter::Applier do
     end
   end
 
-  context "#apply_selected_on_groups" do
+  context "#apply_groups_filters" do
     before do
       groups = Organizer::Group::Collection.new
       groups.add_group(:site, :site_id)
@@ -69,13 +69,13 @@ describe Organizer::Filter::Applier do
 
     it "filters parent group items" do
       options = { site: { filter2: 150 } }
-      subject.apply_selected_on_groups(@filters, @group, options)
+      subject.apply_groups_filters(@filters, @group, options)
       expect(@group.count).to eq(2)
     end
 
     it "filters child groups items" do
       options = { store: { filter2: 50 } }
-      subject.apply_selected_on_groups(@filters, @group, options)
+      subject.apply_groups_filters(@filters, @group, options)
       expect(@group.count).to eq(3)
       expect(@group.first.count).to eq(0)
       expect(@group.second.count).to eq(1)
@@ -84,7 +84,7 @@ describe Organizer::Filter::Applier do
 
     it "filters groups items in the complete hierarchy" do
       options = { site: { filter2: 150 }, store: { filter2: 50 } }
-      subject.apply_selected_on_groups(@filters, @group, options)
+      subject.apply_groups_filters(@filters, @group, options)
       expect(@group.count).to eq(2)
       expect(@group.first.count).to eq(0)
       expect(@group.second.count).to eq(1)

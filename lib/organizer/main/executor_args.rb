@@ -55,7 +55,7 @@ module Organizer
     end
 
     def groups_sort_items
-      ags_by_group(:sort_by, :sort_items)
+      args_by_group(:sort_by, :sort_items)
     end
 
     def groups
@@ -71,12 +71,12 @@ module Organizer
     end
 
     def groups_filters
-      ags_by_group(:filter_by, :filters)
+      args_by_group(:filter_by, :filters)
     end
 
     private
 
-    def ags_by_group(_method_name, _build_with)
+    def args_by_group(_method_name, _build_with)
       args = {}
       group_data = []
 

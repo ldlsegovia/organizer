@@ -72,7 +72,7 @@ module Organizer
       args = _args.groups_filters
       load_executor(_executors) do |source|
         if source.is_a?(Organizer::Group::Collection)
-          Organizer::Filter::Applier.apply_selected_on_groups(_definitions.filters, source, args)
+          Organizer::Filter::Applier.apply_groups_filters(_definitions.filters, source, args)
         else
           source
         end
