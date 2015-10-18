@@ -1,15 +1,9 @@
 class Organizer::ExecutorArgs
   include Organizer::Error
 
-  def initialize(_chained_methods)
-    @collection_methods = []
-    @group_methods = []
-    collection_method = true
-
-    _chained_methods.each do |method|
-      collection_method = false if method.group_by?
-      !!collection_method ? @collection_methods << method : @group_methods << method
-    end
+  def initialize(_collection_methods, _group_methods)
+    @collection_methods = _collection_methods
+    @group_methods = _group_methods
   end
 
   def default_filters_to_skip
@@ -28,11 +22,48 @@ class Organizer::ExecutorArgs
     _methods.each do |method|
       next unless method.filter_by?
       method.args.each do |arg|
-        if arg.is_a?(Hash)
+        if hash?(arg)
           args.merge!(arg)
-        elsif arg.is_a?(Symbol) || arg.is_a?(String)
+        elsif string?(arg)
           args[arg] = nil
         end
+      end
+    end
+
+    return if args.keys.empty?
+    args
+  end
+
+  def sort_items(_methods = nil)
+    args = Organizer::Sort::Collection.new
+    _methods ||= @collection_methods
+
+    _methods.each do |method|
+      next unless method.sort_by?
+      method.args.each do |arg|
+        if hash?(arg)
+          arg.each { |attr_name, orientation| add_sort_item(args, attr_name, orientation) }
+        elsif string?(arg)
+          add_sort_item(args, arg)
+        end
+      end
+    end
+
+    return if args.empty?
+    args
+  end
+
+  def groups_sort_items
+    args = {}
+    group_sort_items = []
+
+    @group_methods.reverse_each do |method|
+      if method.sort_by?
+        group_sort_items << method
+      elsif method.group_by? && !group_sort_items.empty?
+        group_sort_items_args = sort_items(group_sort_items)
+        args[method.args.first] = group_sort_items_args if group_sort_items_args
+        group_sort_items = []
       end
     end
 
@@ -68,5 +99,20 @@ class Organizer::ExecutorArgs
 
     return if args.keys.empty?
     args
+  end
+
+  private
+
+  def add_sort_item(_args, _attr_name, _orientation = nil)
+    descending = true if _orientation.to_s == "desc"
+    _args.add_item(_attr_name.to_sym, descending)
+  end
+
+  def string?(_arg)
+    _arg.is_a?(Symbol) || _arg.is_a?(String)
+  end
+
+  def hash?(_arg)
+    _arg.is_a?(Hash)
   end
 end

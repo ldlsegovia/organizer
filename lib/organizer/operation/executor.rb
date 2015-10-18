@@ -3,19 +3,16 @@ module Organizer
     class Executor
       include Organizer::Error
 
-      def self.execute(_operations, _collection, _group_collection = nil)
-        return unless _collection.is_a?(Organizer::Source::Collection)
+      def self.execute_on_source(_operations, _source_collection)
+        return _source_collection if _operations.count <= 0
+        _source_collection.each { |item| execute_recursively(item, _operations.dup) }
+        _source_collection
+      end
 
-        if _group_collection.blank?
-          return _collection if _operations.count <= 0
-          _collection.each { |item| execute_recursively(item, _operations.dup) }
-          return _collection
-        end
-
-        return unless _group_collection.is_a?(Organizer::Group::Collection)
+      def self.execute_on_groups(_operations, _source_collection, _group_collection)
         return _group_collection if _operations.count <= 0
 
-        _collection.each do |source_item|
+        _source_collection.each do |source_item|
           _group_collection.each do |group_item|
             eval_operations_against_groups(_operations, source_item, [group_item])
           end

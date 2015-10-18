@@ -9,8 +9,8 @@ module Organizer
       attr_reader :definition
 
       def initialize(_definition, _name)
-        raise_error(:definition_must_be_a_proc) if !_definition.is_a?(Proc)
-        raise_error(:blank_name) if !_name
+        raise_error(:definition_must_be_a_proc) unless _definition.is_a?(Proc)
+        raise_error(:blank_name) unless _name
         @definition = _definition
         @item_name = _name
       end

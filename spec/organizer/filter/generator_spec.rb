@@ -4,7 +4,7 @@ describe Organizer::Filter::Generator do
   let_collection(:collection)
 
   def apply_filter(_key, _value)
-    Organizer::Filter::Applier.apply(@filters, collection, selected_filters: { _key => _value })
+    Organizer::Filter::Applier.apply_selected(@filters, collection, _key => _value)
   end
 
   describe "#generate" do
@@ -16,7 +16,7 @@ describe Organizer::Filter::Generator do
     it "has generated filters" do
       item.attribute_names.each do |attribute|
         [:eq, :not_eq, :gt, :lt, :goet, :loet, :starts, :ends, :contains].each do |sufix|
-          filter_name = "#{attribute}_#{sufix}"
+          filter_name = "#{attribute}_#{sufix}".to_sym
           expect(@filters.find_by_name(filter_name).item_name).to eq(filter_name)
         end
       end

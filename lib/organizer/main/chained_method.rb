@@ -1,8 +1,7 @@
 class Organizer::ChainedMethod
   attr_reader :name, :args
 
-  Organizer::Chainer::CHAINABLE_METHODS.each do |method|
-    method_name = method[:method]
+  Organizer::Chainer::CHAINABLE_METHODS.each do |method_name|
     define_method("#{method_name}?") do
       name == method_name
     end

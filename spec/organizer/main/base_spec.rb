@@ -63,31 +63,17 @@ describe Organizer::Base do
             expect(result.size).to eq(8)
           end
 
-          it "chains skip_default_filter with filter_by method" do
-            result = @organizer.skip_default_filters(:my_filter).filter_by(:filter1).organize
-            expect(result).to be_a(Organizer::Source::Collection)
-            expect(result.size).to eq(8)
-          end
-
-          it "chains filter_by with skip_default_filter method" do
-            result = @organizer.filter_by(:filter1).skip_default_filters(:my_filter).organize
-            expect(result).to be_a(Organizer::Source::Collection)
-            expect(result.size).to eq(8)
-          end
-
           it "skips all default filters" do
             result = @organizer.skip_default_filters.organize
             expect(result).to be_a(Organizer::Source::Collection)
             expect(result.size).to eq(9)
           end
 
-          it "raises error chaning skip filter to group by method" do
-            expect { @organizer.group_by(:gender).skip_default_filters }.to(
+          it "raises error chaning skip filter with other methods group by method" do
+            expect { @organizer.filter_by(:gender).skip_default_filters }.to(
               raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
-          end
 
-          it "raises error chaning skip filter to another skip filter" do
-            expect { @organizer.skip_default_filters.skip_default_filters }.to(
+            expect { @organizer.group_by(:gender).skip_default_filters }.to(
               raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
           end
         end
@@ -115,6 +101,34 @@ describe Organizer::Base do
         end
       end
 
+      context "sorting" do
+        it "sorts collection ascending" do
+          result = BaseChild.new.sort_by(:age).organize
+          expect(result.first.age).to eq(8)
+          expect(result.last.age).to eq(65)
+
+          result = BaseChild.new.sort_by(age: :asc).organize
+          expect(result.first.age).to eq(8)
+          expect(result.last.age).to eq(65)
+        end
+
+        it "sorts collection descending" do
+          result = BaseChild.new.sort_by(age: :desc).organize
+          expect(result.first.age).to eq(65)
+          expect(result.last.age).to eq(8)
+        end
+
+        it "sorts by multiple attributes" do
+          result = BaseChild.new.sort_by(gender: :desc, age: :desc).organize
+          expect(result.first.first_name).to eq("Rodolfo")
+          expect(result.last.first_name).to eq("Virginia")
+
+          result = BaseChild.new.sort_by(gender: :desc).sort_by(age: :desc).organize
+          expect(result.first.first_name).to eq("Rodolfo")
+          expect(result.last.first_name).to eq("Virginia")
+        end
+      end
+
       context "working with groups" do
         context "grouping by attribute" do
           before { BaseChild.add_group(:site_id) }
@@ -123,16 +137,6 @@ describe Organizer::Base do
             result = @organizer.group_by(:site_id).organize
             expect(result).to be_a(Organizer::Group::Collection)
             expect(result.size).to eq(3)
-          end
-
-          it "allows to chain group after skip_default_filters method" do
-            BaseChild.add_default_filter(:my_filter) { true }
-            expect { @organizer.skip_default_filters(:my_filter).group_by(:site_id).organize }.to_not raise_error
-          end
-
-          it "allows to chain group after filter_by method" do
-            BaseChild.add_filter(:my_filter) { true }
-            expect { @organizer.filter_by(:my_filter).group_by(:site_id).organize }.to_not raise_error
           end
 
           context "with operations" do
@@ -261,6 +265,26 @@ describe Organizer::Base do
                 expect(result.size).to eq(1)
                 expect(result.first.greater_age).to eq(65)
                 expect(result.first.lower_savings).to eq(2.5)
+              end
+            end
+
+            context "sorting" do
+              it "sorts parent group" do
+                group = @organizer.group_by(:gender).sort_by(greater_age: :desc).group_by(:site_id).organize
+                expect(group.first.greater_age).to eq(65)
+                expect(group.last.greater_age).to eq(64)
+
+                group = @organizer.group_by(:gender, :site_id).sort_by(greater_age: :desc).organize
+                expect(group.first.greater_age).to eq(65)
+                expect(group.last.greater_age).to eq(64)
+              end
+
+              it "sorts child group" do
+                group = @organizer.group_by(:gender).group_by(:site_id).sort_by(:lower_savings).organize
+                expect(group.first.first.lower_savings).to eq(2.5)
+                expect(group.first.last.lower_savings).to eq(25.5)
+                expect(group.last.first.lower_savings).to eq(30.0)
+                expect(group.last.last.lower_savings).to eq(45.5)
               end
             end
           end

@@ -11,56 +11,52 @@ class Organizer::Executor
     load_operations_executor(executors, _definitions)
     load_default_filters_executor(executors, _definitions, _args)
     load_filters_executor(executors, _definitions, _args)
+    load_sort_items_executor(executors, _args)
     load_groups_executor(executors, _definitions, _args)
     load_group_operations_executor(executors, _definitions)
     load_group_filters_executor(executors, _definitions, _args)
+    load_group_sort_items_executor(executors, _args)
     executors
   end
 
   def self.load_operations_executor(_executors, _definitions)
     load_executor(_executors) do |source|
-      Organizer::Operation::Executor.execute(
-        _definitions.operations,
-        source
-      )
+      Organizer::Operation::Executor.execute_on_source(_definitions.operations, source)
     end
   end
 
   def self.load_default_filters_executor(_executors, _definitions, _args)
     args = _args.default_filters_to_skip
     load_executor(_executors) do |source|
-      Organizer::Filter::Applier.apply(
-        _definitions.default_filters,
-        source,
-        skipped_filters: args
-      )
+      Organizer::Filter::Applier.apply_except_skipped(_definitions.default_filters, source, args)
     end
   end
 
   def self.load_filters_executor(_executors, _definitions, _args)
     args = _args.filters
     load_executor(_executors) do |source|
-      Organizer::Filter::Applier.apply(
-        _definitions.filters,
-        source,
-        selected_filters: args)
+      Organizer::Filter::Applier.apply_selected(_definitions.filters, source, args)
+    end if args
+  end
+
+  def self.load_sort_items_executor(_executors, _args)
+    args = _args.sort_items
+    load_executor(_executors) do |source|
+      Organizer::Sort::Applier.apply_on_source(args, source)
     end if args
   end
 
   def self.load_groups_executor(_executors, _definitions, _args)
     args = _args.groups
     load_executor(_executors) do |source|
-      Organizer::Group::Builder.build(
-        source,
-        _definitions.groups,
-        args)
+      Organizer::Group::Builder.build(source, _definitions.groups, args)
     end if args
   end
 
   def self.load_group_operations_executor(_executors, _definitions)
     load_executor(_executors) do |source|
       if source.is_a?(Organizer::Group::Collection)
-        Organizer::Operation::Executor.execute(
+        Organizer::Operation::Executor.execute_on_groups(
           _definitions.group_operations,
           _definitions.collection,
           source
@@ -75,11 +71,18 @@ class Organizer::Executor
     args = _args.groups_filters
     load_executor(_executors) do |source|
       if source.is_a?(Organizer::Group::Collection)
-        Organizer::Filter::Applier.apply(
-          _definitions.filters,
-          source,
-          groups_filters: args
-        )
+        Organizer::Filter::Applier.apply_selected_on_groups(_definitions.filters, source, args)
+      else
+        source
+      end
+    end if args
+  end
+
+  def self.load_group_sort_items_executor(_executors, _args)
+    args = _args.groups_sort_items
+    load_executor(_executors) do |source|
+      if source.is_a?(Organizer::Group::Collection)
+        Organizer::Sort::Applier.apply_on_groups(args, source)
       else
         source
       end

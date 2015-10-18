@@ -16,7 +16,6 @@ describe Organizer::Filter::Item do
       f = Organizer::Filter::Item.new(-> {})
       expect { f.definition = "definition" }.to raise_error
       expect { f.item_name = "name" }.to raise_error
-      expect { f.value = "value" }.to raise_error
     end
 
     it "raise exception if _definition is not a Proc" do
@@ -54,12 +53,14 @@ describe Organizer::Filter::Item do
       expect(Organizer::Filter::Item.new(proc).apply(item)).to be_truthy
     end
 
-    it "uses filter value param on definition call" do
+    it "uses filter value attr on definition call" do
       proc = Proc.new do |organizer_item, value|
         (organizer_item.int_attr1 + organizer_item.int_attr2) == value
       end
 
-      expect(Organizer::Filter::Item.new(proc, :my_filter).apply(item, 666)).to be_truthy
+      filter = Organizer::Filter::Item.new(proc, :my_filter)
+      filter.value = 666
+      expect(filter.apply(item)).to be_truthy
     end
   end
 
