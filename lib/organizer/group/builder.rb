@@ -1,6 +1,6 @@
 module Organizer
   module Group
-    class Builder
+    module Builder
       include Organizer::Error
 
       def self.build(_collection, _groups, _group_by)

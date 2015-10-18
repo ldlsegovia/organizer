@@ -1,6 +1,6 @@
 module Organizer
   module Filter
-    class Generator
+    module Generator
       include Organizer::Error
 
       def self.generate(_attribute_names)

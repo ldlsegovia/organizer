@@ -1,6 +1,6 @@
 module Organizer
   module Filter
-    class Applier
+    module Applier
       include Organizer::Error
 
       def self.apply_except_skipped(_filters, _source_collection, _skipped_filter_names = nil)

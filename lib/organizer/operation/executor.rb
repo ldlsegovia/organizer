@@ -1,6 +1,6 @@
 module Organizer
   module Operation
-    class Executor
+    module Executor
       include Organizer::Error
 
       def self.execute_on_source(_operations, _source_collection)

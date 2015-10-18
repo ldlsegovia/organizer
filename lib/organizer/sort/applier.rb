@@ -1,6 +1,6 @@
 module Organizer
   module Sort
-    class Applier
+    module Applier
       include Organizer::Error
 
       def self.apply_on_source(_sort_items, _source_collection)
