@@ -169,6 +169,8 @@ MyOrganizer.new.skip_default_filters(:all).organize
 MyOrganizer.new.skip_default_filters(:filter1, :filter2).organize
 ```
 
+> Remember: skip_default_filters can't be chained like other methods (filter_by, sort_by), it needs to be called first.
+
 #### `#filter`
 
 Allows you to define conditions that will not be initially evaluated but user may activate later.
@@ -221,6 +223,34 @@ MyOrganizer.new.filter_by(:filter1).filter_by(filter2: 5).organize
 ```
 
 > Remember: filters will work with generated attributes (operation) too.
+
+#### `#sort_by`
+
+Allows you to sort the collection by one or more attributes in ascending or descending order.
+
+##### Definition Example
+
+It does not need definition.
+
+##### Usage Example
+
+```ruby
+# ascending by default
+MyOrganizer.new.sort_by(:age).organize
+
+# passing explicit orientation
+MyOrganizer.new.sort_by(age: :asc).organize
+
+# descending
+MyOrganizer.new.sort_by(age: :desc).organize
+
+# by multiple attributes
+MyOrganizer.new.sort_by(age: :desc, :first_name).organize
+
+MyOrganizer.new.sort_by(age: :desc).sort_by(:first_name).organize
+```
+
+> Remember: sort by will work with generated attributes (operation) too.
 
 ### On Groups context
 
@@ -346,6 +376,26 @@ MyOrganizer.new.group_by(:gender).filter_by(:filter1).filter_by(:filter2).organi
 MyOrganizer.new.group_by(:gender).filter_by(:filter1, :filter2).organize
 ```
 
+#### `#sort_by`
+
+Allows you to sort the groups by one or more attributes in ascending or descending order.
+
+##### Definition Example
+
+It does not need definition.
+
+##### Usage Example
+
+```ruby
+# sort will be applied to :gender group.
+MyOrganizer.new.group_by(:gender, :site_id).sort_by(:age).organize
+
+# :age sorting will be applied to :gender group and :first_name to :site_id group
+MyOrganizer.new.group_by(:gender).sort_by(age: :desc).group_by(:site_id).sort_by(:first_name).organize
+```
+
+> Remember: sort by will work with generated attributes (operation) too.
+
 ### Putting all together
 
 Filters, groups, etc. can be chained to produce more accurate results...
@@ -356,6 +406,8 @@ q = MyOrganizer.new
 q = q.skip_default_filters(:some_default_filter)
 # filter collection by filter1
 q = q.filter_by(:filter1)
+# sort collection by age
+q = q.sort_by(age: :desc)
 # the result is grouped by site_id and each site by section_id
 q = q.group_by(:site_id, :section_id)
 # then, site group will by filtered by filter2
