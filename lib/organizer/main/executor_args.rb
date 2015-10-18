@@ -54,21 +54,7 @@ class Organizer::ExecutorArgs
   end
 
   def groups_sort_items
-    args = {}
-    group_sort_items = []
-
-    @group_methods.reverse_each do |method|
-      if method.sort_by?
-        group_sort_items << method
-      elsif method.group_by? && !group_sort_items.empty?
-        group_sort_items_args = sort_items(group_sort_items)
-        args[method.args.first] = group_sort_items_args if group_sort_items_args
-        group_sort_items = []
-      end
-    end
-
-    return if args.keys.empty?
-    args
+    ags_by_group(:sort_by, :sort_items)
   end
 
   def groups
@@ -84,24 +70,28 @@ class Organizer::ExecutorArgs
   end
 
   def groups_filters
+    ags_by_group(:filter_by, :filters)
+  end
+
+  private
+
+  def ags_by_group(_method_name, _build_with)
     args = {}
-    group_filters = []
+    group_data = []
 
     @group_methods.reverse_each do |method|
-      if method.filter_by?
-        group_filters << method
-      elsif method.group_by? && !group_filters.empty?
-        group_filters_args = filters(group_filters)
-        args[method.args.first] = group_filters_args if group_filters_args
-        group_filters = []
+      if method.send("#{_method_name}?")
+        group_data << method
+      elsif method.group_by? && !group_data.empty?
+        group_data_args = send(_build_with, group_data)
+        args[method.args.first] = group_data_args if group_data_args
+        group_data = []
       end
     end
 
     return if args.keys.empty?
     args
   end
-
-  private
 
   def add_sort_item(_args, _attr_name, _orientation = nil)
     descending = true if _orientation.to_s == "desc"
