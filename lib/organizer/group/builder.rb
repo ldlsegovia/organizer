@@ -3,27 +3,11 @@ module Organizer
     module Builder
       include Organizer::Error
 
-      def self.build(_collection, _groups, _group_by)
-        selected_groups = get_selected_groups(_groups, _group_by)
-        return _collection if selected_groups.size.zero?
+      def self.build(_collection, _groups)
+        return _collection if !_groups || _groups.size.zero?
         groups = Organizer::Group::Collection.new
-        build_recursively(groups, _collection, selected_groups)
+        build_recursively(groups, _collection, _groups)
         groups
-      end
-
-      def self.get_selected_groups(_groups, _group_by)
-        selected_groups = Organizer::Group::Collection.new
-        return selected_groups unless _group_by
-        _group_by = [_group_by] unless _group_by.is_a?(Array)
-
-        _group_by.each do |group_name|
-          group = _groups.find_by_name(group_name)
-          raise_error(:unknown_group_given) unless group
-          hierarchy = _groups.hierarchy(group)
-          hierarchy.each { |g| selected_groups << g }
-        end
-
-        selected_groups
       end
 
       def self.build_recursively(_result, _collection, _nested_groups)

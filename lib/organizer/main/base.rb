@@ -28,8 +28,7 @@ module Organizer
       end
 
       def organize
-        executor_args = Organizer::ExecutorArgs.new(chainer.collection_methods, chainer.group_methods)
-        result = Organizer::Executor.run(definitions_keeper, executor_args)
+        result = Organizer::Executor.run(definitions_keeper, chainer)
         @chainer = nil
         result
       end

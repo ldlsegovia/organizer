@@ -4,7 +4,9 @@ describe Organizer::Filter::Generator do
   let_collection(:collection)
 
   def apply_filter(_key, _value)
-    Organizer::Filter::Applier.apply_selected(@filters, collection, _key => _value)
+    filter = @filters.find_by_name(_key)
+    filter.value = _value
+    Organizer::Filter::Applier.apply([filter], collection)
   end
 
   describe "#generate" do

@@ -5,12 +5,12 @@ describe Organizer::Sort::Applier do
   let_collection(:collection)
   before { @sort_items = Organizer::Sort::Collection.new }
 
-  describe "#apply_on_source" do
+  describe "#apply" do
     context "with ascendant sort item" do
       before { @sort_items.add_item(:gender) }
 
       it "sorts collection" do
-        result = subject.apply_on_source(@sort_items, collection)
+        result = subject.apply(@sort_items, collection)
         expect(result.first.first_name).to eq("Virginia")
         expect(result.last.first_name).to eq("Javier")
       end
@@ -20,7 +20,7 @@ describe Organizer::Sort::Applier do
       before { @sort_items.add_item(:gender, true) }
 
       it "sorts collection" do
-        result = subject.apply_on_source(@sort_items, collection)
+        result = subject.apply(@sort_items, collection)
         expect(result.first.first_name).to eq("Juan Manuel")
         expect(result.last.first_name).to eq("Virginia")
       end
@@ -29,7 +29,7 @@ describe Organizer::Sort::Applier do
         before { @sort_items.add_item(:age, true) }
 
         it "sorts collection" do
-          result = subject.apply_on_source(@sort_items, collection)
+          result = subject.apply(@sort_items, collection)
           expect(result.first.first_name).to eq("Rodolfo")
           expect(result.last.first_name).to eq("Virginia")
         end
@@ -42,7 +42,7 @@ describe Organizer::Sort::Applier do
       groups = Organizer::Group::Collection.new
       groups.add_group(:gender)
       groups.add_group(:site_id)
-      result = Organizer::Group::Builder.build(collection, groups, [:gender, :site_id])
+      result = Organizer::Group::Builder.build(collection, groups)
 
       @operations = Organizer::Operation::Collection.new
 

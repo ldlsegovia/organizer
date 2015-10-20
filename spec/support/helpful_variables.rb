@@ -43,7 +43,7 @@ module HelpfulVariables
       groups_collection = Organizer::Group::Collection.new
       groups_collection << Organizer::Group::Item.new(group_attr)
       Organizer::Group::Builder.build(
-        send(collection_name), groups_collection, group_attr)
+        send(collection_name), groups_collection)
     end
   end
 end

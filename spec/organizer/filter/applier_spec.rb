@@ -4,44 +4,17 @@ describe Organizer::Filter::Applier do
   subject { Organizer::Filter::Applier }
   let_collection(:collection)
 
-  before { @filters = Organizer::Filter::Collection.new }
+  context "#apply" do
+    before { @filters = Organizer::Filter::Collection.new }
 
-  context "#apply_except_skipped" do
-    before do
-      @filters.add_filter { |item| item.age > 9 }
-      @filters.add_filter(:my_filter) { |item| item.age < 33 }
+    it "applies filters passed as params" do
+      @filters.add_filter(:filter1) { |item| item.age > 9 }
+      @filters.add_filter(:filter2) { |item| item.age < 33 }
+      expect(subject.apply(@filters, collection).size).to eq(3)
     end
 
-    it "skips specific filter" do
-      expect(subject.apply_except_skipped(@filters, collection, [:my_filter]).size).to eq(8)
-    end
-
-    it "skips all filters" do
-      expect(subject.apply_except_skipped(@filters, collection, :all).size).to eq(9)
-    end
-  end
-
-  context "#apply_selected" do
-    context "without value" do
-      before do
-        @filters.add_filter(:filter1) { |item| item.age > 9 }
-        @filters.add_filter(:filter2) { |item| item.age < 33 }
-      end
-
-      it { expect(subject.apply_selected(@filters, collection).size).to eq(9) }
-      it { expect(subject.apply_selected(@filters, collection, [:filter1]).size).to eq(8) }
-      it { expect(subject.apply_selected(@filters, collection, [:filter1, :filter2]).size).to eq(3) }
-    end
-
-    context "with value" do
-      before do
-        @filters.add_filter(:filter1) { |item, value| item.age > value }
-        @filters.add_filter(:filter2) { |item, value| item.age < value }
-      end
-
-      it { expect(subject.apply_selected(@filters, collection).size).to eq(9) }
-      it { expect(subject.apply_selected(@filters, collection, filter1: 9).size).to eq(8) }
-      it { expect(subject.apply_selected(@filters, collection, filter1: 9, filter2: 33).size).to eq(3) }
+    it "returns complete collection with no filters" do
+      expect(subject.apply(@filters, collection).size).to eq(9)
     end
   end
 
@@ -50,7 +23,7 @@ describe Organizer::Filter::Applier do
       groups = Organizer::Group::Collection.new
       groups.add_group(:site, :site_id)
       groups.add_group(:store, :store_id)
-      result = Organizer::Group::Builder.build(collection, groups, [:site, :store])
+      result = Organizer::Group::Builder.build(collection, groups)
 
       @operations = Organizer::Operation::Collection.new
 
@@ -64,18 +37,24 @@ describe Organizer::Filter::Applier do
 
       @group = Organizer::Operation::Executor.execute_on_groups(@operations, collection, result)
 
-      @filters.add_filter(:filter2) { |item, value| item.age_sum < value }
+      @filter_definition = Proc.new do |item, value|
+        item.age_sum < value
+      end
     end
 
     it "filters parent group items" do
-      options = { site: { filter2: 150 } }
-      subject.apply_groups_filters(@filters, @group, options)
+      filter = Organizer::Filter::Item.new(@filter_definition, :filter)
+      filter.value = 150
+      subject.apply_groups_filters({ site: [filter] }, @group)
+
       expect(@group.count).to eq(2)
     end
 
     it "filters child groups items" do
-      options = { store: { filter2: 50 } }
-      subject.apply_groups_filters(@filters, @group, options)
+      filter = Organizer::Filter::Item.new(@filter_definition, :filter)
+      filter.value = 50
+      subject.apply_groups_filters({ store: [filter] }, @group)
+
       expect(@group.count).to eq(3)
       expect(@group.first.count).to eq(0)
       expect(@group.second.count).to eq(1)
@@ -83,8 +62,12 @@ describe Organizer::Filter::Applier do
     end
 
     it "filters groups items in the complete hierarchy" do
-      options = { site: { filter2: 150 }, store: { filter2: 50 } }
-      subject.apply_groups_filters(@filters, @group, options)
+      filter1 = Organizer::Filter::Item.new(@filter_definition, :filter)
+      filter1.value = 150
+      filter2 = Organizer::Filter::Item.new(@filter_definition, :filter)
+      filter2.value = 50
+
+      subject.apply_groups_filters({ site: [filter1], store: [filter2] }, @group)
       expect(@group.count).to eq(2)
       expect(@group.first.count).to eq(0)
       expect(@group.second.count).to eq(1)
