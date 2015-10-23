@@ -73,14 +73,24 @@ module Organizer
       nil
     end
 
-    def in_root_context
-      in_context do
-        if @ctx.root_parent?
-          yield
+    def in_specific_context(_dsl_method, _nested_definition = nil, &action)
+      in_context(_nested_definition) do
+        if @ctx.send("#{_dsl_method}_parent?")
+          action.call
         else
           raise_error(:forbidden_nesting)
         end
       end
+    end
+
+    def method_missing(_method, *_args, &block)
+      if _method =~ /in_\w+_context/
+        dsl_method_name = _method.to_s.gsub("in_", "").gsub("_context", "")
+        in_specific_context(dsl_method_name, *_args, &block)
+        return
+      end
+
+      super
     end
 
     def create_organizer_class(_organizer_name)

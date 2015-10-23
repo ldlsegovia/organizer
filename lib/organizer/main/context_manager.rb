@@ -25,18 +25,6 @@ module Organizer
       close
     end
 
-    def root_parent?
-      @ctx_hierarchy.one?
-    end
-
-    def group_parent?
-      (parent_ctx.type == :group) rescue false
-    end
-
-    def groups_parent?
-      (parent_ctx.type == :groups) rescue false
-    end
-
     def parent_ctx
       @ctx_hierarchy[-2]
     end
@@ -45,7 +33,20 @@ module Organizer
       parent_ctx == parent_prev_ctx
     end
 
+    def method_missing(_method, *_args, &block)
+      if _method =~ /\w+_parent?/
+        return check_parent(_method.to_s.gsub("_parent?", "").to_sym)
+      end
+
+      super
+    end
+
     private
+
+    def check_parent(_ctx_type)
+      return @ctx_hierarchy.one? if _ctx_type == :root
+      (parent_ctx.type == _ctx_type) rescue false
+    end
 
     def close
       @prev_ctx_hierarchy = @ctx_hierarchy.clone
