@@ -23,22 +23,41 @@ describe Organizer do
 
     it "raises error passing invalid dsl methods in definition block" do
       {
-        group: :my_group
+        group: :my_group,
+        operation: :my_operation,
+        default_filter: nil
       }.each do |dsl_method, params|
         Object.send(:remove_const, :MyOrganizer) rescue nil
         expect do
           Organizer.define("my_organizer") do
-            if params
-              send(dsl_method, params)
-            else
-              send(dsl_method)
-            end
+            !!params ? send(dsl_method, params) : send(dsl_method)
           end
         end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
       end
     end
 
     describe "#collection" do
+      it "raises error passing invalid methods in collection block" do
+        {
+          collection: nil,
+          generate_filters_for: [:attr1, :attr2],
+          filter: :my_filter,
+          groups: nil,
+          group: :my_group
+        }.each do |dsl_method, params|
+          Object.send(:remove_const, :MyOrganizer) rescue nil
+          expect do
+            Organizer.define("my_organizer") do
+              collection do
+                !!params ? send(dsl_method, params) : send(dsl_method)
+              end
+            end
+          end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
+        end
+      end
+    end
+
+    describe "#source" do
       let_collection(:collection)
 
       context "with unfiltered collection" do
@@ -46,7 +65,9 @@ describe Organizer do
           valid_collection = raw_collection
 
           Organizer.define("my_organizer") do
-            source { valid_collection }
+            collection do
+              source { valid_collection }
+            end
           end
 
           @collection = MyOrganizer.new.collection
@@ -66,7 +87,9 @@ describe Organizer do
             ]
 
             Organizer.define("another_organizer") do
-              source { another_collection }
+              collection do
+                source { another_collection }
+              end
             end
 
             @collection2 = AnotherOrganizer.new.collection
@@ -84,8 +107,10 @@ describe Organizer do
           valid_collection = raw_collection
 
           Organizer.define("my_organizer") do
-            source do |options|
-              valid_collection.select { |item| item[:age] < options[:age] }
+            collection do
+              source do |options|
+                valid_collection.select { |item| item[:age] < options[:age] }
+              end
             end
           end
 
@@ -101,7 +126,12 @@ describe Organizer do
 
     describe "#default_filter" do
       before do
-        Organizer.define("my_organizer") { default_filter {} }
+        Organizer.define("my_organizer") do
+          collection do
+            default_filter {}
+          end
+        end
+
         @filters = MyOrganizer.default_filters
       end
 
@@ -143,9 +173,14 @@ describe Organizer do
     end
 
     describe "#operation" do
-      context "in root context" do
+      context "in collection context" do
         before do
-          Organizer.define("my_organizer") { operation(:my_operation) {} }
+          Organizer.define("my_organizer") do
+            collection do
+              operation(:my_operation) {}
+            end
+          end
+
           @operations = MyOrganizer.operations
         end
 
@@ -191,20 +226,18 @@ describe Organizer do
 
       it "raises error passing invalid methods in groups definition block" do
         {
+          collection: nil,
           source: nil,
           filter: :my_filter,
           default_filter: nil,
           groups: nil,
+          generate_filters_for: [:attr1, :attr2]
         }.each do |dsl_method, params|
           Object.send(:remove_const, :MyOrganizer) rescue nil
           expect do
             Organizer.define("my_organizer") do
               groups do
-                if params
-                  send(dsl_method, params)
-                else
-                  send(dsl_method)
-                end
+                !!params ? send(dsl_method, params) : send(dsl_method)
               end
             end
           end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
@@ -235,9 +268,11 @@ describe Organizer do
       context "in group context" do
         it "raises error passing invalid methods in group definition block" do
           {
+            collection: nil,
             source: nil,
             filter: :my_filter,
             default_filter: nil,
+            generate_filters_for: [:attr1, :attr2],
             groups: nil,
             operation: :my_operation
           }.each do |dsl_method, params|
@@ -246,11 +281,7 @@ describe Organizer do
               Organizer.define("my_organizer") do
                 groups do
                   group(:my_group) do
-                    if params
-                      send(dsl_method, params)
-                    else
-                      send(dsl_method)
-                    end
+                    !!params ? send(dsl_method, params) : send(dsl_method)
                   end
                 end
               end

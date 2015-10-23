@@ -9,12 +9,18 @@ module Organizer
       nil
     end
 
+    def collection(&nested_definition)
+      in_context(nested_definition) do
+        raise_error(:forbidden_nesting) unless @ctx.root_parent?
+      end
+    end
+
     def source(&block)
-      in_root_context { @organizer_class.add_collection(&block) }
+      in_collection_context { @organizer_class.add_collection(&block) }
     end
 
     def default_filter(_name = nil, &block)
-      in_root_context { @organizer_class.add_default_filter(_name, &block) }
+      in_collection_context { @organizer_class.add_default_filter(_name, &block) }
     end
 
     def generate_filters_for(*_attributes)
@@ -32,7 +38,7 @@ module Organizer
 
     def operation(_name, _initial_value = 0, &block)
       in_context do
-        if @ctx.root_parent?
+        if @ctx.collection_parent?
           @organizer_class.add_simple_operation(_name, &block)
         elsif @ctx.groups_parent?
           @organizer_class.add_memo_operation(_name, _initial_value, &block)
