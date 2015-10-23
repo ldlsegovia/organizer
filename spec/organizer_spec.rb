@@ -46,7 +46,7 @@ describe Organizer do
           valid_collection = raw_collection
 
           Organizer.define("my_organizer") do
-            collection { valid_collection }
+            source { valid_collection }
           end
 
           @collection = MyOrganizer.new.collection
@@ -66,7 +66,7 @@ describe Organizer do
             ]
 
             Organizer.define("another_organizer") do
-              collection { another_collection }
+              source { another_collection }
             end
 
             @collection2 = AnotherOrganizer.new.collection
@@ -84,7 +84,7 @@ describe Organizer do
           valid_collection = raw_collection
 
           Organizer.define("my_organizer") do
-            collection do |options|
+            source do |options|
               valid_collection.select { |item| item[:age] < options[:age] }
             end
           end
@@ -191,7 +191,7 @@ describe Organizer do
 
       it "raises error passing invalid methods in groups definition block" do
         {
-          collection: nil,
+          source: nil,
           filter: :my_filter,
           default_filter: nil,
           groups: nil,
@@ -235,7 +235,7 @@ describe Organizer do
       context "in group context" do
         it "raises error passing invalid methods in group definition block" do
           {
-            collection: nil,
+            source: nil,
             filter: :my_filter,
             default_filter: nil,
             groups: nil,

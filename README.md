@@ -44,7 +44,7 @@ Inside define's method block, you can pass:
 
 ### On Root context
 
-#### `#collection`
+#### `#source`
 
 This method takes a block containing a denormalized collection. The block's content will be executed later. So, you can pass anything that produces a collection.
 
@@ -54,7 +54,7 @@ This method takes a block containing a denormalized collection. The block's cont
 
 ```ruby
 Organizer.define("my_organizer") do
-  collection do
+  source do
     [
       { age: 22, name: "Juan Manuel", site_id: 1, store_id: 1, gender: "M", savings: 20.50 },
       { age: 31, name: "Leandro", site_id: 1, store_id: 1, gender: "M", savings: 15.50 },
@@ -75,7 +75,7 @@ These options will be present as the first param on collection definition like t
 
 ```ruby
 Organizer.define("my_organizer") do
-  collection do |collection_options|
+  source do |collection_options|
     data = [
       { age: 22, name: "Juan Manuel", site_id: 1, store_id: 1, gender: "M", savings: 20.50 },
       { age: 31, name: "Leandro", site_id: 1, store_id: 1, gender: "M", savings: 15.50 },

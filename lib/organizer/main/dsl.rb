@@ -9,7 +9,7 @@ module Organizer
       nil
     end
 
-    def collection(&block)
+    def source(&block)
       in_root_context { @organizer_class.add_collection(&block) }
     end
 
