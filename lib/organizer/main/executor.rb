@@ -53,7 +53,7 @@ module Organizer
       load_executor(_executors) do |source|
         if source.is_a?(Organizer::Group::Collection)
           Organizer::Operation::Executor.execute_on_groups(
-            _definitions.group_operations,
+            _definitions.groups_operations,
             _definitions.collection,
             source
           )

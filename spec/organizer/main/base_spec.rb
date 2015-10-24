@@ -141,7 +141,7 @@ describe Organizer::Base do
 
           context "with operations" do
             before do
-              BaseChild.add_memo_operation(:attrs_sum, 10) do |memo, item|
+              BaseChild.add_groups_operation(:attrs_sum, 10) do |memo, item|
                 memo.attrs_sum + item.age
               end
             end
@@ -209,10 +209,10 @@ describe Organizer::Base do
           context "with operations" do
             before do
               BaseChild.add_group(:site_id)
-              BaseChild.add_memo_operation(:greater_age) do |memo, item|
+              BaseChild.add_groups_operation(:greater_age) do |memo, item|
                 memo.greater_age > item.age ? memo.greater_age : item.age
               end
-              BaseChild.add_memo_operation(:lower_savings, nil) do |memo, item|
+              BaseChild.add_groups_operation(:lower_savings, nil) do |memo, item|
                 memo.lower_savings = item.savings if memo.lower_savings.nil?
                 memo.lower_savings < item.savings ? memo.lower_savings : item.savings
               end

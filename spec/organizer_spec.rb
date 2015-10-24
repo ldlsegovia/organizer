@@ -199,7 +199,7 @@ describe Organizer do
             end
           end
 
-          @operations = MyOrganizer.group_operations
+          @operations = MyOrganizer.groups_operations
           @operation1 = @operations.first
           @operation2 = @operations.last
         end
