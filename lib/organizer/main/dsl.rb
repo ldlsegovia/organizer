@@ -9,12 +9,18 @@ module Organizer
       nil
     end
 
-    def collection(&block)
-      in_root_context { @organizer_class.add_collection(&block) }
+    def collection(&nested_definition)
+      in_context(nested_definition) do
+        raise_error(:forbidden_nesting) unless @ctx.root_parent?
+      end
+    end
+
+    def source(&block)
+      in_collection_context { @organizer_class.add_collection(&block) }
     end
 
     def default_filter(_name = nil, &block)
-      in_root_context { @organizer_class.add_default_filter(_name, &block) }
+      in_collection_context { @organizer_class.add_default_filter(_name, &block) }
     end
 
     def generate_filters_for(*_attributes)
@@ -32,7 +38,7 @@ module Organizer
 
     def operation(_name, _initial_value = 0, &block)
       in_context do
-        if @ctx.root_parent?
+        if @ctx.collection_parent?
           @organizer_class.add_simple_operation(_name, &block)
         elsif @ctx.groups_parent?
           @organizer_class.add_memo_operation(_name, _initial_value, &block)
@@ -73,14 +79,24 @@ module Organizer
       nil
     end
 
-    def in_root_context
-      in_context do
-        if @ctx.root_parent?
-          yield
+    def in_specific_context(_dsl_method, _nested_definition = nil, &action)
+      in_context(_nested_definition) do
+        if @ctx.send("#{_dsl_method}_parent?")
+          action.call
         else
           raise_error(:forbidden_nesting)
         end
       end
+    end
+
+    def method_missing(_method, *_args, &block)
+      if _method =~ /in_\w+_context/
+        dsl_method_name = _method.to_s.gsub("in_", "").gsub("_context", "")
+        in_specific_context(dsl_method_name, *_args, &block)
+        return
+      end
+
+      super
     end
 
     def create_organizer_class(_organizer_name)
