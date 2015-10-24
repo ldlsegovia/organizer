@@ -4,14 +4,11 @@ module Organizer
       include Organizer::Error
 
       def self.execute_on_source(_operations, _source_collection)
-        return _source_collection if _operations.count <= 0
         _source_collection.each { |item| execute_recursively(item, _operations.dup) }
         _source_collection
       end
 
       def self.execute_on_groups(_operations, _source_collection, _group_collection)
-        return _group_collection if _operations.count <= 0
-
         _source_collection.each do |source_item|
           _group_collection.each do |group_item|
             eval_operations_against_groups(_operations, source_item, [group_item])
@@ -25,12 +22,8 @@ module Organizer
         group_item = _group_items_hierarchy.last
         return unless group_item.is_a?(Organizer::Group::Item)
 
-        result = _group_items_hierarchy.map do |gi|
-          gi.apply_grouping_criteria(_source_item).to_s === gi.item_name.to_s
-        end.uniq
-
-        if result.size == 1 && !!result.first
-          _operations.each { |operation| operation.execute(group_item, _source_item) }
+        if item_match_with_group_hierarchy?(_group_items_hierarchy, _source_item)
+          execute_group_operations(_operations, group_item, _source_item)
         end
 
         group_item.each do |child|
@@ -39,6 +32,20 @@ module Organizer
           new_hierarchy << child
           eval_operations_against_groups(_operations, _source_item, new_hierarchy)
         end
+      end
+
+      def self.execute_group_operations(_operations, _group_item, _source_item)
+        group_operations = _operations.is_a?(Hash) ? _operations[_group_item.group_name] : _operations
+        return unless group_operations
+        group_operations.each { |operation| operation.execute(_group_item, _source_item) }
+      end
+
+      def self.item_match_with_group_hierarchy?(_group_items_hierarchy, _source_item)
+        result = _group_items_hierarchy.map do |gi|
+          gi.apply_grouping_criteria(_source_item).to_s === gi.item_name.to_s
+        end.uniq
+
+        result.size == 1 && !!result.first
       end
 
       def self.execute_recursively(_item, _operations, _previous_operations_count = 0)
