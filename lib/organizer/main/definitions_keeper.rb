@@ -31,7 +31,7 @@ module Organizer
       @filters.add_filter(_name, &block)
     end
 
-    def add_simple_operation(_name, &block)
+    def add_source_operation(_name, &block)
       @operations.add_simple_operation(_name, &block)
     end
 

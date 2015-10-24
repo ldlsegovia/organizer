@@ -39,7 +39,7 @@ module Organizer
     def operation(_name, _initial_value = 0, &block)
       in_context do
         if @ctx.collection_parent?
-          @organizer_class.add_simple_operation(_name, &block)
+          @organizer_class.add_source_operation(_name, &block)
         elsif @ctx.groups_parent?
           @organizer_class.add_groups_operation(_name, _initial_value, &block)
         else

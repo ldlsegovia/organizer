@@ -80,7 +80,7 @@ describe Organizer::Base do
       end
 
       context "working with operations" do
-        before { BaseChild.add_simple_operation(:new_attr) { |item| item.age * 2 } }
+        before { BaseChild.add_source_operation(:new_attr) { |item| item.age * 2 } }
 
         it "executes operations" do
           result = BaseChild.new.organize
