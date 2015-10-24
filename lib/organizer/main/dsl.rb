@@ -42,6 +42,9 @@ module Organizer
           @organizer_class.add_source_operation(_name, &block)
         elsif @ctx.groups_parent?
           @organizer_class.add_groups_operation(_name, _initial_value, &block)
+        elsif @ctx.group_parent?
+          group_name = @ctx.parent_ctx.data.group_name
+          @organizer_class.add_group_operation(group_name, _name, _initial_value, &block)
         else
           raise_error(:forbidden_nesting)
         end

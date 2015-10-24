@@ -3,7 +3,10 @@ module Organizer
     include Organizer::Error
 
     attr_accessor :collection_options
-    attr_reader :collection_proc, :groups, :filters, :default_filters, :operations, :groups_operations
+    attr_reader :collection_proc
+    attr_reader :groups
+    attr_reader :filters, :default_filters
+    attr_reader :operations, :groups_operations, :grouped_opperations
 
     def initialize
       @groups = Organizer::Group::Collection.new
@@ -11,6 +14,7 @@ module Organizer
       @default_filters = Organizer::Filter::Collection.new
       @operations = Organizer::Operation::Collection.new
       @groups_operations = Organizer::Operation::Collection.new
+      @grouped_opperations = {}
     end
 
     def add_collection(&block)
@@ -37,6 +41,14 @@ module Organizer
 
     def add_groups_operation(_name, _initial_value = 0, &block)
       @groups_operations.add_memo_operation(_name, _initial_value, &block)
+    end
+
+    def add_group_operation(_group_name, _operation_name, _initial_value = 0, &block)
+      if !@grouped_opperations[_group_name]
+        @grouped_opperations[_group_name] = Organizer::Operation::Collection.new
+      end
+
+      @grouped_opperations[_group_name].add_memo_operation(_operation_name, _initial_value, &block)
     end
 
     def add_group(_name, _group_by_attr = nil, _parent_name = nil)
