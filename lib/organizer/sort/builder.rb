@@ -2,20 +2,15 @@ module Organizer
   module Sort
     module Builder
       include Organizer::Error
+      extend Organizer::ChainedMethodsHelpers
 
       def self.build_sort_items(_methods)
+        methods = methods_to_hash(_methods, :sort_by)
+        return if methods.keys.empty?
         sort_items = Organizer::Sort::Collection.new
-        _methods ||= @collection_methods
 
-        _methods.each do |method|
-          next unless method.sort_by?
-          method.args.each do |arg|
-            if arg.is_a?(Hash)
-              arg.each { |attr_name, orientation| add_sort_item(sort_items, attr_name, orientation) }
-            elsif arg.is_a?(Symbol) || arg.is_a?(String)
-              add_sort_item(sort_items, arg)
-            end
-          end
+        methods.each do |attr_name, orientation|
+          sort_items.add_item(attr_name.to_sym, orientation.to_s == "desc")
         end
 
         return if sort_items.empty?
@@ -24,25 +19,14 @@ module Organizer
 
       def self.build_groups_sort_items(_group_methods)
         groups_sort_items = {}
-        group_data = []
 
-        _group_methods.reverse_each do |method|
-          if method.sort_by?
-            group_data << method
-          elsif method.group_by? && !group_data.empty?
-            group_sort_items = build_sort_items(group_data)
-            groups_sort_items[method.args.first] = group_sort_items if group_sort_items
-            group_data = []
-          end
+        for_each_group_methods(_group_methods, :sort_by) do |group_name, sort_methods|
+          group_sort_items = build_sort_items(sort_methods)
+          groups_sort_items[group_name] = group_sort_items if group_sort_items
         end
 
         return if groups_sort_items.keys.empty?
         groups_sort_items
-      end
-
-      def self.add_sort_item(_sort_items_collection, _attr_name, _orientation = nil)
-        descending = true if _orientation.to_s == "desc"
-        _sort_items_collection.add_item(_attr_name.to_sym, descending)
       end
     end
   end

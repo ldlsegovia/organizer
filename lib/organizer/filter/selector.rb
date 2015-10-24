@@ -2,6 +2,7 @@ module Organizer
   module Filter
     module Selector
       include Organizer::Error
+      extend Organizer::ChainedMethodsHelpers
 
       def self.select_default(_filters, _collection_methods)
         skip_methods = _collection_methods.select(&:skip_default_filters?)
@@ -13,7 +14,7 @@ module Organizer
       end
 
       def self.select_filters(_filters, _methods)
-        selected = filters_from_methods(_methods)
+        selected = methods_to_hash(_methods, :filter_by)
         return if selected.keys.empty?
         selected_filters = Organizer::Filter::Collection.new
 
@@ -31,37 +32,14 @@ module Organizer
 
       def self.select_groups_filters(_filters, _group_methods)
         groups_filters = {}
-        group_data = []
 
-        _group_methods.reverse_each do |method|
-          if method.filter_by?
-            group_data << method
-          elsif method.group_by? && !group_data.empty?
-            group_filters = select_filters(_filters, group_data)
-            groups_filters[method.args.first] = group_filters if group_filters
-            group_data = []
-          end
+        for_each_group_methods(_group_methods, :filter_by) do |group_name, filter_methods|
+          group_filters = select_filters(_filters, filter_methods)
+          groups_filters[group_name] = group_filters if group_filters
         end
 
         return if groups_filters.keys.empty?
         groups_filters
-      end
-
-      def self.filters_from_methods(_methods)
-        filters = {}
-
-        _methods.each do |method|
-          next unless method.filter_by?
-          method.args.each do |arg|
-            if arg.is_a?(Hash)
-              filters.merge!(arg)
-            elsif arg.is_a?(Symbol) || arg.is_a?(String)
-              filters[arg] = nil
-            end
-          end
-        end
-
-        filters
       end
     end
   end
