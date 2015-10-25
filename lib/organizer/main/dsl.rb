@@ -39,9 +39,12 @@ module Organizer
     def operation(_name, _initial_value = 0, &block)
       in_context do
         if @ctx.collection_parent?
-          @organizer_class.add_simple_operation(_name, &block)
+          @organizer_class.add_source_operation(_name, &block)
         elsif @ctx.groups_parent?
-          @organizer_class.add_memo_operation(_name, _initial_value, &block)
+          @organizer_class.add_groups_operation(_name, _initial_value, &block)
+        elsif @ctx.group_parent?
+          group_name = @ctx.parent_ctx.data.group_name
+          @organizer_class.add_group_operation(group_name, _name, _initial_value, &block)
         else
           raise_error(:forbidden_nesting)
         end
@@ -79,8 +82,8 @@ module Organizer
       nil
     end
 
-    def in_specific_context(_dsl_method, _nested_definition = nil, &action)
-      in_context(_nested_definition) do
+    def in_specific_context(_dsl_method, &action)
+      in_context do
         if @ctx.send("#{_dsl_method}_parent?")
           action.call
         else

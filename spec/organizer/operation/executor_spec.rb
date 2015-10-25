@@ -51,18 +51,18 @@ describe Organizer::Operation::Executor do
       @operations.add_memo_operation(:age_sum) do |memo, item|
         memo.age_sum + item.age
       end
+
+      @result = subject.execute_on_groups({ gender: @operations }, gender_group_collection, gender)
     end
 
     it "returns a group collection" do
-      result = subject.execute_on_groups(@operations, gender_group_collection, gender)
-      expect(result.size).to eq(2)
-      expect(result).to be_a(Organizer::Group::Collection)
+      expect(@result.size).to eq(2)
+      expect(@result).to be_a(Organizer::Group::Collection)
     end
 
     it "returns group items with new attribute" do
-      result = subject.execute_on_groups(@operations, gender_group_collection, gender)
-      expect(result.first.age_sum).to eq(192)
-      expect(result.last.age_sum).to eq(130)
+      expect(@result.first.age_sum).to eq(192)
+      expect(@result.last.age_sum).to eq(130)
     end
   end
 end

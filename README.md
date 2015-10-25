@@ -243,7 +243,8 @@ MyOrganizer.new.group_by(:age_greater_than_33).organize
 
 #### Group Operation
 
-You can define operations that will be applied to groups only.
+You can define operations that will be applied to all groups or specific groups.
+On the following example **age_sum** and **age_sum_with_initial_value** operations will be applied to **gender** and **site_id** groups but, **odd_age_count** will be applied to **gender** group only.
 
 ##### Definition Example
 
@@ -256,6 +257,12 @@ Organizer.define("my_organizer") do
 
     operation(:age_sum_with_initial_value, 10) do |group_item, item|
       group_item.age_sum_with_initial_value += item.age
+    end
+
+    group(:gender) do
+      operation(:odd_age_count) do |group_item, item|
+        item.age.odd? ? group_item.odd_age_count + 1 : group_item.odd_age_count
+      end
     end
 
     group(:site_id)
