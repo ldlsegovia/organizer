@@ -206,7 +206,7 @@ describe Organizer::Base do
             it_should_behave_like(:nested_group)
           end
 
-          context "with operations" do
+          context "with global operations" do
             before do
               BaseChild.add_group(:site_id)
               BaseChild.add_groups_operation(:greater_age) do |memo, item|
@@ -224,6 +224,25 @@ describe Organizer::Base do
               expect(result.first.first.lower_savings).to eq(15.5)
               expect(result.second.greater_age).to eq(64)
               expect(result.second.first.greater_age).to eq(64)
+            end
+
+            context "with specific group operations" do
+              before do
+                BaseChild.add_group_operation(:gender, :odd_age_count, 0) do |memo, item|
+                  item.age.odd? ? memo.odd_age_count + 1 : memo.odd_age_count
+                end
+                BaseChild.add_group_operation(:site_id, :even_age_count, 0) do |memo, item|
+                  item.age.even? ? memo.even_age_count + 1 : memo.even_age_count
+                end
+              end
+
+              it "applies operations to specific groups" do
+                result = @organizer.group_by(:gender, :site_id).organize
+                expect(result.first.odd_age_count).to eq(4)
+                expect { result.first.even_age_count }.to raise_error(NoMethodError)
+                expect(result.first.first.even_age_count).to eq(1)
+                expect { result.first.first.odd_age_count }.to raise_error(NoMethodError)
+              end
             end
 
             context "filtering groups" do
