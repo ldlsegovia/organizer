@@ -42,25 +42,6 @@ describe Organizer::Group::Builder do
       end
     end
 
-    context "grouping by condition" do
-      before do
-        @groups = Organizer::Group::Collection.new
-        @groups.add_group(:age_greater_than_33, "item.age > 33")
-        @group = subject.build(collection, @groups)
-      end
-
-      it { expect(@group.size).to eq(2) }
-      it { expect(@group).to be_a(Organizer::Group::Collection) }
-
-      it { expect(@group.first).to be_a(Organizer::Group::Item) }
-      it { expect(@group.first.group_name).to eq(:age_greater_than_33) }
-      it { expect(@group.first.size).to eq(6) }
-
-      it { expect(@group.last).to be_a(Organizer::Group::Item) }
-      it { expect(@group.last.group_name).to eq(:age_greater_than_33) }
-      it { expect(@group.last.size).to eq(3) }
-    end
-
     context "with nested groups" do
       before do
         groups = Organizer::Group::Collection.new

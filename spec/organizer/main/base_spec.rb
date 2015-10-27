@@ -156,16 +156,6 @@ describe Organizer::Base do
           end
         end
 
-        context "grouping by condition" do
-          before { BaseChild.add_group(:age_greater_than_33, "item.age > 33") }
-
-          it "groups collection items" do
-            result = @organizer.group_by(:age_greater_than_33).organize
-            expect(result).to be_a(Organizer::Group::Collection)
-            expect(result.size).to eq(2)
-          end
-        end
-
         context "with nested groups" do
           before { BaseChild.add_group(:gender) }
 

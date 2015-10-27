@@ -15,7 +15,7 @@ module Organizer
         group = nested_groups.shift
         return unless group
 
-        grouped_collection = _collection.group_by { |item| group.apply_grouping_criteria(item) }
+        grouped_collection = _collection.group_by { |item| group.apply(item) }
         grouped_collection.each do |group_value_items|
           group_value = group_value_items.first
           items = group_value_items.last

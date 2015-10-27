@@ -51,7 +51,7 @@ module Organizer
 
       if self.is_a?(Organizer::Group::Item)
         parts << group_name.to_s.magenta
-        parts << grouping_criteria.to_s.magenta if group_name.to_s != grouping_criteria.to_s
+        parts << group_by_attr.to_s.magenta if group_name.to_s != group_by_attr.to_s
         parts << item_name.to_s.magenta if group_name.to_s != item_name.to_s
 
       elsif self.class.include?(Organizer::CollectionItem) && !item_name.blank?

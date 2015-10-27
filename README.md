@@ -226,7 +226,6 @@ Organizer.define("my_organizer") do
   groups do
     group(my_group: :site_id) # named group
     group(:site_id) # grouping by attribute
-    group(:age_greater_than_33, "item.age > 33") # grouping by condition
   end
 end
 ```
@@ -237,8 +236,6 @@ end
 MyOrganizer.new.group_by(:my_group).organize
 
 MyOrganizer.new.group_by(:site_id).organize
-
-MyOrganizer.new.group_by(:age_greater_than_33).organize
 ```
 
 #### Group Operation

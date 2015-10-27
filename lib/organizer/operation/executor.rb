@@ -42,7 +42,7 @@ module Organizer
 
       def self.item_match_with_group_hierarchy?(_group_items_hierarchy, _source_item)
         result = _group_items_hierarchy.map do |gi|
-          gi.apply_grouping_criteria(_source_item).to_s === gi.item_name.to_s
+          gi.apply(_source_item).to_s === gi.item_name.to_s
         end.uniq
 
         result.size == 1 && !!result.first
