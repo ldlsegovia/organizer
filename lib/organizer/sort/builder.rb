@@ -5,7 +5,7 @@ module Organizer
       extend Organizer::ChainedMethodsHelpers
 
       def self.build_sort_items(_methods)
-        methods = methods_to_hash(_methods, :sort_by)
+        methods = methods_to_hash(_methods)
         return if methods.keys.empty?
         sort_items = Organizer::Sort::Collection.new
 
@@ -17,10 +17,10 @@ module Organizer
         sort_items
       end
 
-      def self.build_groups_sort_items(_group_methods)
+      def self.build_groups_sort_items(_sort_group_methods)
         groups_sort_items = {}
 
-        for_each_group_methods(_group_methods, :sort_by) do |group_name, sort_methods|
+        for_each_group_methods(_sort_group_methods) do |group_name, sort_methods|
           group_sort_items = build_sort_items(sort_methods)
           groups_sort_items[group_name] = group_sort_items if group_sort_items
         end

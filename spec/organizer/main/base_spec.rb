@@ -48,7 +48,7 @@ describe Organizer::Base do
         context "with default filters" do
           before do
             BaseChild.add_default_filter { |item| item.age > 9 }
-            BaseChild.add_default_filter(:my_filter) { |item| item.age < 33 }
+            BaseChild.add_default_filter(:default_filter1) { |item| item.age < 33 }
           end
 
           it "returns filtered collection" do
@@ -58,7 +58,7 @@ describe Organizer::Base do
           end
 
           it "skips default filter passing filter to skip_default_filter option" do
-            result = @organizer.skip_default_filters(:my_filter).organize
+            result = @organizer.skip_default_filters(:default_filter1).organize
             expect(result).to be_a(Organizer::Source::Collection)
             expect(result.size).to eq(8)
           end
@@ -69,11 +69,8 @@ describe Organizer::Base do
             expect(result.size).to eq(9)
           end
 
-          it "raises error chaning skip filter with other methods group by method" do
-            expect { @organizer.filter_by(:gender).skip_default_filters }.to(
-              raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
-
-            expect { @organizer.group_by(:gender).skip_default_filters }.to(
+          it "raises error chaning skip filter twice" do
+            expect { @organizer.skip_default_filters.skip_default_filters }.to(
               raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
           end
         end
@@ -134,7 +131,7 @@ describe Organizer::Base do
           before { BaseChild.add_group(:site_id) }
 
           it "groups collection items" do
-            result = @organizer.group_by(:site_id).organize
+            result = @organizer.group_by_site_id.organize
             expect(result).to be_a(Organizer::Group::Collection)
             expect(result.size).to eq(3)
           end
@@ -147,7 +144,7 @@ describe Organizer::Base do
             end
 
             it "groups collection items" do
-              result = @organizer.group_by(:site_id).organize
+              result = @organizer.group_by_site_id.organize
               result.each do |group_item|
                 expected_sum = group_item.inject(10) { |memo, source_item| memo + source_item.age }
                 expect(group_item.attrs_sum).to eq(expected_sum)
@@ -157,48 +154,41 @@ describe Organizer::Base do
         end
 
         context "with nested groups" do
-          before { BaseChild.add_group(:gender) }
-
-          shared_examples :nested_group do
-            it "groups collection by gender and site" do
-              expect(@group).to be_a(Organizer::Group::Collection)
-              expect(@group.size).to eq(2)
-              expect(@group.first).to be_a(Organizer::Group::Item)
-              expect(@group.first.size).to eq(3)
-              expect(@group.first.first).to be_a(Organizer::Group::Item)
-              expect(@group.first.first.size).to eq(2)
-              expect(@group.first.first.first).to be_a(Organizer::Source::Item)
-            end
+          before do
+            BaseChild.add_group(:gender)
+            BaseChild.add_group(:site, :site_id, :gender)
+            BaseChild.add_group(:hola, :site_id)
+            BaseChild.add_group(:chau, :store_id)
           end
 
-          context "nested through params" do
-            before { BaseChild.add_group(:site_id) }
-
-            context "calling group by once" do
-              before { @group = @organizer.group_by(:gender, :site_id).organize }
-
-              it_should_behave_like(:nested_group)
-            end
-
-            context "calling group by several times" do
-              before { @group = @organizer.group_by(:gender).group_by(:site_id).organize }
-
-              it_should_behave_like(:nested_group)
-            end
+          it "groups collection by gender and site" do
+            group = @organizer.group_by_gender.organize
+            expect(group).to be_a(Organizer::Group::Collection)
+            expect(group.size).to eq(2)
+            expect(group.first).to be_a(Organizer::Group::Item)
+            expect(group.first.size).to eq(3)
+            expect(group.first.first).to be_a(Organizer::Group::Item)
+            expect(group.first.first.size).to eq(2)
+            expect(group.first.first.first).to be_a(Organizer::Source::Item)
           end
 
-          context "nested on definition" do
-            before do
-              BaseChild.add_group(:site, :site_id, :gender)
-              @group = @organizer.group_by(:gender).organize
-            end
+          it "raises error trying to call group by twice" do
+            expect { @organizer.group_by_gender.group_by_site }.to(
+              raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
+          end
 
-            it_should_behave_like(:nested_group)
+          it "raises error trying to group by inexistent group" do
+            expect { @organizer.group_by_missing_group.organize }.to(
+              raise_organizer_error(Organizer::Group::SelectorException, :unknown_group_given))
+          end
+
+          it "raises error trying to call group_by on child group" do
+            expect { @organizer.group_by_site.organize }.to(
+              raise_organizer_error(Organizer::Group::SelectorException, :cant_group_by_child_group))
           end
 
           context "with global operations" do
             before do
-              BaseChild.add_group(:site_id)
               BaseChild.add_groups_operation(:greater_age) do |memo, item|
                 memo.greater_age > item.age ? memo.greater_age : item.age
               end
@@ -209,7 +199,7 @@ describe Organizer::Base do
             end
 
             it "applies operations to full group hierarchy" do
-              result = @organizer.group_by(:gender, :site_id).organize
+              result = @organizer.group_by_gender.organize
               expect(result.first.lower_savings).to eq(2.5)
               expect(result.first.first.lower_savings).to eq(15.5)
               expect(result.second.greater_age).to eq(64)
@@ -221,13 +211,13 @@ describe Organizer::Base do
                 BaseChild.add_group_operation(:gender, :odd_age_count, 0) do |memo, item|
                   item.age.odd? ? memo.odd_age_count + 1 : memo.odd_age_count
                 end
-                BaseChild.add_group_operation(:site_id, :even_age_count, 0) do |memo, item|
+                BaseChild.add_group_operation(:site, :even_age_count, 0) do |memo, item|
                   item.age.even? ? memo.even_age_count + 1 : memo.even_age_count
                 end
               end
 
               it "applies operations to specific groups" do
-                result = @organizer.group_by(:gender, :site_id).organize
+                result = @organizer.group_by_gender.organize
                 expect(result.first.odd_age_count).to eq(4)
                 expect { result.first.even_age_count }.to raise_error(NoMethodError)
                 expect(result.first.first.even_age_count).to eq(1)
@@ -245,19 +235,10 @@ describe Organizer::Base do
                 end
               end
 
-              it "applies filters to first group passing group names as array" do
-                q = @organizer.group_by(:gender, :site_id)
-                q = q.filter_by(greater_age_greater_than: 64)
-                result = q.organize
-
-                expect(result.size).to eq(1)
-                expect(result.first.greater_age).to eq(65)
-                expect(result.first.size).to eq(3)
-              end
-
-              it "applies filters to previous group" do
-                q = @organizer.group_by(:gender).filter_by(greater_age_greater_than: 64)
-                q = q.group_by(:site_id).filter_by(lower_savings_lower_than: 10)
+              it "applies filters to related groups" do
+                q = @organizer.group_by_gender
+                q = q.filter_gender_by(greater_age_greater_than: 64)
+                q = q.filter_site_by(lower_savings_lower_than: 10)
                 result = q.organize
 
                 expect(result.size).to eq(1)
@@ -266,9 +247,9 @@ describe Organizer::Base do
                 expect(result.first.first.lower_savings).to eq(2.5)
               end
 
-              it "applies multiple filters to previous group" do
-                q = @organizer.group_by(:site_id)
-                q = q.filter_by(greater_age_greater_than: 64, lower_savings_lower_than: 3)
+              it "applies multiple filters" do
+                q = @organizer.group_by_gender
+                q = q.filter_gender_by(greater_age_greater_than: 64, lower_savings_lower_than: 3)
                 result = q.organize
 
                 expect(result.size).to eq(1)
@@ -278,22 +259,19 @@ describe Organizer::Base do
             end
 
             context "sorting" do
-              it "sorts parent group" do
-                group = @organizer.group_by(:gender).sort_by(greater_age: :desc).group_by(:site_id).organize
-                expect(group.first.greater_age).to eq(65)
-                expect(group.last.greater_age).to eq(64)
+              it "sorts related groups" do
+                q = @organizer.group_by_gender
+                q = q.sort_gender_by(:greater_age)
+                q = q.sort_site_by(lower_savings: :desc)
+                result = q.organize
 
-                group = @organizer.group_by(:gender, :site_id).sort_by(greater_age: :desc).organize
-                expect(group.first.greater_age).to eq(65)
-                expect(group.last.greater_age).to eq(64)
-              end
+                expect(result.first.greater_age).to eq(64)
+                expect(result.first.first.lower_savings).to eq(45.5)
+                expect(result.first.last.lower_savings).to eq(30.0)
 
-              it "sorts child group" do
-                group = @organizer.group_by(:gender).group_by(:site_id).sort_by(:lower_savings).organize
-                expect(group.first.first.lower_savings).to eq(2.5)
-                expect(group.first.last.lower_savings).to eq(25.5)
-                expect(group.last.first.lower_savings).to eq(30.0)
-                expect(group.last.last.lower_savings).to eq(45.5)
+                expect(result.last.greater_age).to eq(65)
+                expect(result.last.first.lower_savings).to eq(25.5)
+                expect(result.last.last.lower_savings).to eq(2.5)
               end
             end
           end

@@ -3,21 +3,14 @@ module Organizer
     module Selector
       include Organizer::Error
 
-      def self.select_groups(_groups, _group_methods)
-        selected = groups_from_methods(_group_methods)
-        return if selected.empty?
-
+      def self.select_groups(_groups, _group_method)
+        return if _group_method.blank?
         selected_groups = Organizer::Group::Collection.new
-        return selected_groups unless selected
-        selected = [selected] unless selected.is_a?(Array)
-
-        selected.each do |group_name|
-          group = _groups.find_by_name(group_name)
-          raise_error(:unknown_group_given) unless group
-          hierarchy = _groups.hierarchy(group)
-          hierarchy.each { |g| selected_groups << g }
-        end
-
+        group = _groups.find_by_name(_group_method.group_name)
+        raise_error(:unknown_group_given) unless group
+        raise_error(:cant_group_by_child_group) if group.has_parent?
+        hierarchy = _groups.hierarchy(group)
+        hierarchy.each { |g| selected_groups << g }
         selected_groups
       end
 
@@ -25,7 +18,7 @@ module Organizer
         selected = []
 
         _group_methods.each do |method|
-          next unless method.group_by?
+          next unless method.group?
           selected += method.args
         end
 

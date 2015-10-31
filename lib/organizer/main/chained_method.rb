@@ -1,16 +1,25 @@
 module Organizer
   class ChainedMethod
-    attr_reader :name, :args
+    attr_reader :name, :args, :group_name
 
-    Organizer::Chainer::CHAINABLE_METHODS.each do |method_name|
-      define_method("#{method_name}?") do
-        name == method_name
+    Organizer::Chainer::CHAINABLE_METHODS.each do |method|
+      define_method("#{method[:name]}?") do
+        name == method[:name]
       end
     end
 
-    def initialize(_method_name, _method_args)
-      @name = _method_name
+    def initialize(_method_name, _method_args, _group_related = nil)
+      @name = _method_name.to_sym
       @args = _method_args
+      @group_name = _group_related
+    end
+
+    def collection_type?
+      !@group_name
+    end
+
+    def group_type?
+      !!@group_name
     end
 
     def args?

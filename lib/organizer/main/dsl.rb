@@ -93,7 +93,7 @@ module Organizer
     end
 
     def method_missing(_method, *_args, &block)
-      if _method =~ /in_\w+_context/
+      if _method =~ /\Ain_\w+_context$/
         dsl_method_name = _method.to_s.gsub("in_", "").gsub("_context", "")
         in_specific_context(dsl_method_name, *_args, &block)
         return
