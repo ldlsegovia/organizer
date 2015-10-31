@@ -5,7 +5,7 @@ module Organizer
       extend Organizer::ChainedMethodsHelpers
 
       def self.select_default(_filters, _collection_methods)
-        skip_methods = _collection_methods.select(&:skip_default_filters?)
+        skip_methods = _collection_methods.select(&:skip_default_filter?)
         return _filters if skip_methods.empty?
         skip_all = skip_methods.find { |m| m.array_args_include?(:all) }
         filters_to_skip = skip_methods.map(&:args).flatten
@@ -14,7 +14,7 @@ module Organizer
       end
 
       def self.select_filters(_filters, _methods)
-        selected = methods_to_hash(_methods, :filter_by)
+        selected = methods_to_hash(_methods)
         return if selected.keys.empty?
         selected_filters = Organizer::Filter::Collection.new
 
@@ -30,10 +30,10 @@ module Organizer
         selected_filters
       end
 
-      def self.select_groups_filters(_filters, _group_methods)
+      def self.select_groups_filters(_filters, _group_filter_methods)
         groups_filters = {}
 
-        for_each_group_methods(_group_methods, :filter_by) do |group_name, filter_methods|
+        for_each_group_methods(_group_filter_methods) do |group_name, filter_methods|
           group_filters = select_filters(_filters, filter_methods)
           groups_filters[group_name] = group_filters if group_filters
         end

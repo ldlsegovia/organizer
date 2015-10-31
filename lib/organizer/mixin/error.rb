@@ -119,9 +119,10 @@ module Organizer
       }
     end
 
-    class BuilderException < ::Exception
+    class SelectorException < ::Exception
       ERRORS = {
-        unknown_group_given: "Unknown group name given"
+        unknown_group_given: "Unknown group name given",
+        cant_group_by_child_group: "Cant group by child group"
       }
     end
 

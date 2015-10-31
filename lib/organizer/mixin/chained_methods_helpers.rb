@@ -1,23 +1,17 @@
 module Organizer
   module ChainedMethodsHelpers
-    def for_each_group_methods(_group_methods, *_method_names)
-      group_methods = []
-
-      _group_methods.reverse_each do |method|
-        if _method_names.include?(method.name)
-          group_methods << method
-        elsif method.group_by? && !group_methods.empty?
-          yield(method.args.first, group_methods)
-          group_methods = []
-        end
+    def for_each_group_methods(_group_methods)
+      group_names = _group_methods.map(&:group_name).uniq
+      group_names.each do |group_name|
+        group_methods = _group_methods.select { |m| m.group_name == group_name }
+        yield(group_name.to_sym, group_methods)
       end
     end
 
-    def methods_to_hash(_methods, _method_name)
+    def methods_to_hash(_methods)
       result = {}
 
       _methods.each do |method|
-        next unless method.name == _method_name
         method.args.each do |arg|
           if arg.is_a?(Hash)
             result.merge!(arg)
