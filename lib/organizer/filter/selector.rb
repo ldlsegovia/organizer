@@ -2,7 +2,6 @@ module Organizer
   module Filter
     module Selector
       include Organizer::Error
-      extend Organizer::ChainedMethodsHelpers
 
       def self.select_default(_filters, _collection_methods)
         skip_methods = _collection_methods.select(&:skip_default_filter?)
@@ -13,12 +12,11 @@ module Organizer
         _filters.reject_items(filters_to_skip)
       end
 
-      def self.select_filters(_filters, _methods)
-        selected = methods_to_hash(_methods)
-        return if selected.keys.empty?
+      def self.select_filters(_filters, _filter_methods)
+        return if _filter_methods.keys.empty?
         selected_filters = Organizer::Filter::Collection.new
 
-        selected.each do |filter_name, value|
+        _filter_methods.each do |filter_name, value|
           filter = _filters.find_by_name(filter_name)
 
           if filter
@@ -33,8 +31,8 @@ module Organizer
       def self.select_groups_filters(_filters, _group_filter_methods)
         groups_filters = {}
 
-        for_each_group_methods(_group_filter_methods) do |group_name, filter_methods|
-          group_filters = select_filters(_filters, filter_methods)
+        _group_filter_methods.keys.each do |group_name|
+          group_filters = select_filters(_filters, _group_filter_methods[group_name])
           groups_filters[group_name] = group_filters if group_filters
         end
 

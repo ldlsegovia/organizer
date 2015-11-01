@@ -2,7 +2,6 @@ module Organizer
   module Operation
     module Selector
       include Organizer::Error
-      extend Organizer::ChainedMethodsHelpers
 
       def self.select_group_operations(_groups_operations, _grouped_operations, _groups)
         groups_operations = {}

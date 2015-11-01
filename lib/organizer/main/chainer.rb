@@ -15,8 +15,11 @@ module Organizer
 
     CHAINABLE_METHODS.each do |method|
       instance_eval do
-        define_method("#{method[:name]}_methods") do
-          @chained_methods.select { |m| method[:name] == m.name }
+        define_method("#{method[:name]}_methods") do |*args_as|
+          args_as = args_as.first
+          methods = @chained_methods.select { |m| method[:name] == m.name }
+          return normalize_methods(methods, args_as) if method[:scope] === :collection
+          get_grouped_methods(methods, args_as)
         end
       end
     end
@@ -70,6 +73,37 @@ module Organizer
     def validate_uniqueness(_method, _method_name)
       return if @chained_methods.select { |method| method.name == _method.name }.empty?
       raise_error(:invalid_chaining) if _method.name == _method_name
+    end
+
+    def get_grouped_methods(_methods, _args_as)
+      groups = {}
+      group_names = _methods.map(&:group_name).uniq
+      group_names.each do |group_name|
+        group_methods = _methods.select { |m| m.group_name == group_name }
+        groups[group_name.to_sym] = normalize_methods(group_methods, _args_as)
+      end
+      groups
+    end
+
+    def normalize_methods(_methods, _strategy = nil)
+      return _methods unless _strategy
+      return methods_to_hash(_methods) if _strategy == :hash
+    end
+
+    def methods_to_hash(_methods)
+      result = {}
+
+      _methods.each do |method|
+        method.args.each do |arg|
+          if arg.is_a?(Hash)
+            result.merge!(arg)
+          elsif arg.is_a?(Symbol) || arg.is_a?(String)
+            result[arg] = nil
+          end
+        end
+      end
+
+      result
     end
   end
 end

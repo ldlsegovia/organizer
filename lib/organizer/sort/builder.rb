@@ -2,14 +2,12 @@ module Organizer
   module Sort
     module Builder
       include Organizer::Error
-      extend Organizer::ChainedMethodsHelpers
 
       def self.build_sort_items(_methods)
-        methods = methods_to_hash(_methods)
-        return if methods.keys.empty?
+        return if _methods.keys.empty?
         sort_items = Organizer::Sort::Collection.new
 
-        methods.each do |attr_name, orientation|
+        _methods.each do |attr_name, orientation|
           sort_items.add_item(attr_name.to_sym, orientation.to_s == "desc")
         end
 
@@ -20,8 +18,8 @@ module Organizer
       def self.build_groups_sort_items(_sort_group_methods)
         groups_sort_items = {}
 
-        for_each_group_methods(_sort_group_methods) do |group_name, sort_methods|
-          group_sort_items = build_sort_items(sort_methods)
+        _sort_group_methods.keys.each do |group_name|
+          group_sort_items = build_sort_items(_sort_group_methods[group_name])
           groups_sort_items[group_name] = group_sort_items if group_sort_items
         end
 

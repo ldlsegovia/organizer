@@ -14,14 +14,6 @@ module Organizer
       @group_name = _group_related
     end
 
-    def collection_type?
-      !@group_name
-    end
-
-    def group_type?
-      !!@group_name
-    end
-
     def args?
       !args.blank?
     end
