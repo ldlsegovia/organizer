@@ -8,7 +8,7 @@ module Organizer
       load_default_filters_executor(executors, _definitions, _chainer.skip_default_filter_methods)
       load_filters_executor(executors, _definitions, _chainer.filter_methods)
       load_sort_items_executor(executors, _chainer.sort_methods)
-      load_groups_executor(executors, _definitions, _chainer.group_methods.first)
+      load_groups_executor(executors, _definitions, _chainer.group)
       load_group_operations_executor(executors, _definitions)
       load_group_filters_executor(executors, _definitions, _chainer.filter_group_methods)
       load_group_sort_items_executor(executors, _chainer.sort_group_methods)
