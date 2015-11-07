@@ -182,11 +182,6 @@ describe Organizer::Base do
               raise_organizer_error(Organizer::Group::SelectorException, :unknown_group_given))
           end
 
-          it "raises error trying to call group_by on child group" do
-            expect { @organizer.group_by_site.organize }.to(
-              raise_organizer_error(Organizer::Group::SelectorException, :cant_group_by_child_group))
-          end
-
           context "with global operations" do
             before do
               BaseChild.add_groups_operation(:greater_age) do |memo, item|

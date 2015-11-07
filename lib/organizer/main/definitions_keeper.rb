@@ -9,7 +9,7 @@ module Organizer
     attr_reader :operations, :groups_operations, :grouped_operations
 
     def initialize
-      @groups = Organizer::Group::Collection.new
+      @groups = {}
       @filters = Organizer::Filter::Collection.new
       @default_filters = Organizer::Filter::Collection.new
       @operations = Organizer::Operation::Collection.new
@@ -52,7 +52,13 @@ module Organizer
     end
 
     def add_group(_name, _group_by_attr = nil, _parent_name = nil)
-      @groups.add_group(_name, _group_by_attr, _parent_name)
+      if !_parent_name
+        return false if !!@groups[_name]
+        @groups[_name] = Organizer::Group::Collection.new
+        @parent_group = @groups[_name]
+      end
+
+      @parent_group.add_group(_name, _group_by_attr, _parent_name)
     end
   end
 end

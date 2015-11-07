@@ -269,8 +269,7 @@ describe Organizer do
         before do
           Organizer.define("my_organizer") do
             groups do
-              group(:store_id, :store) {}
-              group(:age_greater_than_33, "item.age > 30") {}
+              group(:store, :store_id) {}
             end
           end
 
@@ -278,9 +277,9 @@ describe Organizer do
         end
 
         it "adds a group to MyOrganizer class" do
-          expect(@groups.count).to eq(2)
-          expect(@groups.first).to be_a(Organizer::Group::Item)
-          expect(@groups.last).to be_a(Organizer::Group::Item)
+          expect(@groups.keys.count).to eq(1)
+          expect(@groups[:store]).to be_a(Organizer::Group::Collection)
+          expect(@groups[:store].first.group_name).to eq(:store)
         end
       end
 
@@ -332,7 +331,7 @@ describe Organizer do
               end
             end
 
-            @groups = MyOrganizer.groups
+            @groups = MyOrganizer.groups[:g1]
           end
 
           it "adds a group nested to another group" do
