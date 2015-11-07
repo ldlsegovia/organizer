@@ -213,8 +213,8 @@ describe Organizer do
           @global_operation2 = @global_operations.last
 
           grouped_operations = MyOrganizer.grouped_operations
-          @gender_operations = grouped_operations[:gender]
-          @site_operations = grouped_operations[:site]
+          @gender_operations = grouped_operations.memo_operations(:gender)
+          @site_operations = grouped_operations.memo_operations(:site)
         end
 
         it "adds groups operations to MyOrganizer class" do

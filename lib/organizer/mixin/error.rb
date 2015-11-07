@@ -110,6 +110,25 @@ module Organizer
     end
   end
 
+  module GroupDefinition
+    class CollectionException < ::Exception
+      ERRORS = {
+        invalid_item: "Invalid group collection item. Must be Organizer::GroupDefinition::Item only",
+        repeated_item: "Repeated item. An Item with same name was added previously",
+        definition_not_found: "Group definition not found"
+      }
+    end
+
+    class ItemException < ::Exception
+      ERRORS = {
+        must_be_a_hash: "_hash parameter must be a Hash",
+        invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
+        attr_already_defined: "Attribute already defined",
+        attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
+      }
+    end
+  end
+
   module Group
     class CollectionException < ::Exception
       ERRORS = {

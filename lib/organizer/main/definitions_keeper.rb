@@ -14,7 +14,7 @@ module Organizer
       @default_filters = Organizer::Filter::Collection.new
       @operations = Organizer::Operation::Collection.new
       @groups_operations = Organizer::Operation::Collection.new
-      @grouped_operations = {}
+      @grouped_operations = Organizer::GroupDefinition::Collection.new
     end
 
     def add_collection(&block)
@@ -44,11 +44,11 @@ module Organizer
     end
 
     def add_group_operation(_group_name, _operation_name, _initial_value = 0, &block)
-      if !@grouped_operations[_group_name]
-        @grouped_operations[_group_name] = Organizer::Operation::Collection.new
+      if !@grouped_operations.find_by_name(_group_name)
+        @grouped_operations.add_definition(_group_name)
       end
 
-      @grouped_operations[_group_name].add_memo_operation(_operation_name, _initial_value, &block)
+      @grouped_operations.add_memo_operation(_group_name, _operation_name, _initial_value, &block)
     end
 
     def add_group(_name, _group_by_attr = nil, _parent_name = nil)

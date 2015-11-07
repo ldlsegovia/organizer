@@ -3,7 +3,7 @@ module Organizer
     module Selector
       include Organizer::Error
 
-      def self.select_group_operations(_groups_operations, _grouped_operations, _groups)
+      def self.select_group_operations(_groups_operations, _groups_definitions, _groups)
         groups_operations = {}
 
         _groups.each do |group|
@@ -14,7 +14,8 @@ module Organizer
           end
 
           load_operations(groups_operations[group_name], _groups_operations)
-          load_operations(groups_operations[group_name], _grouped_operations[group_name])
+          group_operations = _groups_definitions.memo_operations(group_name)
+          load_operations(groups_operations[group_name], group_operations)
         end
 
         return if groups_operations.keys.empty?
