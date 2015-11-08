@@ -8,10 +8,13 @@ module Organizer
       load_default_filters_executor(executors, _definitions, _chainer.skip_default_filter_methods)
       load_filters_executor(executors, _definitions, _chainer.filter_methods(:hash))
       load_sort_items_executor(executors, _chainer.sort_methods(:hash))
-      load_groups_executor(executors, _definitions, _chainer.group)
-      load_group_operations_executor(executors, _definitions)
+
+      @group_definitions = get_group_definitions(_definitions.groups, _chainer.group)
+      load_groups_executor(executors)
+      load_group_operations_executor(executors, _definitions.collection, _definitions.groups_operations)
       load_group_filters_executor(executors, _definitions, _chainer.filter_group_methods(:hash))
       load_group_sort_items_executor(executors, _chainer.sort_group_methods(:hash))
+
       execute(executors.shift, _definitions.collection, executors)
     end
 
@@ -42,24 +45,19 @@ module Organizer
       end if sort_items
     end
 
-    def self.load_groups_executor(_executors, _definitions, _group_method)
-      @group = Organizer::Group::Selector.select_groups(_definitions.groups, _group_method)
+    def self.load_groups_executor(_executors)
       load_executor(_executors) do |source|
-        Organizer::Group::Builder.build(source, @group)
-      end if @group
+        hierarchy = @group_definitions.map(&:group)
+        Organizer::Group::Builder.build(source, hierarchy)
+      end if @group_definitions
     end
 
-    def self.load_group_operations_executor(_executors, _definitions)
+    def self.load_group_operations_executor(_executors, _collection, _global_operations)
       load_executor(_executors) do |source|
-        if @group
+        if @group_definitions
           operations = Organizer::Operation::Selector.select_group_operations(
-            _definitions.groups_operations, _definitions.grouped_operations, @group)
-
-          Organizer::Operation::Executor.execute_on_groups(
-            operations,
-            _definitions.collection,
-            source
-          )
+            _global_operations, @group_definitions)
+          Organizer::Operation::Executor.execute_on_groups(operations, _collection, source)
         else
           source
         end
@@ -67,9 +65,10 @@ module Organizer
     end
 
     def self.load_group_filters_executor(_executors, _definitions, _filter_group_methods)
-      filters = Organizer::Filter::Selector.select_groups_filters(_definitions.filters, _filter_group_methods)
+      filters = Organizer::Filter::Selector.select_groups_filters(_definitions.filters, _filter_group_methods, @group_definitions)
+
       load_executor(_executors) do |source|
-        if @group
+        if @group_definitions
           Organizer::Filter::Applier.apply_groups_filters(filters, source)
         else
           source
@@ -78,9 +77,10 @@ module Organizer
     end
 
     def self.load_group_sort_items_executor(_executors, _sort_group_methods)
-      groups_sort_items = Organizer::Sort::Builder.build_groups_sort_items(_sort_group_methods)
+      groups_sort_items = Organizer::Sort::Builder.build_groups_sort_items(_sort_group_methods, @group_definitions)
+
       load_executor(_executors) do |source|
-        if @group
+        if @group_definitions
           Organizer::Sort::Applier.apply_on_groups(groups_sort_items, source)
         else
           source
@@ -100,6 +100,11 @@ module Organizer
       next_proc = _next_procs.shift
       return result unless next_proc
       execute(next_proc, result, _next_procs)
+    end
+
+    def self.get_group_definitions(_definitions, _group_method)
+      return if _group_method.blank?
+      _definitions[_group_method.group_name.to_sym].clone
     end
   end
 end

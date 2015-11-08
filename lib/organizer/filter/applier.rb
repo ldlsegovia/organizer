@@ -25,7 +25,7 @@ module Organizer
       def self.apply_groups_filters(_filters, _groups_collection)
         return if _groups_collection.empty?
         return unless _groups_collection.first.is_a?(Organizer::Group::Item)
-        group_filters = _filters[_groups_collection.first.group_name]
+        group_filters = _filters.filters(_groups_collection.first.group_name)
         apply(group_filters, _groups_collection)
         _groups_collection.each { |item| apply_groups_filters(_filters, item) }
       end

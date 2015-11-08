@@ -43,8 +43,7 @@ module Organizer
         elsif @ctx.groups_parent?
           @organizer_class.add_groups_operation(_name, _initial_value, &block)
         elsif @ctx.group_parent?
-          group_name = @ctx.parent_ctx.data.group_name
-          @organizer_class.add_group_operation(group_name, _name, _initial_value, &block)
+          @organizer_class.add_group_operation(_name, _initial_value, &block)
         else
           raise_error(:forbidden_nesting)
         end
@@ -61,11 +60,12 @@ module Organizer
       in_context(nested_definition) do
         if @ctx.groups_parent?
           @organizer_class.add_group(_name, _group_by_attr)
+          # TODO: check repeated group parent
         elsif @ctx.group_parent?
           if @ctx.same_prev_ctx_parent?
             raise_error(:forbidden_nesting)
           else
-            parent_name = @ctx.parent_ctx.data.group_name
+            parent_name = @ctx.parent_ctx.data.item_name
             @organizer_class.add_group(_name, _group_by_attr, parent_name)
           end
         else

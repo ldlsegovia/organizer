@@ -13,7 +13,7 @@ module Organizer
       end
 
       def self.select_filters(_filters, _filter_methods)
-        return if _filter_methods.keys.empty?
+        return if !_filter_methods || _filter_methods.keys.empty?
         selected_filters = Organizer::Filter::Collection.new
 
         _filter_methods.each do |filter_name, value|
@@ -28,16 +28,18 @@ module Organizer
         selected_filters
       end
 
-      def self.select_groups_filters(_filters, _group_filter_methods)
-        groups_filters = {}
+      def self.select_groups_filters(_filters, _group_filter_methods, _group_definitions)
+        return unless _group_definitions
 
-        _group_filter_methods.keys.each do |group_name|
-          group_filters = select_filters(_filters, _group_filter_methods[group_name])
-          groups_filters[group_name] = group_filters if group_filters
+        _group_filter_methods.each do |group_name, filters|
+          definition = _group_definitions.find_by_name(group_name)
+          raise_error(:unknown_group) unless definition
+          group_filters = select_filters(_filters, filters)
+          definition.filters = group_filters if group_filters
         end
 
-        return if groups_filters.keys.empty?
-        groups_filters
+        return if _group_definitions.empty?
+        _group_definitions
       end
     end
   end

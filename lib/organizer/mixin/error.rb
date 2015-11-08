@@ -72,6 +72,12 @@ module Organizer
         repeated_item: "Repeated item. An Item with same name was added previously"
       }
     end
+
+    class SelectorException < ::Exception
+      ERRORS = {
+        unknown_group: "Cant apply filters to unknown group"
+      }
+    end
   end
 
   module Operation
@@ -108,6 +114,12 @@ module Organizer
         blank_name: "name param is mandatory",
       }
     end
+
+    class BuilderException < ::Exception
+      ERRORS = {
+        unknown_group: "Cant sort unknown groups"
+      }
+    end
   end
 
   module GroupDefinition
@@ -135,12 +147,6 @@ module Organizer
         invalid_parent: "Group not found in collection",
         invalid_item: "Invalid group collection item. Must be Organizer::Group::Item only",
         repeated_item: "Repeated item. An Item with same name was added previously"
-      }
-    end
-
-    class SelectorException < ::Exception
-      ERRORS = {
-        unknown_group_given: "Unknown group name given"
       }
     end
 

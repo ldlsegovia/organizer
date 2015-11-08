@@ -157,8 +157,6 @@ describe Organizer::Base do
           before do
             BaseChild.add_group(:gender)
             BaseChild.add_group(:site, :site_id, :gender)
-            BaseChild.add_group(:hola, :site_id)
-            BaseChild.add_group(:chau, :store_id)
           end
 
           it "groups collection by gender and site" do
@@ -175,11 +173,6 @@ describe Organizer::Base do
           it "raises error trying to call group by twice" do
             expect { @organizer.group_by_gender.group_by_site }.to(
               raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
-          end
-
-          it "raises error trying to group by inexistent group" do
-            expect { @organizer.group_by_missing_group.organize }.to(
-              raise_organizer_error(Organizer::Group::SelectorException, :unknown_group_given))
           end
 
           context "with global operations" do
@@ -203,20 +196,15 @@ describe Organizer::Base do
 
             context "with specific group operations" do
               before do
-                BaseChild.add_group_operation(:gender, :odd_age_count, 0) do |memo, item|
+                BaseChild.add_group_operation(:odd_age_count, 0) do |memo, item|
                   item.age.odd? ? memo.odd_age_count + 1 : memo.odd_age_count
-                end
-                BaseChild.add_group_operation(:site, :even_age_count, 0) do |memo, item|
-                  item.age.even? ? memo.even_age_count + 1 : memo.even_age_count
                 end
               end
 
               it "applies operations to specific groups" do
                 result = @organizer.group_by_gender.organize
-                expect(result.first.odd_age_count).to eq(4)
-                expect { result.first.even_age_count }.to raise_error(NoMethodError)
-                expect(result.first.first.even_age_count).to eq(1)
-                expect { result.first.first.odd_age_count }.to raise_error(NoMethodError)
+                expect { result.first.odd_age_count }.to raise_error(NoMethodError)
+                expect(result.first.first.odd_age_count).to eq(1)
               end
             end
 
@@ -240,6 +228,11 @@ describe Organizer::Base do
                 expect(result.first.greater_age).to eq(65)
                 expect(result.first.size).to eq(1)
                 expect(result.first.first.lower_savings).to eq(2.5)
+              end
+
+              it "raises error trying to apply filter to unknown group" do
+                expect { @organizer.group_by_gender.filter_unknown_group_by(value: 64).organize }.to(
+                  raise_organizer_error(Organizer::Filter::SelectorException, :unknown_group))
               end
 
               it "applies multiple filters" do
@@ -267,6 +260,11 @@ describe Organizer::Base do
                 expect(result.last.greater_age).to eq(65)
                 expect(result.last.first.lower_savings).to eq(25.5)
                 expect(result.last.last.lower_savings).to eq(2.5)
+              end
+
+              it "raises error trying to sort unknown groups" do
+                expect { @organizer.group_by_gender.sort_unknown_group_by(value: 64).organize }.to(
+                  raise_organizer_error(Organizer::Sort::BuilderException, :unknown_group))
               end
             end
           end

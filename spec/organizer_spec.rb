@@ -212,9 +212,8 @@ describe Organizer do
           @global_operation1 = @global_operations.first
           @global_operation2 = @global_operations.last
 
-          grouped_operations = MyOrganizer.grouped_operations
-          @gender_operations = grouped_operations.memo_operations(:gender)
-          @site_operations = grouped_operations.memo_operations(:site)
+          @gender_operations = MyOrganizer.groups[:gender].memo_operations(:gender)
+          @site_operations = MyOrganizer.groups[:site].memo_operations(:site)
         end
 
         it "adds groups operations to MyOrganizer class" do
@@ -278,8 +277,8 @@ describe Organizer do
 
         it "adds a group to MyOrganizer class" do
           expect(@groups.keys.count).to eq(1)
-          expect(@groups[:store]).to be_a(Organizer::Group::Collection)
-          expect(@groups[:store].first.group_name).to eq(:store)
+          expect(@groups[:store]).to be_a(Organizer::GroupDefinition::Collection)
+          expect(@groups[:store].first.item_name).to eq(:store)
         end
       end
 
@@ -335,9 +334,9 @@ describe Organizer do
           end
 
           it "adds a group nested to another group" do
-            expect(@groups.first.parent_name).to be_nil
-            expect(@groups.second.parent_name).to eq(:g1)
-            expect(@groups.third.parent_name).to eq(:g2)
+            expect(@groups.first.group.parent_name).to be_nil
+            expect(@groups.second.group.parent_name).to eq(:g1)
+            expect(@groups.third.group.parent_name).to eq(:g2)
           end
         end
       end

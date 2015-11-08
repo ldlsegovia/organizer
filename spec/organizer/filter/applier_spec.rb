@@ -45,7 +45,10 @@ describe Organizer::Filter::Applier do
     it "filters parent group items" do
       filter = Organizer::Filter::Item.new(@filter_definition, :filter)
       filter.value = 150
-      subject.apply_groups_filters({ site: [filter] }, @group)
+
+      definitions = Organizer::GroupDefinition::Collection.new
+      definitions.add_definition(:site).filters << filter
+      subject.apply_groups_filters(definitions, @group)
 
       expect(@group.count).to eq(2)
     end
@@ -53,7 +56,10 @@ describe Organizer::Filter::Applier do
     it "filters child groups items" do
       filter = Organizer::Filter::Item.new(@filter_definition, :filter)
       filter.value = 50
-      subject.apply_groups_filters({ store: [filter] }, @group)
+
+      definitions = Organizer::GroupDefinition::Collection.new
+      definitions.add_definition(:store).filters << filter
+      subject.apply_groups_filters(definitions, @group)
 
       expect(@group.count).to eq(3)
       expect(@group.first.count).to eq(0)
@@ -62,12 +68,17 @@ describe Organizer::Filter::Applier do
     end
 
     it "filters groups items in the complete hierarchy" do
+      definitions = Organizer::GroupDefinition::Collection.new
+
       filter1 = Organizer::Filter::Item.new(@filter_definition, :filter)
       filter1.value = 150
+      definitions.add_definition(:site).filters << filter1
+
       filter2 = Organizer::Filter::Item.new(@filter_definition, :filter)
       filter2.value = 50
+      definitions.add_definition(:store).filters << filter2
 
-      subject.apply_groups_filters({ site: [filter1], store: [filter2] }, @group)
+      subject.apply_groups_filters(definitions, @group)
       expect(@group.count).to eq(2)
       expect(@group.first.count).to eq(0)
       expect(@group.second.count).to eq(1)
