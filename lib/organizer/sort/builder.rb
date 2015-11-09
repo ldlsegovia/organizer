@@ -3,11 +3,11 @@ module Organizer
     module Builder
       include Organizer::Error
 
-      def self.build_sort_items(_methods)
-        return if !_methods || _methods.keys.empty?
+      def self.build_sort_items(_sort_methods)
+        return if !_sort_methods || _sort_methods.keys.empty?
         sort_items = Organizer::Sort::Collection.new
 
-        _methods.each do |attr_name, orientation|
+        _sort_methods.each do |attr_name, orientation|
           sort_items.add_item(attr_name.to_sym, orientation.to_s == "desc")
         end
 

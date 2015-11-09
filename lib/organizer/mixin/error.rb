@@ -160,5 +160,11 @@ module Organizer
         attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
       }
     end
+
+    class SelectorException < ::Exception
+      ERRORS = {
+        unknown_group: "Cant group by unknown group"
+      }
+    end
   end
 end

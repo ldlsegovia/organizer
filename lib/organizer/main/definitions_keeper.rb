@@ -9,10 +9,12 @@ module Organizer
     attr_reader :operations, :groups_operations
 
     def initialize
-      @groups = {}
       @filters = Organizer::Filter::Collection.new
+
       @default_filters = Organizer::Filter::Collection.new
       @operations = Organizer::Operation::Collection.new
+
+      @groups = {}
       @groups_operations = Organizer::Operation::Collection.new
       @grouped_operations = Organizer::GroupDefinition::Collection.new
     end
@@ -50,8 +52,7 @@ module Organizer
     def add_group(_name, _group_by_attr = nil, _parent_name = nil)
       if !_parent_name
         return false if !!@groups[_name]
-        @groups[_name] = Organizer::GroupDefinition::Collection.new
-        @current_groups = @groups[_name]
+        @current_groups = @groups[_name.to_sym] = Organizer::GroupDefinition::Collection.new
       end
 
       @current_group = @current_groups.add_definition(_name, _group_by_attr, _parent_name)

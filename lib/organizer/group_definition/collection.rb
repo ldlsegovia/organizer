@@ -12,12 +12,6 @@ module Organizer
         last
       end
 
-      def find_or_create_definition(_group)
-        definition = find_by_name(_group.group_name)
-        return definition if definition
-        add_definition(_group.group_name, _group.group_by_attr, _group.parent_name)
-      end
-
       def add_memo_operation(_group_name, _operation, _initial_value = 0, &block)
         in_definition_context(_group_name) do |group_definition|
           if _operation.is_a?(Organizer::Operation::Memo)

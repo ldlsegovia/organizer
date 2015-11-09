@@ -136,6 +136,11 @@ describe Organizer::Base do
             expect(result.size).to eq(3)
           end
 
+          it "raises error trying to group by unknown group" do
+            expect { @organizer.group_by_unknown.organize }.to(
+              raise_organizer_error(Organizer::Group::SelectorException, :unknown_group))
+          end
+
           context "with operations" do
             before do
               BaseChild.add_groups_operation(:attrs_sum, 10) do |memo, item|

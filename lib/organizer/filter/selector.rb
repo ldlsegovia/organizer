@@ -3,11 +3,10 @@ module Organizer
     module Selector
       include Organizer::Error
 
-      def self.select_default(_filters, _collection_methods)
-        skip_methods = _collection_methods.select(&:skip_default_filter?)
-        return _filters if skip_methods.empty?
-        skip_all = skip_methods.find { |m| m.array_args_include?(:all) }
-        filters_to_skip = skip_methods.map(&:args).flatten
+      def self.select_default(_filters, _skip_filter_methods)
+        return _filters if _skip_filter_methods.empty?
+        skip_all = _skip_filter_methods.find { |m| m.array_args_include?(:all) }
+        filters_to_skip = _skip_filter_methods.map(&:args).flatten
         return if skip_all || filters_to_skip.blank?
         _filters.reject_items(filters_to_skip)
       end

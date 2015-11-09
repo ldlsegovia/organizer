@@ -27,27 +27,6 @@ describe Organizer::GroupDefinition::Collection do
     end
   end
 
-  describe "#find_or_create_definition" do
-    before { @group = Organizer::Group::Item.new(:store, :store_id, :gender) }
-
-    it "adds new definition" do
-      expect { subject.find_or_create_definition(@group) }.to change(subject, :count).from(0).to(1)
-    end
-
-    context "with existent definition" do
-      before { subject.add_definition(:store, :another_id) }
-
-      it "does not create new definition" do
-        expect { subject.find_or_create_definition(@group) }.to_not change(subject, :count)
-      end
-
-      it "returns existent definition" do
-        definition = subject.find_or_create_definition(@group)
-        expect(definition.group.group_by_attr).to eq(:another_id)
-      end
-    end
-  end
-
   describe "collection mixin" do
     let!(:collection) { Organizer::GroupDefinition::Collection.new }
     let!(:collection_exception_class) { Organizer::GroupDefinition::CollectionException }
