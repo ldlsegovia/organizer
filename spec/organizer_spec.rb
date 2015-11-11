@@ -333,10 +333,10 @@ describe Organizer do
             @groups = MyOrganizer.groups[:g1]
           end
 
-          it "adds a group nested to another group" do
-            expect(@groups.first.group.parent_name).to be_nil
-            expect(@groups.second.group.parent_name).to eq(:g1)
-            expect(@groups.third.group.parent_name).to eq(:g2)
+          it "adds nested groups in order" do
+            expect(@groups.first.group.group_name).to be(:g1)
+            expect(@groups.second.group.group_name).to eq(:g2)
+            expect(@groups.third.group.group_name).to eq(:g3)
           end
         end
       end

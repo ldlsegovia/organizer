@@ -144,7 +144,6 @@ module Organizer
   module Group
     class CollectionException < ::Exception
       ERRORS = {
-        invalid_parent: "Group not found in collection",
         invalid_item: "Invalid group collection item. Must be Organizer::Group::Item only",
         repeated_item: "Repeated item. An Item with same name was added previously"
       }

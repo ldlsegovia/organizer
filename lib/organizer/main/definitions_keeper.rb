@@ -55,7 +55,7 @@ module Organizer
         @current_groups = @groups[_name.to_sym] = Organizer::GroupDefinition::Collection.new
       end
 
-      @current_group = @current_groups.add_definition(_name, _group_by_attr, _parent_name)
+      @current_group = @current_groups.add_definition(_name, _group_by_attr)
     end
   end
 end
