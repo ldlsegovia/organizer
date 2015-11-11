@@ -60,7 +60,7 @@ describe Organizer::Sort::Applier do
 
     it "sorts parent group" do
       @sort_items.add_item(:age_sum)
-      definitions = Organizer::GroupDefinition::Collection.new
+      definitions = Organizer::Group::DefinitionsCollection.new
       definitions.add_definition(:gender).sort_items = @sort_items
 
       subject.apply_on_groups(definitions, @group)
@@ -70,7 +70,7 @@ describe Organizer::Sort::Applier do
 
     it "sorts child group" do
       @sort_items.add_item(:greatest_savings, true)
-      definitions = Organizer::GroupDefinition::Collection.new
+      definitions = Organizer::Group::DefinitionsCollection.new
       definitions.add_definition(:site_id).sort_items = @sort_items
 
       subject.apply_on_groups(definitions, @group)

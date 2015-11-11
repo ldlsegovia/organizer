@@ -277,7 +277,7 @@ describe Organizer do
 
         it "adds a group to MyOrganizer class" do
           expect(@groups.keys.count).to eq(1)
-          expect(@groups[:store]).to be_a(Organizer::GroupDefinition::Collection)
+          expect(@groups[:store]).to be_a(Organizer::Group::DefinitionsCollection)
           expect(@groups[:store].first.item_name).to eq(:store)
         end
       end
@@ -334,9 +334,9 @@ describe Organizer do
           end
 
           it "adds nested groups in order" do
-            expect(@groups.first.group.group_name).to be(:g1)
-            expect(@groups.second.group.group_name).to eq(:g2)
-            expect(@groups.third.group.group_name).to eq(:g3)
+            expect(@groups.first.item_name).to eq(:g1)
+            expect(@groups.second.item_name).to eq(:g2)
+            expect(@groups.third.item_name).to eq(:g3)
           end
         end
       end

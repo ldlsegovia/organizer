@@ -16,7 +16,6 @@ module Organizer
 
       @groups = {}
       @groups_operations = Organizer::Operation::Collection.new
-      @grouped_operations = Organizer::GroupDefinition::Collection.new
     end
 
     def add_collection(&block)
@@ -52,7 +51,7 @@ module Organizer
     def add_group(_name, _group_by_attr = nil, _parent_name = nil)
       if !_parent_name
         return false if !!@groups[_name]
-        @current_groups = @groups[_name.to_sym] = Organizer::GroupDefinition::Collection.new
+        @current_groups = @groups[_name.to_sym] = Organizer::Group::DefinitionsCollection.new
       end
 
       @current_group = @current_groups.add_definition(_name, _group_by_attr)

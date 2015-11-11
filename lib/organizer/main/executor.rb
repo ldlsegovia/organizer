@@ -14,7 +14,7 @@ module Organizer
 
       load_groups_executor
 
-      if @selected_groups
+      if @selected_group_definitions
         load_group_operations_executor
         load_group_filters_executor
         load_group_sort_items_executor
@@ -57,10 +57,10 @@ module Organizer
 
     def self.load_groups_executor
       load_executor do |source|
-        @selected_groups = Organizer::Group::Selector.select(
+        @selected_group_definitions = Organizer::Group::Selector.select(
           @definitions.groups, @chainer.group)
 
-        groups = @selected_groups.map(&:group) if @selected_groups
+        groups = @selected_group_definitions.groups_from_definitions if @selected_group_definitions
         Organizer::Group::Builder.build(source, groups)
       end
     end
@@ -68,7 +68,7 @@ module Organizer
     def self.load_group_operations_executor
       load_executor do |source|
         grouped_operations = Organizer::Operation::Selector.select_group_operations(
-          @definitions.groups_operations, @selected_groups)
+          @definitions.groups_operations, @selected_group_definitions)
 
         Organizer::Operation::Executor.execute_on_groups(
           grouped_operations, @definitions.collection, source)
@@ -77,7 +77,7 @@ module Organizer
 
     def self.load_group_filters_executor
       grouped_filters = Organizer::Filter::Selector.select_groups_filters(
-        @definitions.filters, @chainer.filter_group_methods(:hash), @selected_groups)
+        @definitions.filters, @chainer.filter_group_methods(:hash), @selected_group_definitions)
 
       load_executor do |source|
         Organizer::Filter::Applier.apply_groups_filters(grouped_filters, source)
@@ -86,7 +86,7 @@ module Organizer
 
     def self.load_group_sort_items_executor
       grouped_sort_items = Organizer::Sort::Builder.build_groups_sort_items(
-        @chainer.sort_group_methods(:hash), @selected_groups)
+        @chainer.sort_group_methods(:hash), @selected_group_definitions)
 
       load_executor do |source|
         Organizer::Sort::Applier.apply_on_groups(grouped_sort_items, source)

@@ -60,7 +60,6 @@ module Organizer
       in_context(nested_definition) do
         if @ctx.groups_parent?
           @organizer_class.add_group(_name, _group_by_attr)
-          # TODO: raise exception with repeated parent name
         elsif @ctx.group_parent?
           if @ctx.same_prev_ctx_parent?
             raise_error(:forbidden_nesting)

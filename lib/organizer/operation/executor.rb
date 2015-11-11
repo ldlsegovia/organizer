@@ -35,7 +35,7 @@ module Organizer
       end
 
       def self.execute_group_operations(_operations, _group_item, _source_item)
-        group_operations = if _operations.is_a?(Organizer::GroupDefinition::Collection)
+        group_operations = if _operations.is_a?(Organizer::Group::DefinitionsCollection)
                              _operations.memo_operations(_group_item.group_name)
                            else
                              _operations

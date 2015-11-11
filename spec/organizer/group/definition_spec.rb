@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Organizer::GroupDefinition::Item do
-  before { @definition = Organizer::GroupDefinition::Item.new(:store_id) }
+describe Organizer::Group::Definition do
+  before { @definition = Organizer::Group::Definition.new(:store_id) }
 
   describe "#initialize" do
     it "creates a group with name" do
@@ -23,19 +23,19 @@ describe Organizer::GroupDefinition::Item do
   end
 
   describe "attributes handler mixin" do
-    let!(:instance) { Organizer::GroupDefinition::Item.new(:store_id) }
-    let!(:error_class) { Organizer::GroupDefinition::ItemException }
+    let!(:instance) { Organizer::Group::Definition.new(:store_id) }
+    let!(:error_class) { Organizer::Group::DefinitionException }
 
     it_should_behave_like(:attributes_handler)
   end
 
   describe "collection item mixin" do
-    let!(:item) { Organizer::GroupDefinition::Item.new(:item_name) }
+    let!(:item) { Organizer::Group::Definition.new(:item_name) }
     it_should_behave_like(:collection_item)
   end
 
   describe "explainer mixin" do
-    let!(:explainer) { Organizer::GroupDefinition::Item.new(:item_name) }
+    let!(:explainer) { Organizer::Group::Definition.new(:item_name) }
     it_should_behave_like(:explainer)
   end
 end

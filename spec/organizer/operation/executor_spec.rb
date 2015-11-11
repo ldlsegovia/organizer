@@ -52,7 +52,7 @@ describe Organizer::Operation::Executor do
         memo.age_sum + item.age
       end
 
-      definitions = Organizer::GroupDefinition::Collection.new
+      definitions = Organizer::Group::DefinitionsCollection.new
       definition = definitions.add_definition(:gender)
       @operations.each { |operation| definition.add_memo_operation(operation) }
       @result = subject.execute_on_groups(definitions, gender_group_collection, gender)

@@ -46,7 +46,7 @@ describe Organizer::Filter::Applier do
       filter = Organizer::Filter::Item.new(@filter_definition, :filter)
       filter.value = 150
 
-      definitions = Organizer::GroupDefinition::Collection.new
+      definitions = Organizer::Group::DefinitionsCollection.new
       definitions.add_definition(:site).filters << filter
       subject.apply_groups_filters(definitions, @group)
 
@@ -57,7 +57,7 @@ describe Organizer::Filter::Applier do
       filter = Organizer::Filter::Item.new(@filter_definition, :filter)
       filter.value = 50
 
-      definitions = Organizer::GroupDefinition::Collection.new
+      definitions = Organizer::Group::DefinitionsCollection.new
       definitions.add_definition(:store).filters << filter
       subject.apply_groups_filters(definitions, @group)
 
@@ -68,7 +68,7 @@ describe Organizer::Filter::Applier do
     end
 
     it "filters groups items in the complete hierarchy" do
-      definitions = Organizer::GroupDefinition::Collection.new
+      definitions = Organizer::Group::DefinitionsCollection.new
 
       filter1 = Organizer::Filter::Item.new(@filter_definition, :filter)
       filter1.value = 150
