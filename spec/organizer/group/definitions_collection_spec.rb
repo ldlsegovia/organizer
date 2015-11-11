@@ -25,26 +25,6 @@ describe Organizer::Group::DefinitionsCollection do
     end
   end
 
-  describe "#add_memo_operation" do
-    before { subject.add_definition(:store_id) }
-
-    it "adds new operation related with given group" do
-      expect { subject.add_memo_operation(:store_id, :age_sum, 0, &-> {}) }.to(
-        change(subject.memo_operations(:store_id), :count).from(0).to(1))
-    end
-
-    it "adds new operation passing operation instance" do
-      operation = Organizer::Operation::Memo.new(Proc.new {}, :age_sum, 0)
-      expect { subject.add_memo_operation(:store_id, operation) }.to(
-        change(subject.memo_operations(:store_id), :count).from(0).to(1))
-    end
-
-    it "raises error trying to add operation to unknown definition" do
-      expect { subject.add_memo_operation(:unknown_group, :age_sum, 0, &-> {}) }.to(
-        raise_organizer_error(Organizer::Group::DefinitionsCollectionException, :definition_not_found))
-    end
-  end
-
   describe "collection mixin" do
     let!(:collection) { Organizer::Group::DefinitionsCollection.new }
     let!(:collection_exception_class) { Organizer::Group::DefinitionsCollectionException }

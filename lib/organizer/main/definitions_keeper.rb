@@ -45,16 +45,16 @@ module Organizer
     end
 
     def add_group_operation(_operation_name, _initial_value = 0, &block)
-      @current_group.add_memo_operation(_operation_name, _initial_value, &block)
+      @current_group_definition.add_memo_operation(_operation_name, _initial_value, &block)
     end
 
     def add_group(_name, _group_by_attr = nil, _parent_name = nil)
       if !_parent_name
         return false if !!@groups[_name]
-        @current_groups = @groups[_name.to_sym] = Organizer::Group::DefinitionsCollection.new
+        @current_groups_definitions = @groups[_name.to_sym] = Organizer::Group::DefinitionsCollection.new
       end
 
-      @current_group = @current_groups.add_definition(_name, _group_by_attr)
+      @current_group_definition = @current_groups_definitions.add_definition(_name, _group_by_attr)
     end
   end
 end

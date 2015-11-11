@@ -24,17 +24,6 @@ module Organizer
         groups
       end
 
-      def add_memo_operation(_group_name, _operation, _initial_value = 0, &block)
-        in_definition_context(_group_name) do |group_definition|
-          if _operation.is_a?(Organizer::Operation::Memo)
-            group_definition.add_memo_operation(_operation)
-          else
-            operation = Organizer::Operation::Memo.new(block, _operation, _initial_value)
-            group_definition.add_memo_operation(operation)
-          end
-        end
-      end
-
       def memo_operations(_group_name)
         find_if_definition(_group_name, :memo_operations)
       end
