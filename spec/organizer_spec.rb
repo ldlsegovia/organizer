@@ -212,9 +212,8 @@ describe Organizer do
           @global_operation1 = @global_operations.first
           @global_operation2 = @global_operations.last
 
-          grouped_operations = MyOrganizer.grouped_operations
-          @gender_operations = grouped_operations[:gender]
-          @site_operations = grouped_operations[:site]
+          @gender_operations = MyOrganizer.groups[:gender].memo_operations(:gender)
+          @site_operations = MyOrganizer.groups[:site].memo_operations(:site)
         end
 
         it "adds groups operations to MyOrganizer class" do
@@ -269,8 +268,7 @@ describe Organizer do
         before do
           Organizer.define("my_organizer") do
             groups do
-              group(:store_id, :store) {}
-              group(:age_greater_than_33, "item.age > 30") {}
+              group(:store, :store_id) {}
             end
           end
 
@@ -278,9 +276,9 @@ describe Organizer do
         end
 
         it "adds a group to MyOrganizer class" do
-          expect(@groups.count).to eq(2)
-          expect(@groups.first).to be_a(Organizer::Group::Item)
-          expect(@groups.last).to be_a(Organizer::Group::Item)
+          expect(@groups.keys.count).to eq(1)
+          expect(@groups[:store]).to be_a(Organizer::Group::DefinitionsCollection)
+          expect(@groups[:store].first.item_name).to eq(:store)
         end
       end
 
@@ -332,13 +330,13 @@ describe Organizer do
               end
             end
 
-            @groups = MyOrganizer.groups
+            @groups = MyOrganizer.groups[:g1]
           end
 
-          it "adds a group nested to another group" do
-            expect(@groups.first.parent_name).to be_nil
-            expect(@groups.second.parent_name).to eq(:g1)
-            expect(@groups.third.parent_name).to eq(:g2)
+          it "adds nested groups in order" do
+            expect(@groups.first.item_name).to eq(:g1)
+            expect(@groups.second.item_name).to eq(:g2)
+            expect(@groups.third.item_name).to eq(:g3)
           end
         end
       end

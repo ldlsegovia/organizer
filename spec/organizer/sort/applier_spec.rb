@@ -60,16 +60,20 @@ describe Organizer::Sort::Applier do
 
     it "sorts parent group" do
       @sort_items.add_item(:age_sum)
-      groups_sort_items = { gender: @sort_items }
-      subject.apply_on_groups(groups_sort_items, @group)
+      definitions = Organizer::Group::DefinitionsCollection.new
+      definitions.add_definition(:gender).sort_items = @sort_items
+
+      subject.apply_on_groups(definitions, @group)
       expect(@group.first.age_sum).to eq(130)
       expect(@group.last.age_sum).to eq(192)
     end
 
     it "sorts child group" do
       @sort_items.add_item(:greatest_savings, true)
-      groups_sort_items = { site_id: @sort_items }
-      subject.apply_on_groups(groups_sort_items, @group)
+      definitions = Organizer::Group::DefinitionsCollection.new
+      definitions.add_definition(:site_id).sort_items = @sort_items
+
+      subject.apply_on_groups(definitions, @group)
       expect(@group.first.first.greatest_savings).to eq(50.2)
       expect(@group.first.last.greatest_savings).to eq(20.5)
       expect(@group.last.first.greatest_savings).to eq(70.1)

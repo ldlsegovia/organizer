@@ -13,12 +13,6 @@ describe Organizer::Group::Item do
       expect(group.item_name).to eq(:store)
       expect(group.group_by_attr).to eq(:store_id)
     end
-
-    it "creates a group with parent" do
-      group = Organizer::Group::Item.new(:store, :store_id, :site)
-      expect(group.parent_name).to eq(:site)
-      expect(group.has_parent?).to be_truthy
-    end
   end
 
   it "raises error trying to add non group item to group" do

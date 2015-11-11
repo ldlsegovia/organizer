@@ -72,6 +72,12 @@ module Organizer
         repeated_item: "Repeated item. An Item with same name was added previously"
       }
     end
+
+    class SelectorException < ::Exception
+      ERRORS = {
+        unknown_group: "Cant apply filters to unknown group"
+      }
+    end
   end
 
   module Operation
@@ -108,21 +114,36 @@ module Organizer
         blank_name: "name param is mandatory",
       }
     end
+
+    class BuilderException < ::Exception
+      ERRORS = {
+        unknown_group: "Cant sort unknown groups"
+      }
+    end
   end
 
   module Group
     class CollectionException < ::Exception
       ERRORS = {
-        invalid_parent: "Group not found in collection",
         invalid_item: "Invalid group collection item. Must be Organizer::Group::Item only",
         repeated_item: "Repeated item. An Item with same name was added previously"
       }
     end
 
-    class SelectorException < ::Exception
+    class DefinitionsCollectionException < ::Exception
       ERRORS = {
-        unknown_group_given: "Unknown group name given",
-        cant_group_by_child_group: "Cant group by child group"
+        invalid_item: "Invalid group collection item. Must be Organizer::Group::Definition only",
+        repeated_item: "Repeated item. An Item with same name was added previously",
+        definition_not_found: "Group definition not found"
+      }
+    end
+
+    class DefinitionException < ::Exception
+      ERRORS = {
+        must_be_a_hash: "_hash parameter must be a Hash",
+        invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
+        attr_already_defined: "Attribute already defined",
+        attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
       }
     end
 
@@ -134,6 +155,12 @@ module Organizer
         invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
         attr_already_defined: "Attribute already defined",
         attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
+      }
+    end
+
+    class SelectorException < ::Exception
+      ERRORS = {
+        unknown_group: "Cant group by unknown group"
       }
     end
   end

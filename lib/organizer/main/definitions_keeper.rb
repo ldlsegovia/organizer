@@ -6,15 +6,16 @@ module Organizer
     attr_reader :collection_proc
     attr_reader :groups
     attr_reader :filters, :default_filters
-    attr_reader :operations, :groups_operations, :grouped_operations
+    attr_reader :operations, :groups_operations
 
     def initialize
-      @groups = Organizer::Group::Collection.new
       @filters = Organizer::Filter::Collection.new
+
       @default_filters = Organizer::Filter::Collection.new
       @operations = Organizer::Operation::Collection.new
+
+      @groups = {}
       @groups_operations = Organizer::Operation::Collection.new
-      @grouped_operations = {}
     end
 
     def add_collection(&block)
@@ -43,16 +44,17 @@ module Organizer
       @groups_operations.add_memo_operation(_name, _initial_value, &block)
     end
 
-    def add_group_operation(_group_name, _operation_name, _initial_value = 0, &block)
-      if !@grouped_operations[_group_name]
-        @grouped_operations[_group_name] = Organizer::Operation::Collection.new
-      end
-
-      @grouped_operations[_group_name].add_memo_operation(_operation_name, _initial_value, &block)
+    def add_group_operation(_operation_name, _initial_value = 0, &block)
+      @current_group.add_memo_operation(_operation_name, _initial_value, &block)
     end
 
     def add_group(_name, _group_by_attr = nil, _parent_name = nil)
-      @groups.add_group(_name, _group_by_attr, _parent_name)
+      if !_parent_name
+        return false if !!@groups[_name]
+        @current_groups = @groups[_name.to_sym] = Organizer::Group::DefinitionsCollection.new
+      end
+
+      @current_group = @current_groups.add_definition(_name, _group_by_attr)
     end
   end
 end

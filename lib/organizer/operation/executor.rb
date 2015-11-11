@@ -8,34 +8,39 @@ module Organizer
         _source_collection
       end
 
-      def self.execute_on_groups(_operations, _source_collection, _group_collection)
+      def self.execute_on_groups(_group_definitions, _source_collection, _group_collection)
         _source_collection.each do |source_item|
           _group_collection.each do |group_item|
-            eval_operations_against_groups(_operations, source_item, [group_item])
+            eval_operations_against_groups(_group_definitions, source_item, [group_item])
           end
         end
 
         _group_collection
       end
 
-      def self.eval_operations_against_groups(_operations, _source_item, _group_items_hierarchy)
+      def self.eval_operations_against_groups(_group_definitions, _source_item, _group_items_hierarchy)
         group_item = _group_items_hierarchy.last
         return unless group_item.is_a?(Organizer::Group::Item)
 
         if item_match_with_group_hierarchy?(_group_items_hierarchy, _source_item)
-          execute_group_operations(_operations, group_item, _source_item)
+          execute_group_operations(_group_definitions, group_item, _source_item)
         end
 
         group_item.each do |child|
           break unless child.is_a?(Organizer::Group::Item)
           new_hierarchy = _group_items_hierarchy.clone
           new_hierarchy << child
-          eval_operations_against_groups(_operations, _source_item, new_hierarchy)
+          eval_operations_against_groups(_group_definitions, _source_item, new_hierarchy)
         end
       end
 
       def self.execute_group_operations(_operations, _group_item, _source_item)
-        group_operations = _operations.is_a?(Hash) ? _operations[_group_item.group_name] : _operations
+        group_operations = if _operations.is_a?(Organizer::Group::DefinitionsCollection)
+                             _operations.memo_operations(_group_item.group_name)
+                           else
+                             _operations
+                           end
+
         return unless group_operations
         group_operations.each { |operation| operation.execute(_group_item, _source_item) }
       end

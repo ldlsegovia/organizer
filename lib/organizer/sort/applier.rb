@@ -10,12 +10,12 @@ module Organizer
         end
       end
 
-      def self.apply_on_groups(_groups_sort_items, _groups_collection)
+      def self.apply_on_groups(_group_definitions, _groups_collection)
         return if _groups_collection.empty?
         return unless _groups_collection.first.is_a?(Organizer::Group::Item)
-        group_sort_items = _groups_sort_items[_groups_collection.first.group_name] || []
+        group_sort_items = _group_definitions.sort_items(_groups_collection.first.group_name) || []
         apply(group_sort_items, _groups_collection)
-        _groups_collection.each { |item| apply_on_groups(_groups_sort_items, item) }
+        _groups_collection.each { |item| apply_on_groups(_group_definitions, item) }
       end
 
       def self.compare_items(_sort_items, _item_one, _item_two)
