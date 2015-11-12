@@ -318,6 +318,17 @@ describe Organizer do
           end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
         end
 
+        it "raises error trying to add two parent groups with same name" do
+          expect do
+            Organizer.define("my_organizer") do
+              groups do
+                group(:g1)
+                group(:g1)
+              end
+            end
+          end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
+        end
+
         context "with nested groups" do
           before do
             Organizer.define("my_organizer") do

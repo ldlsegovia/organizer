@@ -59,14 +59,12 @@ module Organizer
     def group(_name, _group_by_attr = nil, &nested_definition)
       in_context(nested_definition) do
         if @ctx.groups_parent?
-          @organizer_class.add_group(_name, _group_by_attr)
+          group = @organizer_class.add_group_definition(_name, _group_by_attr)
+          raise_error(:forbidden_nesting) unless group
+          group
         elsif @ctx.group_parent?
-          if @ctx.same_prev_ctx_parent?
-            raise_error(:forbidden_nesting)
-          else
-            parent_name = @ctx.parent_ctx.data.item_name
-            @organizer_class.add_group(_name, _group_by_attr, parent_name)
-          end
+          raise_error(:forbidden_nesting) if @ctx.same_prev_ctx_parent?
+          @organizer_class.add_group_definition(_name, _group_by_attr, !!@ctx.parent_ctx.data)
         else
           raise_error(:forbidden_nesting)
         end

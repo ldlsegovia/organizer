@@ -48,8 +48,8 @@ module Organizer
       @current_group_definition.add_memo_operation(_operation_name, _initial_value, &block)
     end
 
-    def add_group(_name, _group_by_attr = nil, _parent_name = nil)
-      if !_parent_name
+    def add_group_definition(_name, _group_by_attr = nil, _has_parent = false)
+      if !_has_parent
         return false if !!@groups[_name]
         @current_groups_definitions = @groups[_name.to_sym] = Organizer::Group::DefinitionsCollection.new
       end

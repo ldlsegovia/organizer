@@ -128,7 +128,7 @@ describe Organizer::Base do
 
       context "working with groups" do
         context "grouping by attribute" do
-          before { BaseChild.add_group(:site_id) }
+          before { BaseChild.add_group_definition(:site_id) }
 
           it "groups collection items" do
             result = @organizer.group_by_site_id.organize
@@ -160,8 +160,8 @@ describe Organizer::Base do
 
         context "with nested groups" do
           before do
-            BaseChild.add_group(:gender)
-            BaseChild.add_group(:site, :site_id, :gender)
+            BaseChild.add_group_definition(:gender)
+            BaseChild.add_group_definition(:site, :site_id, :gender)
           end
 
           it "groups collection by gender and site" do
