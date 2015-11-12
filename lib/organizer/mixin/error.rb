@@ -75,6 +75,7 @@ module Organizer
 
     class SelectorException < ::Exception
       ERRORS = {
+        unknown_filter: "Cant apply unknown filters",
         unknown_group: "Cant apply filters to unknown group"
       }
     end

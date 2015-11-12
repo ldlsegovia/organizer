@@ -12,7 +12,7 @@ describe Organizer::Base do
   describe "#organize" do
     context "with undefined collection" do
       it "raises error with undefined collection" do
-        expect { BaseChild.new.organize }.to(
+        expect { @organizer.organize }.to(
           raise_organizer_error(Organizer::Exception, :undefined_collection_method))
       end
     end
@@ -43,6 +43,11 @@ describe Organizer::Base do
           result = @organizer.filter_by(:filter1, filter2: 33).organize
           expect(result).to be_a(Organizer::Source::Collection)
           expect(result.size).to eq(3)
+        end
+
+        it "raises error trying to apply unknown filters" do
+          expect { @organizer.filter_by(:unknown_filter).organize }.to(
+            raise_organizer_error(Organizer::Filter::SelectorException, :unknown_filter))
         end
 
         context "with default filters" do
@@ -80,7 +85,7 @@ describe Organizer::Base do
         before { BaseChild.add_source_operation(:new_attr) { |item| item.age * 2 } }
 
         it "executes operations" do
-          result = BaseChild.new.organize
+          result = @organizer.organize
           expect(result).to be_a(Organizer::Source::Collection)
           expect(result.first.new_attr).to eq(44)
           expect(result.second.new_attr).to eq(62)
@@ -91,7 +96,7 @@ describe Organizer::Base do
           before { BaseChild.add_filter(:filter1) { |item| item.new_attr > 66 } }
 
           it "filters by generated attribute" do
-            result = BaseChild.new.filter_by(:filter1).organize
+            result = @organizer.filter_by(:filter1).organize
             expect(result).to be_a(Organizer::Source::Collection)
             expect(result.size).to eq(3)
           end
@@ -100,27 +105,27 @@ describe Organizer::Base do
 
       context "sorting" do
         it "sorts collection ascending" do
-          result = BaseChild.new.sort_by(:age).organize
+          result = @organizer.sort_by(:age).organize
           expect(result.first.age).to eq(8)
           expect(result.last.age).to eq(65)
 
-          result = BaseChild.new.sort_by(age: :asc).organize
+          result = @organizer.sort_by(age: :asc).organize
           expect(result.first.age).to eq(8)
           expect(result.last.age).to eq(65)
         end
 
         it "sorts collection descending" do
-          result = BaseChild.new.sort_by(age: :desc).organize
+          result = @organizer.sort_by(age: :desc).organize
           expect(result.first.age).to eq(65)
           expect(result.last.age).to eq(8)
         end
 
         it "sorts by multiple attributes" do
-          result = BaseChild.new.sort_by(gender: :desc, age: :desc).organize
+          result = @organizer.sort_by(gender: :desc, age: :desc).organize
           expect(result.first.first_name).to eq("Rodolfo")
           expect(result.last.first_name).to eq("Virginia")
 
-          result = BaseChild.new.sort_by(gender: :desc).sort_by(age: :desc).organize
+          result = @organizer.sort_by(gender: :desc).sort_by(age: :desc).organize
           expect(result.first.first_name).to eq("Rodolfo")
           expect(result.last.first_name).to eq("Virginia")
         end
@@ -261,7 +266,6 @@ describe Organizer::Base do
                 expect(result.first.greater_age).to eq(64)
                 expect(result.first.first.lower_savings).to eq(45.5)
                 expect(result.first.last.lower_savings).to eq(30.0)
-
                 expect(result.last.greater_age).to eq(65)
                 expect(result.last.first.lower_savings).to eq(25.5)
                 expect(result.last.last.lower_savings).to eq(2.5)

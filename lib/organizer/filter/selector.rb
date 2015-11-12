@@ -17,6 +17,7 @@ module Organizer
 
         _filter_methods.each do |filter_name, value|
           filter = _filters.find_by_name(filter_name)
+          raise_error(:unknown_filter) unless filter
 
           if filter
             filter.value = value
