@@ -100,6 +100,12 @@ module Organizer
     class ExecutorException < ::Exception
       ERRORS = {}
     end
+
+    class MaskBuilderException < ::Exception
+      ERRORS = {
+        invalid_mask: "Invalid mask given"
+      }
+    end
   end
 
   module Sort
