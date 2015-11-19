@@ -3,7 +3,7 @@ module Organizer
     module MaskBuilder
       include Organizer::Error
 
-      MASKS_MAP = {
+      NUMBER_FORMATTER_METHODS_MAP = {
         currency: :number_to_currency,
         natural: :number_to_human,
         size: :number_to_human_size,
@@ -13,25 +13,41 @@ module Organizer
         precision: :number_with_precision
       }
 
+      def self.format_as_number(_attribute, _mask, _options)
+        on_item_context(_attribute) do |value|
+          format_method = NUMBER_FORMATTER_METHODS_MAP[_mask.to_sym]
+          ActionView::Base.new.send(format_method, value, _options)
+        end
+      end
+
+      def self.format_as_date(_attribute, _options, _with_time)
+        on_item_context(_attribute) do |value|
+          default_format = _with_time ? "%Y-%m-%d %H:%M:%S" : "%Y-%m-%d"
+          format = _options.fetch(:format, default_format)
+          value.to_s.to_datetime.strftime(format)
+        end
+      end
+
+      def self.on_item_context(_attribute, &_block)
+        Proc.new do |item|
+          value = item.send(_attribute)
+          _block.call(value)
+        end
+      end
+
       def self.build(_attribute, _mask, _options = {})
-        validate_mask(_mask)
-        create_operation(_attribute, MASKS_MAP[_mask], _options)
-      end
+        definition = if NUMBER_FORMATTER_METHODS_MAP[_mask.to_sym]
+                       format_as_number(_attribute, _mask, _options)
+                     elsif _mask == :date || _mask == :datetime
+                       format_as_date(_attribute, _options, _mask == :datetime)
+                     end
 
-      def self.validate_mask(_mask)
-        raise_error(:invalid_mask) unless MASKS_MAP[_mask.to_sym]
-      end
-
-      def self.create_operation(_attribute, _mask_method, _options)
-        definition = Proc.new do |item|
-          ActionView::Base.new.send(_mask_method, item.send(_attribute), _options)
+        if definition
+          masked_attribute_name = "human_#{_attribute}"
+          return Organizer::Operation::Simple.new(definition, masked_attribute_name)
         end
 
-        Organizer::Operation::Simple.new(definition, masked_attribute_name(_attribute))
-      end
-
-      def self.masked_attribute_name(_attribute)
-        "human_#{_attribute}"
+        raise_error(:invalid_mask)
       end
     end
   end

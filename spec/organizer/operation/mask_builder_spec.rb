@@ -28,5 +28,29 @@ describe Organizer::Operation::MaskBuilder do
       operation.execute(source_item)
       expect(source_item.human_int_attr1).to eq("$400.00000")
     end
+
+    it "creates date operation" do
+      operation = subject.build(:date_attr, :date)
+      operation.execute(source_item)
+      expect(source_item.human_date_attr).to eq("1984-06-04")
+    end
+
+    it "creates date operation with custom format" do
+      operation = subject.build(:date_attr, :date, format: "%Y")
+      operation.execute(source_item)
+      expect(source_item.human_date_attr).to eq("1984")
+    end
+
+    it "creates datetime operation" do
+      operation = subject.build(:datetime_attr, :datetime)
+      operation.execute(source_item)
+      expect(source_item.human_datetime_attr).to eq("1984-06-04 06:06:06")
+    end
+
+    it "creates datetime operation with custom format" do
+      operation = subject.build(:datetime_attr, :datetime, format: "%Y")
+      operation.execute(source_item)
+      expect(source_item.human_datetime_attr).to eq("1984")
+    end
   end
 end
