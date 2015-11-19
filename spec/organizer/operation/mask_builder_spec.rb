@@ -52,5 +52,29 @@ describe Organizer::Operation::MaskBuilder do
       operation.execute(source_item)
       expect(source_item.human_datetime_attr).to eq("1984")
     end
+
+    it "creates time operation" do
+      operation = subject.build(:float_attr, :time)
+      operation.execute(source_item)
+      expect(source_item.human_float_attr).to eq("00:00:04")
+    end
+
+    it "creates time operation from seconds" do
+      operation = subject.build(:float_attr, :time_from_seconds)
+      operation.execute(source_item)
+      expect(source_item.human_float_attr).to eq("00:00:04")
+    end
+
+    it "creates time operation from minutes" do
+      operation = subject.build(:float_attr, :time_from_minutes)
+      operation.execute(source_item)
+      expect(source_item.human_float_attr).to eq("00:04:00")
+    end
+
+    it "creates time operation from minutes" do
+      operation = subject.build(:float_attr, :time_from_hours)
+      operation.execute(source_item)
+      expect(source_item.human_float_attr).to eq("04:00:00")
+    end
   end
 end
