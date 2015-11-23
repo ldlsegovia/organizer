@@ -24,9 +24,9 @@ describe Organizer::Operation::MaskBuilder do
     end
 
     it "uses custom options" do
-      operation = subject.build("int_attr1", :currency, precision: 5)
+      operation = subject.build("string_attr", :truncate, length: 5, separator: ' ')
       operation.execute(source_item)
-      expect(source_item.human_int_attr1).to eq("$400.00000")
+      expect(source_item.human_string_attr).to eq("Hi...")
     end
 
     it "creates date operation" do
@@ -75,6 +75,12 @@ describe Organizer::Operation::MaskBuilder do
       operation = subject.build(:float_attr, :time_from_hours)
       operation.execute(source_item)
       expect(source_item.human_float_attr).to eq("04:00:00")
+    end
+
+    it "creates operation using inflector" do
+      operation = subject.build(:string_attr, :upcase)
+      operation.execute(source_item)
+      expect(source_item.human_string_attr).to eq("HI! IM A STRING")
     end
   end
 end

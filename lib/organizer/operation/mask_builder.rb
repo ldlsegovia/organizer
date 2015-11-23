@@ -3,20 +3,31 @@ module Organizer
     module MaskBuilder
       include Organizer::Error
 
-      NUMBER_FORMATTER_METHODS_MAP = {
+      ACTION_VIEW_METHODS_MAP = {
         currency: :number_to_currency,
         natural: :number_to_human,
         size: :number_to_human_size,
         percentage: :number_to_percentage,
         phone: :number_to_phone,
         delimiter: :number_with_delimiter,
-        precision: :number_with_precision
+        precision: :number_with_precision,
+        truncate: :truncate,
+        word_wrap: :word_wrap
+      }
+
+      STRING_METHODS_MAP = {
+        clean: :humanize,
+        capitalize: :capitalize,
+        downcase: :downcase,
+        upcase: :upcase,
       }
 
       def self.build(_attribute, _mask, _options = {})
         _mask = _mask.to_sym
-        definition = if NUMBER_FORMATTER_METHODS_MAP[_mask]
-                       format_as_number(_attribute, _mask, _options)
+        definition = if action_view_mask?(_mask)
+                       format_with_action_view(_attribute, _mask, _options)
+                     elsif string_mask?(_mask)
+                       format_from_string(_attribute, _mask)
                      elsif date_mask?(_mask)
                        format_as_date(_attribute, _options, _mask == :datetime)
                      elsif time_mask?(_mask)
@@ -31,10 +42,17 @@ module Organizer
         raise_error(:invalid_mask)
       end
 
-      def self.format_as_number(_attribute, _mask, _options)
+      def self.format_with_action_view(_attribute, _mask, _options)
         on_item_context(_attribute) do |value|
-          formatter_method = number_formatter(_mask)
+          formatter_method = action_view_formatter(_mask)
           ActionView::Base.new.send(formatter_method, value, _options)
+        end
+      end
+
+      def self.format_from_string(_attribute, _mask)
+        on_item_context(_attribute) do |value|
+          formatter_method = string_formatter(_mask)
+          value.to_s.send(formatter_method)
         end
       end
 
@@ -68,12 +86,24 @@ module Organizer
         end
       end
 
-      def self.number_formatter(_mask)
-        NUMBER_FORMATTER_METHODS_MAP[_mask]
+      def self.action_view_formatter(_mask)
+        ACTION_VIEW_METHODS_MAP[_mask]
+      end
+
+      def self.string_formatter(_mask)
+        STRING_METHODS_MAP[_mask]
+      end
+
+      def self.action_view_mask?(_mask)
+        !!ACTION_VIEW_METHODS_MAP[_mask]
       end
 
       def self.date_mask?(_mask)
         _mask == :date || _mask == :datetime
+      end
+
+      def self.string_mask?(_mask)
+        !!STRING_METHODS_MAP[_mask]
       end
 
       def self.time_mask?(_mask)

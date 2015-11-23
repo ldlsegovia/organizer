@@ -4,7 +4,7 @@ module HelpfulVariables
       int_attr1: 400,
       int_attr2: 266,
       float_attr: 4.684,
-      string_attr: "Hi! I'm a String",
+      string_attr: "Hi! Im a String",
       date_attr: "04/06/1984".to_date,
       datetime_attr: "04/06/1984 06:06:06".to_datetime
     }
