@@ -1,5 +1,4 @@
 require "require_all"
-require "action_view"
 require "active_support/all"
 require "colorize"
 

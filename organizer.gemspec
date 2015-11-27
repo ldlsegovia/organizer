@@ -20,7 +20,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "activesupport"
-  spec.add_dependency "actionview"
   spec.add_dependency "colorize"
   spec.add_dependency "require_all"
 
