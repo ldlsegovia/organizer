@@ -3,9 +3,9 @@ module Organizer
     class Memo < Organizer::Operation::Item
       attr_reader :initial_value
 
-      def initialize(_definition, _name, _initial_value = 0)
+      def initialize(_definition, _name, _initial_value = 0, _options = {})
         @initial_value = _initial_value
-        super(_definition, _name)
+        super(_definition, _name, _options)
       end
 
       def execute(_memo_item, _item)
@@ -15,6 +15,7 @@ module Organizer
 
         result = definition.call(_memo_item, _item)
         _memo_item.send("#{item_name}=", result)
+        mask.execute(_memo_item) if mask
         nil
       end
     end

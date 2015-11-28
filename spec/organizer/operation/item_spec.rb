@@ -18,6 +18,14 @@ describe Organizer::Operation::Item do
       expect { Organizer::Operation::Item.new(-> {}, nil) }.to(
         raise_organizer_error(Organizer::Operation::ItemException, :blank_name))
     end
+
+    it "sets mask operation" do
+      proc = Proc.new {}
+      mask_options = { name: :truncated, options: 5 }
+      o = Organizer::Operation::Item.new(proc, :my_operation, mask: mask_options)
+      expect(o.mask).to be_a(Organizer::Operation::Item)
+      expect(o.mask.item_name).to eq(:human_my_operation)
+    end
   end
 
   describe "#execute" do

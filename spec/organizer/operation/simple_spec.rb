@@ -2,13 +2,21 @@ require 'spec_helper'
 
 describe Organizer::Operation::Simple do
   describe "#execute" do
+    let_item(:item)
+
+    before do
+      @proc = Proc.new { |organizer_item| organizer_item.int_attr1 + organizer_item.int_attr2 }
+    end
+
     it "sets operation result as new attribute into item param" do
-      hash = { attr1: 400, attr2: 266 }
-      item = Organizer::Source::Item.new
-      item.define_attributes(hash)
-      proc = Proc.new { |organizer_item| organizer_item.attr1 + organizer_item.attr2 }
-      Organizer::Operation::Simple.new(proc, :attrs_sum).execute(item)
-      expect(item.attrs_sum).to eq(hash[:attr1] + hash[:attr2])
+      Organizer::Operation::Simple.new(@proc, :attrs_sum).execute(item)
+      expect(item.attrs_sum).to eq(item.int_attr1 + item.int_attr2)
+    end
+
+    it "execute mask when defined" do
+      mask_options = { name: :currency, options: { separator: "-" } }
+      Organizer::Operation::Simple.new(@proc, :attrs_sum, mask: mask_options).execute(item)
+      expect(item.human_attrs_sum).to eq("$666-00")
     end
   end
 

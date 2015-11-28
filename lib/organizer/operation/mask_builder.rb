@@ -2,21 +2,20 @@ module Organizer
   module Operation
     module MaskBuilder
       include Organizer::Error
-      # http://guides.rubyonrails.org/active_support_core_extensions.html#formatting
 
       MASK_METHODS_MAP = {
         currency: { method: :currency, formatter: :number_proc, allow_options: true },
-        natural: { method: :human, formatter: :number_proc, allow_options: false },
-        size: { method: :human_size, formatter: :number_proc, allow_options: false },
+        natural: { method: :human, formatter: :number_proc },
+        size: { method: :human_size, formatter: :number_proc },
         percentage: { method: :percentage, formatter: :number_proc, allow_options: true },
         phone: { method: :phone, formatter: :number_proc, allow_options: true },
         delimited: { method: :delimited, formatter: :number_proc, allow_options: true },
         rounded: { method: :rounded, formatter: :number_proc, allow_options: true },
         clean: { method: :humanize, formatter: :instance_method_proc, allow_options: true },
         truncated: { method: :truncate, formatter: :instance_method_proc, allow_options: true },
-        capitalized: { method: :capitalize, formatter: :instance_method_proc, allow_options: false },
-        downcase: { method: :downcase, formatter: :instance_method_proc, allow_options: false },
-        upcase: { method: :upcase, formatter: :instance_method_proc, allow_options: false },
+        capitalized: { method: :capitalize, formatter: :instance_method_proc },
+        downcase: { method: :downcase, formatter: :instance_method_proc },
+        upcase: { method: :upcase, formatter: :instance_method_proc },
         date: { formatter: :date_proc, allow_options: true },
         datetime: { formatter: :datetime_proc, allow_options: true },
         time: { formatter: :time_proc, allow_options: true },
