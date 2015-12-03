@@ -25,7 +25,8 @@ describe Organizer do
       {
         group: :my_group,
         operation: :my_operation,
-        default_filter: nil
+        default_filter: nil,
+        human: :attr1,
       }.each do |dsl_method, params|
         Object.send(:remove_const, :MyOrganizer) rescue nil
         expect do
@@ -43,7 +44,7 @@ describe Organizer do
           generate_filters_for: [:attr1, :attr2],
           filter: :my_filter,
           groups: nil,
-          group: :my_group
+          group: :my_group,
         }.each do |dsl_method, params|
           Object.send(:remove_const, :MyOrganizer) rescue nil
           expect do
@@ -172,6 +173,23 @@ describe Organizer do
       end
     end
 
+    describe "#human" do
+      before do
+        Organizer.define("my_organizer") do
+          collection do
+            human(:amount, :currency, unit: "€", precision: 3)
+          end
+        end
+
+        @operations = MyOrganizer.operations
+      end
+
+      it "adds mask operation" do
+        expect(@operations.count).to eq(1)
+        expect(@operations).to be_a(Organizer::Operation::Collection)
+      end
+    end
+
     describe "#operation" do
       context "in collection context" do
         before do
@@ -249,7 +267,8 @@ describe Organizer do
           filter: :my_filter,
           default_filter: nil,
           groups: nil,
-          generate_filters_for: [:attr1, :attr2]
+          generate_filters_for: [:attr1, :attr2],
+          human: :attr1,
         }.each do |dsl_method, params|
           Object.send(:remove_const, :MyOrganizer) rescue nil
           expect do
@@ -291,6 +310,7 @@ describe Organizer do
             default_filter: nil,
             generate_filters_for: [:attr1, :attr2],
             groups: nil,
+            human: :attr1,
           }.each do |dsl_method, params|
             Object.send(:remove_const, :MyOrganizer) rescue nil
             expect do

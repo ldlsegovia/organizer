@@ -1,8 +1,8 @@
-require 'require_all'
+require "require_all"
 require "active_support/all"
 require "colorize"
 
-require_all 'lib'
+require_all "lib"
 
 module Organizer
   include Organizer::Error

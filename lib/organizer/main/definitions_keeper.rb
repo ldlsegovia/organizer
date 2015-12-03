@@ -40,6 +40,10 @@ module Organizer
       @operations.add_simple_operation(_name, &block)
     end
 
+    def add_mask_operation(_attribute, _mask, _options = {})
+      @operations.add_mask_operation(_attribute, _mask, _options)
+    end
+
     def add_groups_operation(_name, _initial_value = 0, &block)
       @groups_operations.add_memo_operation(_name, _initial_value, &block)
     end

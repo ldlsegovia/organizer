@@ -12,6 +12,17 @@ describe Organizer::Operation::Collection do
     end
   end
 
+  describe "#add_mask_operation" do
+    it "adds new operation" do
+      expect { subject.add_mask_operation(:attr, :upcase) {} }.to change { subject.count }.from(0).to(1)
+    end
+
+    it "returns a new operation" do
+      operation = subject.add_mask_operation(:attr, :upcase) {}
+      expect(operation).to be_a(Organizer::Operation::Simple)
+    end
+  end
+
   describe "#add_memo_operation" do
     it "adds new group operation" do
       expect { subject.add_memo_operation(:result_attr, :my_group) {} }.to change { subject.count }.from(0).to(1)

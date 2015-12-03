@@ -13,6 +13,7 @@ Organizer is a ruby gem that allows you to build, through a DSL, definitions tha
   - [Collection context](#collection-context)
     - [Source](#source)
     - [Operation](#operation)
+    - [Human Attribute](#human-attribute)
     - [Default Filter](#default-filter)
   - [Groups context](#groups-context)
     - [Group](#group)
@@ -170,6 +171,46 @@ end
 
 ```ruby
 # You don't need nothing special to apply operations. It's enough with the definition
+MyOrganizer.new.organize
+```
+
+#### Human Attribute
+
+You can apply a custom format to your attributes.
+The available masks are:
+
+* `currency`
+* `natural`
+* `size`
+* `percentage`
+* `phone`
+* `delimited`
+* `rounded`
+* `clean`
+* `truncated`
+* `capitalized`
+* `downcase`
+* `upcase`
+* `date`
+* `datetime`
+* `time`
+
+> Mostly are a wrapper of: `http://guides.rubyonrails.org/active_support_core_extensions.html#formatting` Check this out to see mask options.
+
+##### Definition Example
+
+```ruby
+Organizer.define("my_organizer") do
+  collection do
+    human(:amount, :currency, unit: "€", precision: 3)
+  end
+end
+```
+
+##### Usage Example
+
+```ruby
+# You don't need nothing special to apply a custom format. It's enough with the definition
 MyOrganizer.new.organize
 ```
 
