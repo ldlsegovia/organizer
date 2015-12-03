@@ -101,6 +101,17 @@ describe Organizer::Base do
             expect(result.size).to eq(3)
           end
         end
+
+        context "working with masked attributes" do
+          before do
+            BaseChild.add_mask_operation(:new_attr, :currency, unit: ":-) ")
+          end
+
+          it "applies mask to attribute" do
+            result = @organizer.organize
+            expect(result.first.human_new_attr).to eq(":-) 44.00")
+          end
+        end
       end
 
       context "sorting" do

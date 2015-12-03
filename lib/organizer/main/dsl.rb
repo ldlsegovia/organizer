@@ -36,6 +36,12 @@ module Organizer
       end
     end
 
+    def human(_attribute, _mask = :clean, _options = {})
+      in_collection_context do
+        @organizer_class.add_mask_operation(_attribute, _mask, _options)
+      end
+    end
+
     def operation(_name, _initial_value = 0, &block)
       in_context do
         if @ctx.collection_parent?
