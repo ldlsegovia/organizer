@@ -9,15 +9,15 @@ describe Organizer::Group::Definition do
     end
   end
 
-  describe "#add_memo_operation" do
+  describe "#add_children_based_operation" do
     it "adds operation passing opertaion data" do
-      result = @definition.add_memo_operation(:age_sum, 0, &-> {})
+      result = @definition.add_children_based_operation(:age_sum, 0, &-> {})
       expect(result).to be_a(Organizer::Operation::Memo)
     end
 
     it "adds operation passing operation instance" do
       operation = Organizer::Operation::Memo.new(Proc.new {}, :age_sum, 0)
-      result = @definition.add_memo_operation(operation)
+      result = @definition.add_children_based_operation(operation)
       expect(result).to be_a(Organizer::Operation::Memo)
     end
   end

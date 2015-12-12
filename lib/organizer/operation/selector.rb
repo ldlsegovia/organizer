@@ -6,7 +6,7 @@ module Organizer
       def self.select_group_operations(_global_operations, _group_definitions)
         _group_definitions.each do |group_definition|
           _global_operations.each do |operation|
-            group_definition.add_memo_operation(operation)
+            group_definition.add_children_based_operation(operation)
           end
         end
 

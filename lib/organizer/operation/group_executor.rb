@@ -3,6 +3,10 @@ module Organizer
     module GroupExecutor
       include Organizer::Error
 
+      def self.execute_based_on_group_items(_group_definitions, _group_collection)
+
+      end
+
       def self.execute_based_on_children(_group_definitions, _source_collection, _group_collection)
         _source_collection.each do |source_item|
           _group_collection.each do |group_item|
@@ -30,7 +34,7 @@ module Organizer
       end
 
       def self.execute_group_operations(_group_definitions, _group_item, _source_item)
-        group_operations = _group_definitions.memo_operations(_group_item.group_name)
+        group_operations = _group_definitions.children_based_operations(_group_item.group_name)
         return unless group_operations
         group_operations.each { |operation| operation.execute(_group_item, _source_item) }
       end

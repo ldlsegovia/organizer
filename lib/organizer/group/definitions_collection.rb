@@ -24,8 +24,8 @@ module Organizer
         groups
       end
 
-      def memo_operations(_group_name)
-        find_if_definition(_group_name, :memo_operations)
+      def children_based_operations(_group_name)
+        find_if_definition(_group_name, :children_based_operations)
       end
 
       def sort_items(_group_name)

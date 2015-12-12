@@ -14,7 +14,7 @@ describe Organizer::Operation::GroupExecutor do
 
       definitions = Organizer::Group::DefinitionsCollection.new
       definition = definitions.add_definition(:gender)
-      @operations.each { |operation| definition.add_memo_operation(operation) }
+      @operations.each { |operation| definition.add_children_based_operation(operation) }
       @result = subject.execute_based_on_children(definitions, gender_group_collection, gender)
     end
 
@@ -27,5 +27,9 @@ describe Organizer::Operation::GroupExecutor do
       expect(@result.first.age_sum).to eq(192)
       expect(@result.last.age_sum).to eq(130)
     end
+  end
+
+  describe "#execute_based_on_group_items" do
+
   end
 end

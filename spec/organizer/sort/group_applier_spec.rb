@@ -20,7 +20,7 @@ describe Organizer::Sort::GroupApplier do
       group_definitions = Organizer::Group::DefinitionsCollection.new
       d1 = group_definitions.add_definition(:gender)
       d2 = group_definitions.add_definition(:site_id)
-      d1.memo_operations = d2.memo_operations = operations
+      d1.children_based_operations = d2.children_based_operations = operations
       groups = Organizer::Group::Builder.build(collection, group_definitions.groups_from_definitions)
 
       @group = Organizer::Operation::GroupExecutor.execute_based_on_children(group_definitions, collection, groups)

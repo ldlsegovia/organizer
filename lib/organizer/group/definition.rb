@@ -7,25 +7,25 @@ module Organizer
       include Organizer::Explainer
 
       attr_reader :group_by_attr
-      attr_accessor :memo_operations, :sort_items, :filters
+      attr_accessor :children_based_operations, :sort_items, :filters
 
       def initialize(_group_name, _group_by_attr = nil)
         @item_name = _group_name
         @group_by_attr = _group_by_attr || _group_name
 
-        @memo_operations = Organizer::Operation::Collection.new
+        @children_based_operations = Organizer::Operation::Collection.new
         @sort_items = Organizer::Sort::Collection.new
         @filters = Organizer::Filter::Collection.new
       end
 
-      def add_memo_operation(_operation, _initial_value = 0, &block)
+      def add_children_based_operation(_operation, _initial_value = 0, &block)
         if _operation.is_a?(Organizer::Operation::Memo)
-          memo_operations << _operation
+          children_based_operations << _operation
         else
-          memo_operations.add_memo_operation(_operation, _initial_value, &block)
+          children_based_operations.add_memo_operation(_operation, _initial_value, &block)
         end
 
-        memo_operations.last
+        children_based_operations.last
       end
     end
   end
