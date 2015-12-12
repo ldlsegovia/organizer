@@ -20,22 +20,23 @@ describe Organizer::Filter::Applier do
 
   context "#apply_groups_filters" do
     before do
-      groups = Organizer::Group::Collection.new
-      groups.add_group(:site, :site_id)
-      groups.add_group(:store, :store_id)
-      result = Organizer::Group::Builder.build(collection, groups)
+      operations = Organizer::Operation::Collection.new
 
-      @operations = Organizer::Operation::Collection.new
-
-      @operations.add_memo_operation(:age_sum) do |memo, item|
+      operations.add_memo_operation(:age_sum) do |memo, item|
         memo.age_sum + item.age
       end
 
-      @operations.add_memo_operation(:greatest_savings) do |memo, item|
+      operations.add_memo_operation(:greatest_savings) do |memo, item|
         (memo.greatest_savings > item.savings) ? memo.greatest_savings : item.savings
       end
 
-      @group = Organizer::Operation::Executor.execute_on_groups(@operations, collection, result)
+      group_definitions = Organizer::Group::DefinitionsCollection.new
+      d1 = group_definitions.add_definition(:site, :site_id)
+      d2 = group_definitions.add_definition(:store, :store_id)
+      d1.memo_operations = d2.memo_operations = operations
+      groups = Organizer::Group::Builder.build(collection, group_definitions.groups_from_definitions)
+
+      @group = Organizer::Operation::Executor.execute_on_groups(group_definitions, collection, groups)
 
       @filter_definition = Proc.new do |item, value|
         item.age_sum < value

@@ -195,7 +195,7 @@ The available masks are:
 * `datetime`
 * `time`
 
-> Mostly are a wrapper of: `http://guides.rubyonrails.org/active_support_core_extensions.html#formatting` Check this out to see mask options.
+> Most are a wrapper of: `http://guides.rubyonrails.org/active_support_core_extensions.html#formatting` Check this out to see mask options.
 
 ##### Definition Example
 

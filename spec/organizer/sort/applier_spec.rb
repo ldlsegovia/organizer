@@ -39,22 +39,23 @@ describe Organizer::Sort::Applier do
 
   describe "#apply_on_groups" do
     before do
-      groups = Organizer::Group::Collection.new
-      groups.add_group(:gender)
-      groups.add_group(:site_id)
-      result = Organizer::Group::Builder.build(collection, groups)
+      operations = Organizer::Operation::Collection.new
 
-      @operations = Organizer::Operation::Collection.new
-
-      @operations.add_memo_operation(:age_sum) do |memo, item|
+      operations.add_memo_operation(:age_sum) do |memo, item|
         memo.age_sum + item.age
       end
 
-      @operations.add_memo_operation(:greatest_savings) do |memo, item|
+      operations.add_memo_operation(:greatest_savings) do |memo, item|
         (memo.greatest_savings > item.savings) ? memo.greatest_savings : item.savings
       end
 
-      @group = Organizer::Operation::Executor.execute_on_groups(@operations, collection, result)
+      group_definitions = Organizer::Group::DefinitionsCollection.new
+      d1 = group_definitions.add_definition(:gender)
+      d2 = group_definitions.add_definition(:site_id)
+      d1.memo_operations = d2.memo_operations = operations
+      groups = Organizer::Group::Builder.build(collection, group_definitions.groups_from_definitions)
+
+      @group = Organizer::Operation::Executor.execute_on_groups(group_definitions, collection, groups)
       @sort_items = Organizer::Sort::Collection.new
     end
 

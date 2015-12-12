@@ -22,12 +22,12 @@ module Organizer
         _collection
       end
 
-      def self.apply_groups_filters(_filters, _groups_collection)
+      def self.apply_groups_filters(_group_definitions, _groups_collection)
         return if _groups_collection.empty?
         return unless _groups_collection.first.is_a?(Organizer::Group::Item)
-        group_filters = _filters.filters(_groups_collection.first.group_name)
+        group_filters = _group_definitions.filters(_groups_collection.first.group_name)
         apply(group_filters, _groups_collection)
-        _groups_collection.each { |item| apply_groups_filters(_filters, item) }
+        _groups_collection.each { |item| apply_groups_filters(_group_definitions, item) }
       end
     end
   end
