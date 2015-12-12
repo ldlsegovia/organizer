@@ -3,7 +3,7 @@ module Organizer
     module GroupExecutor
       include Organizer::Error
 
-      def self.execute(_group_definitions, _source_collection, _group_collection)
+      def self.execute_based_on_children(_group_definitions, _source_collection, _group_collection)
         _source_collection.each do |source_item|
           _group_collection.each do |group_item|
             eval_operations_against_groups(_group_definitions, source_item, [group_item])

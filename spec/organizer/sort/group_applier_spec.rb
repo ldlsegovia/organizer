@@ -23,7 +23,7 @@ describe Organizer::Sort::GroupApplier do
       d1.memo_operations = d2.memo_operations = operations
       groups = Organizer::Group::Builder.build(collection, group_definitions.groups_from_definitions)
 
-      @group = Organizer::Operation::GroupExecutor.execute(group_definitions, collection, groups)
+      @group = Organizer::Operation::GroupExecutor.execute_based_on_children(group_definitions, collection, groups)
       @sort_items = Organizer::Sort::Collection.new
     end
 

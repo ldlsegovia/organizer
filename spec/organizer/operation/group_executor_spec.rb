@@ -4,7 +4,7 @@ describe Organizer::Operation::GroupExecutor do
   subject { Organizer::Operation::GroupExecutor }
   before { @operations = Organizer::Operation::Collection.new }
 
-  describe "#execute" do
+  describe "#execute_based_on_children" do
     let_group_collection(:gender, :gender)
 
     before do
@@ -15,7 +15,7 @@ describe Organizer::Operation::GroupExecutor do
       definitions = Organizer::Group::DefinitionsCollection.new
       definition = definitions.add_definition(:gender)
       @operations.each { |operation| definition.add_memo_operation(operation) }
-      @result = subject.execute(definitions, gender_group_collection, gender)
+      @result = subject.execute_based_on_children(definitions, gender_group_collection, gender)
     end
 
     it "returns a group collection" do
