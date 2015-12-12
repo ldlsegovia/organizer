@@ -1,14 +1,9 @@
 module Organizer
   module Operation
-    module Executor
+    module GroupExecutor
       include Organizer::Error
 
-      def self.execute_on_source(_operations, _source_collection)
-        _source_collection.each { |item| execute_recursively(item, _operations.dup) }
-        _source_collection
-      end
-
-      def self.execute_on_groups(_group_definitions, _source_collection, _group_collection)
+      def self.execute(_group_definitions, _source_collection, _group_collection)
         _source_collection.each do |source_item|
           _group_collection.each do |group_item|
             eval_operations_against_groups(_group_definitions, source_item, [group_item])
@@ -46,27 +41,6 @@ module Organizer
         end.uniq
 
         result.size == 1 && !!result.first
-      end
-
-      def self.execute_recursively(_item, _operations, _previous_operations_count = 0)
-        return _item if _operations.size.zero?
-        raise_error(_operations.get_errors) if _previous_operations_count == _operations.size
-
-        _non_executed_operations = Organizer::Operation::Collection.new
-        _previous_operations_count = _operations.size
-
-        _operations.each do |operation|
-          begin
-            operation.execute(_item)
-          rescue => e
-            operation.error = e
-            _non_executed_operations << operation
-          end
-        end
-
-        if _non_executed_operations.size > 0
-          execute_recursively(_item, _non_executed_operations, _previous_operations_count)
-        end
       end
     end
   end

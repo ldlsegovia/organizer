@@ -36,7 +36,7 @@ describe Organizer::Filter::Applier do
       d1.memo_operations = d2.memo_operations = operations
       groups = Organizer::Group::Builder.build(collection, group_definitions.groups_from_definitions)
 
-      @group = Organizer::Operation::Executor.execute_on_groups(group_definitions, collection, groups)
+      @group = Organizer::Operation::GroupExecutor.execute(group_definitions, collection, groups)
 
       @filter_definition = Proc.new do |item, value|
         item.age_sum < value

@@ -25,7 +25,7 @@ module Organizer
 
     def self.load_operations_executor
       load_executor do |source|
-        Organizer::Operation::Executor.execute_on_source(@definitions.operations, source)
+        Organizer::Operation::SourceExecutor.execute(@definitions.operations, source)
       end
     end
 
@@ -70,7 +70,7 @@ module Organizer
         grouped_operations = Organizer::Operation::Selector.select_group_operations(
           @definitions.groups_operations, @selected_group_definitions)
 
-        Organizer::Operation::Executor.execute_on_groups(
+        Organizer::Operation::GroupExecutor.execute(
           grouped_operations, @definitions.collection, source)
       end
     end
