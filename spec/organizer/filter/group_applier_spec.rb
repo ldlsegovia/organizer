@@ -1,24 +1,10 @@
 require 'spec_helper'
 
-describe Organizer::Filter::Applier do
-  subject { Organizer::Filter::Applier }
+describe Organizer::Filter::GroupApplier do
+  subject { Organizer::Filter::GroupApplier }
   let_collection(:collection)
 
-  context "#apply" do
-    before { @filters = Organizer::Filter::Collection.new }
-
-    it "applies filters passed as params" do
-      @filters.add_filter(:filter1) { |item| item.age > 9 }
-      @filters.add_filter(:filter2) { |item| item.age < 33 }
-      expect(subject.apply(@filters, collection).size).to eq(3)
-    end
-
-    it "returns complete collection with no filters" do
-      expect(subject.apply(@filters, collection).size).to eq(9)
-    end
-  end
-
-  context "#apply_groups_filters" do
+  describe "#apply" do
     before do
       operations = Organizer::Operation::Collection.new
 
@@ -49,7 +35,7 @@ describe Organizer::Filter::Applier do
 
       definitions = Organizer::Group::DefinitionsCollection.new
       definitions.add_definition(:site).filters << filter
-      subject.apply_groups_filters(definitions, @group)
+      subject.apply(definitions, @group)
 
       expect(@group.count).to eq(2)
     end
@@ -60,7 +46,7 @@ describe Organizer::Filter::Applier do
 
       definitions = Organizer::Group::DefinitionsCollection.new
       definitions.add_definition(:store).filters << filter
-      subject.apply_groups_filters(definitions, @group)
+      subject.apply(definitions, @group)
 
       expect(@group.count).to eq(3)
       expect(@group.first.count).to eq(0)
@@ -79,7 +65,7 @@ describe Organizer::Filter::Applier do
       filter2.value = 50
       definitions.add_definition(:store).filters << filter2
 
-      subject.apply_groups_filters(definitions, @group)
+      subject.apply(definitions, @group)
       expect(@group.count).to eq(2)
       expect(@group.first.count).to eq(0)
       expect(@group.second.count).to eq(1)

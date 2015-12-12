@@ -6,7 +6,7 @@ describe Organizer::Filter::Generator do
   def apply_filter(_key, _value)
     filter = @filters.find_by_name(_key)
     filter.value = _value
-    Organizer::Filter::Applier.apply([filter], collection)
+    Organizer::Filter::SourceApplier.apply([filter], collection)
   end
 
   describe "#generate" do
