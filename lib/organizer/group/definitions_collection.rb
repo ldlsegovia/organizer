@@ -28,6 +28,10 @@ module Organizer
         find_if_definition(_group_name, :children_based_operations)
       end
 
+      def group_item_operations(_group_name)
+        find_if_definition(_group_name, :group_item_operations)
+      end
+
       def sort_items(_group_name)
         find_if_definition(_group_name, :sort_items)
       end

@@ -4,9 +4,7 @@ describe Organizer::Operation::Simple do
   describe "#execute" do
     let_item(:item)
 
-    before do
-      @proc = Proc.new { |organizer_item| organizer_item.int_attr1 + organizer_item.int_attr2 }
-    end
+    before { @proc = Proc.new { |item| item.int_attr1 + item.int_attr2 } }
 
     it "sets operation result as new attribute into item param" do
       Organizer::Operation::Simple.new(@proc, :attrs_sum).execute(item)
