@@ -34,7 +34,7 @@ module Organizer
         @definitions.default_filters, @chainer.skip_default_filter_methods)
 
       load_executor do |source|
-        Organizer::Filter::SourceApplier.apply(filters, source)
+        Organizer::Source::Filter::Applier.apply(filters, source)
       end
     end
 
@@ -43,7 +43,7 @@ module Organizer
         @definitions.filters, @chainer.filter_methods(:hash))
 
       load_executor do |source|
-        Organizer::Filter::SourceApplier.apply(filters, source)
+        Organizer::Source::Filter::Applier.apply(filters, source)
       end if filters
     end
 
@@ -80,7 +80,7 @@ module Organizer
         @definitions.filters, @chainer.filter_group_methods(:hash), @selected_group_definitions)
 
       load_executor do |source|
-        Organizer::Filter::GroupApplier.apply(grouped_filters, source)
+        Organizer::Group::Filter::Applier.apply(grouped_filters, source)
       end if grouped_filters
     end
 

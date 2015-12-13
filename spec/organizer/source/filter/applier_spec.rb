@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Organizer::Filter::SourceApplier do
-  subject { Organizer::Filter::SourceApplier }
+describe Organizer::Source::Filter::Applier do
+  subject { Organizer::Source::Filter::Applier }
   let_collection(:collection)
 
   describe "#apply" do
