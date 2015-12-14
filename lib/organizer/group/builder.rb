@@ -4,7 +4,7 @@ module Organizer
       include Organizer::Error
 
       def self.build(_collection, _groups)
-        return _collection if !_groups || _groups.size.zero?
+        return _collection if _groups.blank?
         groups = Organizer::Group::Collection.new
         build_recursively(groups, _collection, _groups)
         groups

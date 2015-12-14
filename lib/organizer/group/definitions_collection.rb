@@ -25,33 +25,27 @@ module Organizer
       end
 
       def children_based_operations(_group_name)
-        find_if_definition(_group_name, :children_based_operations)
+        find_in_definition(_group_name, :children_based_operations)
       end
 
       def group_item_operations(_group_name)
-        find_if_definition(_group_name, :group_item_operations)
+        find_in_definition(_group_name, :group_item_operations)
       end
 
       def sort_items(_group_name)
-        find_if_definition(_group_name, :sort_items)
+        find_in_definition(_group_name, :sort_items)
       end
 
       def filters(_group_name)
-        find_if_definition(_group_name, :filters)
+        find_in_definition(_group_name, :filters)
       end
 
       private
 
-      def find_if_definition(_group_name, _collection_method)
+      def find_in_definition(_group_name, _collection_method)
         definition = find_by_name(_group_name)
-        return unless definition
+        raise_error(:definition_not_found) unless definition
         definition.send(_collection_method)
-      end
-
-      def in_definition_context(_group_name)
-        defintion = find_by_name(_group_name)
-        raise_error(:definition_not_found) unless defintion
-        yield(defintion)
       end
     end
   end

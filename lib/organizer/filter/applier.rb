@@ -2,7 +2,7 @@ module Organizer
   module Filter
     module Applier
       def filter_collection(_filters, _collection)
-        return _collection unless _filters
+        return _collection if _filters.blank? || _collection.blank?
 
         _collection.reject! do |item|
           keep_item = true

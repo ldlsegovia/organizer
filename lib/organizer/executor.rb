@@ -13,12 +13,9 @@ module Organizer
       load_sort_items_executor
 
       load_groups_executor
-
-      if @selected_group_definitions
-        load_group_operations_executor
-        load_group_filters_executor
-        load_group_sort_items_executor
-      end
+      load_group_operations_executor
+      load_group_filters_executor
+      load_group_sort_items_executor
 
       execute(@executors.shift, _definitions.collection, @executors)
     end
@@ -44,7 +41,7 @@ module Organizer
 
       load_executor do |source|
         Organizer::Source::Filter::Applier.apply(filters, source)
-      end if filters
+      end
     end
 
     def self.load_sort_items_executor
@@ -52,7 +49,7 @@ module Organizer
 
       load_executor do |source|
         Organizer::Sort::SourceApplier.apply(sort_items, source)
-      end if sort_items
+      end
     end
 
     def self.load_groups_executor
@@ -81,7 +78,7 @@ module Organizer
 
       load_executor do |source|
         Organizer::Group::Filter::Applier.apply(grouped_filters, source)
-      end if grouped_filters
+      end
     end
 
     def self.load_group_sort_items_executor

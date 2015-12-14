@@ -6,10 +6,10 @@ module Organizer
         extend Organizer::Filter::Selector
 
         def self.select_default(_filters, _skip_filter_methods)
-          return _filters if _skip_filter_methods.empty?
+          return _filters if _skip_filter_methods.blank?
           skip_all = _skip_filter_methods.find { |m| m.array_args_include?(:all) }
           filters_to_skip = _skip_filter_methods.map(&:args).flatten
-          return if skip_all || filters_to_skip.blank?
+          return Organizer::Filter::Collection.new if skip_all || filters_to_skip.blank?
           _filters.reject_items(filters_to_skip)
         end
 
