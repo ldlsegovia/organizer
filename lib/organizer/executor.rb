@@ -30,7 +30,7 @@ module Organizer
     end
 
     def self.load_default_filters_executor
-      filters = Organizer::Filter::Selector.select_default(
+      filters = Organizer::Source::Filter::Selector.select_default(
         @definitions.default_filters, @chainer.skip_default_filter_methods)
 
       load_executor do |source|
@@ -39,7 +39,7 @@ module Organizer
     end
 
     def self.load_filters_executor
-      filters = Organizer::Filter::Selector.select_filters(
+      filters = Organizer::Source::Filter::Selector.select(
         @definitions.filters, @chainer.filter_methods(:hash))
 
       load_executor do |source|
@@ -56,10 +56,10 @@ module Organizer
     end
 
     def self.load_groups_executor
-      load_executor do |source|
-        @selected_group_definitions = Organizer::Group::Selector.select(
-          @definitions.groups, @chainer.group)
+      @selected_group_definitions = Organizer::Group::Selector.select(
+        @definitions.groups, @chainer.group)
 
+      load_executor do |source|
         groups = @selected_group_definitions.groups_from_definitions if @selected_group_definitions
         Organizer::Group::Builder.build(source, groups)
       end
@@ -76,7 +76,7 @@ module Organizer
     end
 
     def self.load_group_filters_executor
-      grouped_filters = Organizer::Filter::Selector.select_groups_filters(
+      grouped_filters = Organizer::Group::Filter::Selector.select(
         @definitions.filters, @chainer.filter_group_methods(:hash), @selected_group_definitions)
 
       load_executor do |source|

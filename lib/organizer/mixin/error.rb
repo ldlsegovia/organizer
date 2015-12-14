@@ -55,6 +55,14 @@ module Organizer
         attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
       }
     end
+
+    module Filter
+      class SelectorException < ::Exception
+        ERRORS = {
+          unknown_filter: "Cant apply unknown filters"
+        }
+      end
+    end
   end
 
   module Filter
@@ -70,13 +78,6 @@ module Organizer
       ERRORS = {
         invalid_item: "Invalid filter collection item. Must be Organizer:Filter only",
         repeated_item: "Repeated item. An Item with same name was added previously"
-      }
-    end
-
-    class SelectorException < ::Exception
-      ERRORS = {
-        unknown_filter: "Cant apply unknown filters",
-        unknown_group: "Cant apply filters to unknown group"
       }
     end
   end
@@ -169,6 +170,15 @@ module Organizer
       ERRORS = {
         unknown_group: "Cant group by unknown group"
       }
+    end
+
+    module Filter
+      class SelectorException < ::Exception
+        ERRORS = {
+          unknown_group: "Cant apply filters to unknown group",
+          unknown_filter: "Cant apply unknown filters"
+        }
+      end
     end
   end
 end

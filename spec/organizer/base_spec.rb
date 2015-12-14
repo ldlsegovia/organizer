@@ -47,7 +47,7 @@ describe Organizer::Base do
 
         it "raises error trying to apply unknown filters" do
           expect { @organizer.filter_by(:unknown_filter).organize }.to(
-            raise_organizer_error(Organizer::Filter::SelectorException, :unknown_filter))
+            raise_organizer_error(Organizer::Source::Filter::SelectorException, :unknown_filter))
         end
 
         context "with default filters" do
@@ -252,8 +252,13 @@ describe Organizer::Base do
               end
 
               it "raises error trying to apply filter to unknown group" do
+                expect { @organizer.group_by_gender.filter_gender_by(value: 64).organize }.to(
+                  raise_organizer_error(Organizer::Group::Filter::SelectorException, :unknown_filter))
+              end
+
+              it "raises error trying to apply unknown filter to known group" do
                 expect { @organizer.group_by_gender.filter_unknown_group_by(value: 64).organize }.to(
-                  raise_organizer_error(Organizer::Filter::SelectorException, :unknown_group))
+                  raise_organizer_error(Organizer::Group::Filter::SelectorException, :unknown_group))
               end
 
               it "applies multiple filters" do

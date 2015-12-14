@@ -1,8 +1,6 @@
 module Organizer
   module Filter
     module Applier
-      include Organizer::Error
-
       def filter_collection(_filters, _collection)
         return _collection unless _filters
 
