@@ -122,12 +122,6 @@ module Organizer
         blank_name: "name param is mandatory",
       }
     end
-
-    class BuilderException < ::Exception
-      ERRORS = {
-        unknown_group: "Cant sort unknown groups"
-      }
-    end
   end
 
   module Group
@@ -177,6 +171,14 @@ module Organizer
         ERRORS = {
           unknown_group: "Cant apply filters to unknown group",
           unknown_filter: "Cant apply unknown filters"
+        }
+      end
+    end
+
+    module Sort
+      class BuilderException < ::Exception
+        ERRORS = {
+          unknown_group: "Cant sort unknown groups"
         }
       end
     end

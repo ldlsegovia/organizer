@@ -45,7 +45,7 @@ module Organizer
     end
 
     def self.load_sort_items_executor
-      sort_items = Organizer::Sort::Builder.build_sort_items(@chainer.sort_methods(:hash))
+      sort_items = Organizer::Source::Sort::Builder.build(@chainer.sort_methods(:hash))
 
       load_executor do |source|
         Organizer::Sort::SourceApplier.apply(sort_items, source)
@@ -82,7 +82,7 @@ module Organizer
     end
 
     def self.load_group_sort_items_executor
-      grouped_sort_items = Organizer::Sort::Builder.build_groups_sort_items(
+      grouped_sort_items = Organizer::Group::Sort::Builder.build(
         @chainer.sort_group_methods(:hash), @selected_group_definitions)
 
       load_executor do |source|

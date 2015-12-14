@@ -289,7 +289,7 @@ describe Organizer::Base do
 
               it "raises error trying to sort unknown groups" do
                 expect { @organizer.group_by_gender.sort_unknown_group_by(value: 64).organize }.to(
-                  raise_organizer_error(Organizer::Sort::BuilderException, :unknown_group))
+                  raise_organizer_error(Organizer::Group::Sort::BuilderException, :unknown_group))
               end
             end
           end
