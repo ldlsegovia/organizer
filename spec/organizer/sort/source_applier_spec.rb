@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Organizer::Sort::SourceApplier do
-  subject { Organizer::Sort::SourceApplier }
+describe Organizer::Source::Sort::Applier do
+  subject { Organizer::Source::Sort::Applier }
   let_collection(:collection)
   before { @sort_items = Organizer::Sort::Collection.new }
 

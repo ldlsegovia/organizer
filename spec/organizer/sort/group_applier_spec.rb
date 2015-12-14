@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Organizer::Sort::GroupApplier do
-  subject { Organizer::Sort::GroupApplier }
+describe Organizer::Group::Sort::Applier do
+  subject { Organizer::Group::Sort::Applier }
   let_collection(:collection)
 
   describe "#apply" do
