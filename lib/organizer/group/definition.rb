@@ -20,7 +20,7 @@ module Organizer
         @filters = Organizer::Filter::Collection.new
       end
 
-      def add_children_based_operation(_operation, _initial_value = 0, &block)
+      def add_parent_item_operation(_operation, _initial_value = 0, &block)
         if _operation.is_a?(Organizer::Group::Operation::ParentItem)
           parent_item_operations << _operation
         else

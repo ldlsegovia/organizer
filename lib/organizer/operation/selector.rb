@@ -8,7 +8,7 @@ module Organizer
 
         _group_definitions.each do |group_definition|
           _global_operations.each do |operation|
-            group_definition.add_children_based_operation(operation)
+            group_definition.add_parent_item_operation(operation)
           end
         end
 

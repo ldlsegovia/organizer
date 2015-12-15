@@ -8,7 +8,7 @@ describe Organizer::Operation::Collection do
 
     it "returns a new operation" do
       operation = subject.add_simple_item(:result_attr) {}
-      expect(operation).to be_a(Organizer::Source::Operation::Item)
+      expect(operation).to be_a(Organizer::Operation::Simple)
     end
   end
 
@@ -19,7 +19,7 @@ describe Organizer::Operation::Collection do
 
     it "returns a new operation" do
       operation = subject.add_mask_item(:attr, :upcase) {}
-      expect(operation).to be_a(Organizer::Source::Operation::Item)
+      expect(operation).to be_a(Organizer::Operation::Simple)
     end
   end
 
@@ -39,7 +39,7 @@ describe Organizer::Operation::Collection do
     let!(:collection_exception_class) { Organizer::Operation::CollectionException }
 
     context "with source item operations" do
-      let!(:item) { Organizer::Source::Operation::Item.new(-> {}, :item_name) }
+      let!(:item) { Organizer::Operation::Simple.new(-> {}, :item_name) }
       it_should_behave_like(:collection)
     end
 

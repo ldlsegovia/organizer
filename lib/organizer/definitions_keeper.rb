@@ -49,7 +49,7 @@ module Organizer
     end
 
     def add_group_operation(_operation_name, _initial_value = 0, &block)
-      @current_group_definition.add_children_based_operation(_operation_name, _initial_value, &block)
+      @current_group_definition.add_parent_item_operation(_operation_name, _initial_value, &block)
     end
 
     def add_group_definition(_name, _group_by_attr = nil, _has_parent = false)

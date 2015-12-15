@@ -27,7 +27,7 @@ module Organizer
         params = [_attribute, definition[:method], options].compact
         operation_proc = send(definition[:formatter], *params)
         masked_attribute_name = "human_#{_attribute}".to_sym
-        Organizer::Source::Operation::Item.new(operation_proc, masked_attribute_name)
+        Organizer::Operation::Simple.new(operation_proc, masked_attribute_name)
       end
 
       def self.on_item_context(_attribute, &_block)
