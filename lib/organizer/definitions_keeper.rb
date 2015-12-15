@@ -5,14 +5,14 @@ module Organizer
     attr_accessor :collection_options
     attr_reader :collection_proc
     attr_reader :groups
-    attr_reader :filters, :default_filters
-    attr_reader :operations, :groups_operations
+    attr_reader :filters, :source_default_filters
+    attr_reader :source_operations, :groups_operations
 
     def initialize
       @filters = Organizer::Filter::Collection.new
 
-      @default_filters = Organizer::Filter::Collection.new
-      @operations = Organizer::Operation::Collection.new
+      @source_default_filters = Organizer::Filter::Collection.new
+      @source_operations = Organizer::Operation::Collection.new
 
       @groups = {}
       @groups_operations = Organizer::Operation::Collection.new
@@ -29,7 +29,7 @@ module Organizer
     end
 
     def add_default_filter(_name = nil, &block)
-      @default_filters.add_filter(_name, &block)
+      @source_default_filters.add_filter(_name, &block)
     end
 
     def add_filter(_name, &block)
@@ -37,11 +37,11 @@ module Organizer
     end
 
     def add_source_operation(_name, &block)
-      @operations.add_simple_operation(_name, &block)
+      @source_operations.add_simple_operation(_name, &block)
     end
 
     def add_mask_operation(_attribute, _mask, _options = {})
-      @operations.add_mask_operation(_attribute, _mask, _options)
+      @source_operations.add_mask_operation(_attribute, _mask, _options)
     end
 
     def add_groups_operation(_name, _initial_value = 0, &block)

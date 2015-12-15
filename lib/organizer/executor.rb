@@ -22,13 +22,13 @@ module Organizer
 
     def self.load_operations_executor
       load_executor do |source|
-        Organizer::Source::Operation::Executor.execute(@definitions.operations, source)
+        Organizer::Source::Operation::Executor.execute(@definitions.source_operations, source)
       end
     end
 
     def self.load_default_filters_executor
       filters = Organizer::Source::Filter::Selector.select_default(
-        @definitions.default_filters, @chainer.skip_default_filter_methods)
+        @definitions.source_default_filters, @chainer.skip_default_filter_methods)
 
       load_executor do |source|
         Organizer::Source::Filter::Applier.apply(filters, source)

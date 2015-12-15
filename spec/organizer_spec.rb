@@ -133,7 +133,7 @@ describe Organizer do
           end
         end
 
-        @filters = MyOrganizer.default_filters
+        @filters = MyOrganizer.source_default_filters
       end
 
       it "adds a default filter to MyOrganizer class" do
@@ -181,7 +181,7 @@ describe Organizer do
           end
         end
 
-        @operations = MyOrganizer.operations
+        @operations = MyOrganizer.source_operations
       end
 
       it "adds mask operation" do
@@ -199,7 +199,7 @@ describe Organizer do
             end
           end
 
-          @operations = MyOrganizer.operations
+          @operations = MyOrganizer.source_operations
         end
 
         it "adds an operation to MyOrganizer class" do
