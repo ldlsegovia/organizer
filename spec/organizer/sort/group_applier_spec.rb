@@ -22,7 +22,7 @@ describe Organizer::Group::Sort::Applier do
       @d1.children_based_operations = @d2.children_based_operations = operations
 
       group = Organizer::Group::Builder.build(collection, @group_definitions.groups_from_definitions)
-      @group = Organizer::Operation::GroupParentItemsExecutor.execute(@group_definitions, collection, group)
+      @group = Organizer::Group::Operation::ParentItemsExecutor.execute(@group_definitions, collection, group)
       @sort_items = Organizer::Sort::Collection.new
     end
 

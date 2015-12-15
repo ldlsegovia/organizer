@@ -67,7 +67,7 @@ module Organizer
         grouped_operations = Organizer::Operation::Selector.select_group_operations(
           @definitions.groups_operations, @selected_group_definitions)
 
-        Organizer::Operation::GroupParentItemsExecutor.execute(
+        Organizer::Group::Operation::ParentItemsExecutor.execute(
           grouped_operations, @definitions.collection, source)
       end
     end

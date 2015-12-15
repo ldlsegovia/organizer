@@ -32,7 +32,7 @@ describe Organizer::Group::Operation::ItemsExecutor do
       @definition.children_based_operations = memo_operations
       @definition.group_item_operations = simple_operations
 
-      result = Organizer::Operation::GroupParentItemsExecutor.execute(
+      result = Organizer::Group::Operation::ParentItemsExecutor.execute(
         @definitions, gender_group_collection, gender)
       @result = subject.execute(@definitions, result)
     end

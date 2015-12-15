@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Organizer::Operation::GroupParentItemsExecutor do
-  subject { Organizer::Operation::GroupParentItemsExecutor }
+describe Organizer::Group::Operation::ParentItemsExecutor do
+  subject { Organizer::Group::Operation::ParentItemsExecutor }
   let_group_collection(:gender, :gender)
 
   before do
