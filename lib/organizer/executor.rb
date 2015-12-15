@@ -22,7 +22,7 @@ module Organizer
 
     def self.load_operations_executor
       load_executor do |source|
-        Organizer::Operation::SourceExecutor.execute(@definitions.operations, source)
+        Organizer::Source::Operation::Executor.execute(@definitions.operations, source)
       end
     end
 

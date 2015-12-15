@@ -63,6 +63,12 @@ module Organizer
         }
       end
     end
+
+    module Operation
+      class ExecutorException < ::Exception
+        ERRORS = {}
+      end
+    end
   end
 
   module Filter
@@ -96,10 +102,6 @@ module Organizer
         invalid_item: "Invalid operations collection item. Must be Organizer:Operation only",
         repeated_item: "Repeated item. An Item with same name was added previously"
       }
-    end
-
-    class SourceExecutorException < ::Exception
-      ERRORS = {}
     end
 
     class MaskBuilderException < ::Exception
