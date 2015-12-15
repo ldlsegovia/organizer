@@ -159,15 +159,15 @@ describe Organizer::Base do
 
           context "with operations" do
             before do
-              BaseChild.add_groups_operation(:attrs_sum, 10) do |memo, item|
-                memo.attrs_sum + item.age
+              BaseChild.add_group_parent_item_operation(:attrs_sum, 10) do |parent, item|
+                parent.attrs_sum + item.age
               end
             end
 
             it "groups collection items" do
               result = @organizer.group_by_site_id.organize
               result.each do |group_item|
-                expected_sum = group_item.inject(10) { |memo, source_item| memo + source_item.age }
+                expected_sum = group_item.inject(10) { |parent, source_item| parent + source_item.age }
                 expect(group_item.attrs_sum).to eq(expected_sum)
               end
             end
@@ -198,12 +198,12 @@ describe Organizer::Base do
 
           context "with global operations" do
             before do
-              BaseChild.add_groups_operation(:greater_age) do |memo, item|
-                memo.greater_age > item.age ? memo.greater_age : item.age
+              BaseChild.add_group_parent_item_operation(:greater_age) do |parent, item|
+                parent.greater_age > item.age ? parent.greater_age : item.age
               end
-              BaseChild.add_groups_operation(:lower_savings, nil) do |memo, item|
-                memo.lower_savings = item.savings if memo.lower_savings.nil?
-                memo.lower_savings < item.savings ? memo.lower_savings : item.savings
+              BaseChild.add_group_parent_item_operation(:lower_savings, nil) do |parent, item|
+                parent.lower_savings = item.savings if parent.lower_savings.nil?
+                parent.lower_savings < item.savings ? parent.lower_savings : item.savings
               end
             end
 
@@ -217,8 +217,8 @@ describe Organizer::Base do
 
             context "with specific group operations" do
               before do
-                BaseChild.add_group_operation(:odd_age_count, 0) do |memo, item|
-                  item.age.odd? ? memo.odd_age_count + 1 : memo.odd_age_count
+                BaseChild.add_group_operation(:odd_age_count, 0) do |parent, item|
+                  item.age.odd? ? parent.odd_age_count + 1 : parent.odd_age_count
                 end
               end
 

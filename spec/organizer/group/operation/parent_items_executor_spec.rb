@@ -13,11 +13,11 @@ describe Organizer::Group::Operation::ParentItemsExecutor do
     before do
       operations = Organizer::Operation::Collection.new
 
-      operations.add_memo_operation(:age_sum) do |memo, item|
-        memo.age_sum + item.age
+      operations.add_group_parent_item(:age_sum) do |parent, item|
+        parent.age_sum + item.age
       end
 
-      @definition.children_based_operations = operations
+      @definition.parent_item_operations = operations
       @result = subject.execute(@definitions, gender_group_collection, gender)
     end
 

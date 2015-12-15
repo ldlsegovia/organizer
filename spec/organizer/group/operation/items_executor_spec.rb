@@ -8,29 +8,29 @@ describe Organizer::Group::Operation::ItemsExecutor do
     before do
       @definitions = Organizer::Group::DefinitionsCollection.new
       @definition = @definitions.add_definition(:gender)
-      memo_operations = Organizer::Operation::Collection.new
+      parent_operations = Organizer::Operation::Collection.new
 
-      memo_operations.add_memo_operation(:lower_age, nil) do |memo, item|
-        memo.lower_age = item.age if memo.lower_age.nil?
-        memo.lower_age < item.age ? memo.lower_age : item.age
+      parent_operations.add_group_parent_item(:lower_age, nil) do |parent, item|
+        parent.lower_age = item.age if parent.lower_age.nil?
+        parent.lower_age < item.age ? parent.lower_age : item.age
       end
 
-      memo_operations.add_memo_operation(:greater_age) do |memo, item|
-        memo.greater_age > item.age ? memo.greater_age : item.age
+      parent_operations.add_group_parent_item(:greater_age) do |parent, item|
+        parent.greater_age > item.age ? parent.greater_age : item.age
       end
 
       simple_operations = Organizer::Operation::Collection.new
 
-      simple_operations.add_simple_operation(:age_diff) do |item|
+      simple_operations.add_simple_item(:age_diff) do |item|
         item.greater_age - item.lower_age
       end
 
-      simple_operations.add_simple_operation(:double_age_diff) do |item|
+      simple_operations.add_simple_item(:double_age_diff) do |item|
         item.age_diff * 2
       end
 
-      @definition.children_based_operations = memo_operations
-      @definition.group_item_operations = simple_operations
+      @definition.parent_item_operations = parent_operations
+      @definition.item_operations = simple_operations
 
       result = Organizer::Group::Operation::ParentItemsExecutor.execute(
         @definitions, gender_group_collection, gender)

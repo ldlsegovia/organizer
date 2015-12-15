@@ -24,12 +24,12 @@ module Organizer
         groups
       end
 
-      def children_based_operations(_group_name)
-        find_in_definition(_group_name, :children_based_operations)
+      def parent_item_operations(_group_name)
+        find_in_definition(_group_name, :parent_item_operations)
       end
 
-      def group_item_operations(_group_name)
-        find_in_definition(_group_name, :group_item_operations)
+      def item_operations(_group_name)
+        find_in_definition(_group_name, :item_operations)
       end
 
       def sort_items(_group_name)

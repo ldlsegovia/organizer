@@ -226,12 +226,12 @@ describe Organizer do
             end
           end
 
-          @global_operations = MyOrganizer.groups_operations
+          @global_operations = MyOrganizer.group_parent_item_operations
           @global_operation1 = @global_operations.first
           @global_operation2 = @global_operations.last
 
-          @gender_operations = MyOrganizer.groups[:gender].children_based_operations(:gender)
-          @site_operations = MyOrganizer.groups[:site].children_based_operations(:site)
+          @gender_operations = MyOrganizer.groups[:gender].parent_item_operations(:gender)
+          @site_operations = MyOrganizer.groups[:site].parent_item_operations(:site)
         end
 
         it "adds groups operations to MyOrganizer class" do

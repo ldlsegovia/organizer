@@ -6,7 +6,7 @@ describe Organizer::Source::Operation::Executor do
 
   describe "#execute" do
     let_collection(:collection)
-    before { @operations.add_simple_operation(:result_attr) { |item| item.age * 2 } }
+    before { @operations.add_simple_item(:result_attr) { |item| item.age * 2 } }
 
     it "returns the whole collection" do
       result = subject.execute(@operations, collection)
@@ -20,9 +20,9 @@ describe Organizer::Source::Operation::Executor do
 
     context "with nested operations" do
       before do
-        @operations.add_simple_operation(:newer_result_attr) { |item| item.result_attr * 2 }
-        @operations.add_simple_operation(:newest_result_attr) { |item| item.newer_result_attr * 2 }
-        @operations.add_simple_operation(:the_newest_result_attr) { |item| item.newest_result_attr * 2 }
+        @operations.add_simple_item(:newer_result_attr) { |item| item.result_attr * 2 }
+        @operations.add_simple_item(:newest_result_attr) { |item| item.newer_result_attr * 2 }
+        @operations.add_simple_item(:the_newest_result_attr) { |item| item.newest_result_attr * 2 }
       end
 
       it "returns collection items with new attribute" do
@@ -33,8 +33,8 @@ describe Organizer::Source::Operation::Executor do
       end
 
       context "with invalid item attribute" do
-        before { @operations.add_simple_operation(:another_attr) { |item| item.invalid_attr * 2 } }
-        before { @operations.add_simple_operation(:some_attr) { |item| item.some_invalid_attr * 2 } }
+        before { @operations.add_simple_item(:another_attr) { |item| item.invalid_attr * 2 } }
+        before { @operations.add_simple_item(:some_attr) { |item| item.some_invalid_attr * 2 } }
 
         it "raise exception" do
           expect { subject.execute(@operations, collection) }.to(

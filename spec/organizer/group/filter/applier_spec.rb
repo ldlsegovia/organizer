@@ -8,18 +8,18 @@ describe Organizer::Group::Filter::Applier do
     before do
       operations = Organizer::Operation::Collection.new
 
-      operations.add_memo_operation(:age_sum) do |memo, item|
-        memo.age_sum + item.age
+      operations.add_group_parent_item(:age_sum) do |parent, item|
+        parent.age_sum + item.age
       end
 
-      operations.add_memo_operation(:greatest_savings) do |memo, item|
-        (memo.greatest_savings > item.savings) ? memo.greatest_savings : item.savings
+      operations.add_group_parent_item(:greatest_savings) do |parent, item|
+        (parent.greatest_savings > item.savings) ? parent.greatest_savings : item.savings
       end
 
       @group_definitions = Organizer::Group::DefinitionsCollection.new
       @d1 = @group_definitions.add_definition(:site, :site_id)
       @d2 = @group_definitions.add_definition(:store, :store_id)
-      @d1.children_based_operations = @d2.children_based_operations = operations
+      @d1.parent_item_operations = @d2.parent_item_operations = operations
 
       group = Organizer::Group::Builder.build(collection, @group_definitions.groups_from_definitions)
       @group = Organizer::Group::Operation::ParentItemsExecutor.execute(@group_definitions, collection, group)

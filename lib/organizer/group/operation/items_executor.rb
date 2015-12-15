@@ -25,7 +25,7 @@ module Organizer
         end
 
         def self.execute_group_operations(_group_definitions, _group_item)
-          group_operations = _group_definitions.group_item_operations(_group_item.group_name)
+          group_operations = _group_definitions.item_operations(_group_item.group_name)
           return unless group_operations
           group_operations.each { |operation| operation.execute(_group_item) }
         end

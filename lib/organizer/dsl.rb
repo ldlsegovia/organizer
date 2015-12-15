@@ -47,7 +47,7 @@ module Organizer
         if @ctx.collection_parent?
           @organizer_class.add_source_operation(_name, &block)
         elsif @ctx.groups_parent?
-          @organizer_class.add_groups_operation(_name, _initial_value, &block)
+          @organizer_class.add_group_parent_item_operation(_name, _initial_value, &block)
         elsif @ctx.group_parent?
           @organizer_class.add_group_operation(_name, _initial_value, &block)
         else

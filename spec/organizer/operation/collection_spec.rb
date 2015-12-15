@@ -1,36 +1,36 @@
 require 'spec_helper'
 
 describe Organizer::Operation::Collection do
-  describe "#add_simple_operation" do
+  describe "#add_simple_item" do
     it "adds new operation" do
-      expect { subject.add_simple_operation(:result_attr) {} }.to change { subject.count }.from(0).to(1)
+      expect { subject.add_simple_item(:result_attr) {} }.to change { subject.count }.from(0).to(1)
     end
 
     it "returns a new operation" do
-      operation = subject.add_simple_operation(:result_attr) {}
+      operation = subject.add_simple_item(:result_attr) {}
       expect(operation).to be_a(Organizer::Source::Operation::Item)
     end
   end
 
-  describe "#add_mask_operation" do
+  describe "#add_mask_item" do
     it "adds new operation" do
-      expect { subject.add_mask_operation(:attr, :upcase) {} }.to change { subject.count }.from(0).to(1)
+      expect { subject.add_mask_item(:attr, :upcase) {} }.to change { subject.count }.from(0).to(1)
     end
 
     it "returns a new operation" do
-      operation = subject.add_mask_operation(:attr, :upcase) {}
+      operation = subject.add_mask_item(:attr, :upcase) {}
       expect(operation).to be_a(Organizer::Source::Operation::Item)
     end
   end
 
-  describe "#add_memo_operation" do
+  describe "#add_group_parent_item" do
     it "adds new group operation" do
-      expect { subject.add_memo_operation(:result_attr, :my_group) {} }.to change { subject.count }.from(0).to(1)
+      expect { subject.add_group_parent_item(:result_attr, :my_group) {} }.to change { subject.count }.from(0).to(1)
     end
 
     it "returns a new group operation" do
-      operation = subject.add_memo_operation(:result_attr, :my_group) {}
-      expect(operation).to be_a(Organizer::Operation::Memo)
+      operation = subject.add_group_parent_item(:result_attr, :my_group) {}
+      expect(operation).to be_a(Organizer::Group::Operation::ParentItem)
     end
   end
 
@@ -44,7 +44,7 @@ describe Organizer::Operation::Collection do
     end
 
     context "with group item operations" do
-      let!(:item) { Organizer::Operation::Memo.new(-> {}, :item_name, :my_group) }
+      let!(:item) { Organizer::Group::Operation::ParentItem.new(-> {}, :item_name, :my_group) }
       it_should_behave_like(:collection)
     end
   end
