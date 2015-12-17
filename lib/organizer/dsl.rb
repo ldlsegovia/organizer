@@ -20,7 +20,7 @@ module Organizer
     end
 
     def default_filter(_name = nil, &block)
-      in_collection_context { @organizer_class.add_default_filter(_name, &block) }
+      in_collection_context { @organizer_class.add_source_default_filter(_name, &block) }
     end
 
     def generate_filters_for(*_attributes)
@@ -38,7 +38,7 @@ module Organizer
 
     def human(_attribute, _mask = :clean, _options = {})
       in_collection_context do
-        @organizer_class.add_mask_operation(_attribute, _mask, _options)
+        @organizer_class.add_source_mask_operation(_attribute, _mask, _options)
       end
     end
 
@@ -47,9 +47,9 @@ module Organizer
         if @ctx.collection_parent?
           @organizer_class.add_source_operation(_name, &block)
         elsif @ctx.groups_parent?
-          @organizer_class.add_group_parent_item_operation(_name, _initial_value, &block)
+          @organizer_class.add_groups_parent_item_operation(_name, _initial_value, &block)
         elsif @ctx.group_parent?
-          @organizer_class.add_group_operation(_name, _initial_value, &block)
+          @organizer_class.add_group_parent_item_operation(_name, _initial_value, &block)
         else
           raise_error(:forbidden_nesting)
         end

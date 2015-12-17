@@ -5,12 +5,12 @@ module Organizer
         include Organizer::Error
         extend Organizer::Filter::Selector
 
-        def self.select(_filters, _group_filter_methods, _group_definitions)
-          if _filters.blank? || _group_filter_methods.blank? || _group_definitions.blank?
+        def self.select(_filters, _filter_methods, _group_definitions)
+          if _filters.blank? || _filter_methods.blank? || _group_definitions.blank?
             return _group_definitions
           end
 
-          _group_filter_methods.each do |group_name, filters|
+          _filter_methods.each do |group_name, filters|
             definition = _group_definitions.find_by_name(group_name)
             raise_error(:unknown_group) unless definition
             definition.filters = select_filters(_filters, filters)

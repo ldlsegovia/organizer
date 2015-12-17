@@ -2,11 +2,11 @@ module Organizer
   class DefinitionsKeeper
     include Organizer::Error
 
-    attr_accessor :collection_options
-    attr_reader :collection_proc
+    attr_accessor :collection_options, :collection_proc
+    attr_reader :filters
+    attr_reader :source_default_filters, :source_operations
     attr_reader :groups
-    attr_reader :filters, :source_default_filters
-    attr_reader :source_operations, :group_parent_item_operations
+    attr_reader :groups_parent_item_operations
 
     def initialize
       @filters = Organizer::Filter::Collection.new
@@ -15,7 +15,7 @@ module Organizer
       @source_operations = Organizer::Operation::Collection.new
 
       @groups = {}
-      @group_parent_item_operations = Organizer::Operation::Collection.new
+      @groups_parent_item_operations = Organizer::Operation::Collection.new
     end
 
     def add_collection(&block)
@@ -28,27 +28,27 @@ module Organizer
       Organizer::Source::Collection.new.fill(collection_proc.call(collection_options))
     end
 
-    def add_default_filter(_name = nil, &block)
-      @source_default_filters.add_filter(_name, &block)
-    end
-
     def add_filter(_name, &block)
       @filters.add_filter(_name, &block)
+    end
+
+    def add_source_default_filter(_name = nil, &block)
+      @source_default_filters.add_filter(_name, &block)
     end
 
     def add_source_operation(_name, &block)
       @source_operations.add_simple_item(_name, &block)
     end
 
-    def add_mask_operation(_attribute, _mask, _options = {})
+    def add_source_mask_operation(_attribute, _mask, _options = {})
       @source_operations.add_mask_item(_attribute, _mask, _options)
     end
 
-    def add_group_parent_item_operation(_name, _initial_value = 0, &block)
-      @group_parent_item_operations.add_group_parent_item(_name, _initial_value, &block)
+    def add_groups_parent_item_operation(_name, _initial_value = 0, &block)
+      @groups_parent_item_operations.add_group_parent_item(_name, _initial_value, &block)
     end
 
-    def add_group_operation(_operation_name, _initial_value = 0, &block)
+    def add_group_parent_item_operation(_operation_name, _initial_value = 0, &block)
       @current_group_definition.add_parent_item_operation(_operation_name, _initial_value, &block)
     end
 

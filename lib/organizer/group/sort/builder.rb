@@ -5,10 +5,10 @@ module Organizer
         include Organizer::Error
         extend Organizer::Sort::Builder
 
-        def self.build(_sort_group_methods, _group_definitions)
-          return _group_definitions if _sort_group_methods.blank? || _group_definitions.blank?
+        def self.build(_sort_methods, _group_definitions)
+          return _group_definitions if _sort_methods.blank? || _group_definitions.blank?
 
-          _sort_group_methods.each do |group_name, sort_items|
+          _sort_methods.each do |group_name, sort_items|
             definition = _group_definitions.find_by_name(group_name)
             raise_error(:unknown_group) unless definition
             group_sort_items = build_sort_items(sort_items)

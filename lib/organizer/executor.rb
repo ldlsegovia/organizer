@@ -7,26 +7,26 @@ module Organizer
       @chainer = _chainer
       @executors = []
 
-      load_operations_executor
-      load_default_filters_executor
+      load_source_operations_executor
+      load_source_default_filters_executor
       load_filters_executor
       load_sort_items_executor
 
       load_groups_executor
-      load_group_operations_executor
+      load_group_parent_item_operations_executor
       load_group_filters_executor
       load_group_sort_items_executor
 
       execute(@executors.shift, _definitions.collection, @executors)
     end
 
-    def self.load_operations_executor
+    def self.load_source_operations_executor
       load_executor do |source|
         Organizer::Source::Operation::Executor.execute(@definitions.source_operations, source)
       end
     end
 
-    def self.load_default_filters_executor
+    def self.load_source_default_filters_executor
       filters = Organizer::Source::Filter::Selector.select_default(
         @definitions.source_default_filters, @chainer.skip_default_filter_methods)
 
@@ -62,10 +62,10 @@ module Organizer
       end
     end
 
-    def self.load_group_operations_executor
+    def self.load_group_parent_item_operations_executor
       load_executor do |source|
         grouped_operations = Organizer::Operation::Selector.select_group_operations(
-          @definitions.group_parent_item_operations, @selected_group_definitions)
+          @definitions.groups_parent_item_operations, @selected_group_definitions)
 
         Organizer::Group::Operation::ParentItemsExecutor.execute(
           grouped_operations, @definitions.collection, source)

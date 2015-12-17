@@ -99,7 +99,7 @@ module Organizer
 
     class CollectionException < ::Exception
       ERRORS = {
-        invalid_item: "Invalid operations collection item. Must be Organizer:Operation only",
+        invalid_item: "Invalid operations collection item.",
         repeated_item: "Repeated item. An Item with same name was added previously"
       }
     end

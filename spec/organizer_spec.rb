@@ -226,7 +226,7 @@ describe Organizer do
             end
           end
 
-          @global_operations = MyOrganizer.group_parent_item_operations
+          @global_operations = MyOrganizer.groups_parent_item_operations
           @global_operation1 = @global_operations.first
           @global_operation2 = @global_operations.last
 

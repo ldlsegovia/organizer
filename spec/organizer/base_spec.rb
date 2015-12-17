@@ -52,8 +52,8 @@ describe Organizer::Base do
 
         context "with default filters" do
           before do
-            BaseChild.add_default_filter { |item| item.age > 9 }
-            BaseChild.add_default_filter(:default_filter1) { |item| item.age < 33 }
+            BaseChild.add_source_default_filter { |item| item.age > 9 }
+            BaseChild.add_source_default_filter(:default_filter1) { |item| item.age < 33 }
           end
 
           it "returns filtered collection" do
@@ -104,7 +104,7 @@ describe Organizer::Base do
 
         context "working with masked attributes" do
           before do
-            BaseChild.add_mask_operation(:new_attr, :currency, unit: ":-) ")
+            BaseChild.add_source_mask_operation(:new_attr, :currency, unit: ":-) ")
           end
 
           it "applies mask to attribute" do
@@ -159,7 +159,7 @@ describe Organizer::Base do
 
           context "with operations" do
             before do
-              BaseChild.add_group_parent_item_operation(:attrs_sum, 10) do |parent, item|
+              BaseChild.add_groups_parent_item_operation(:attrs_sum, 10) do |parent, item|
                 parent.attrs_sum + item.age
               end
             end
@@ -198,10 +198,10 @@ describe Organizer::Base do
 
           context "with global operations" do
             before do
-              BaseChild.add_group_parent_item_operation(:greater_age) do |parent, item|
+              BaseChild.add_groups_parent_item_operation(:greater_age) do |parent, item|
                 parent.greater_age > item.age ? parent.greater_age : item.age
               end
-              BaseChild.add_group_parent_item_operation(:lower_savings, nil) do |parent, item|
+              BaseChild.add_groups_parent_item_operation(:lower_savings, nil) do |parent, item|
                 parent.lower_savings = item.savings if parent.lower_savings.nil?
                 parent.lower_savings < item.savings ? parent.lower_savings : item.savings
               end
@@ -217,7 +217,7 @@ describe Organizer::Base do
 
             context "with specific group operations" do
               before do
-                BaseChild.add_group_operation(:odd_age_count, 0) do |parent, item|
+                BaseChild.add_group_parent_item_operation(:odd_age_count, 0) do |parent, item|
                   item.age.odd? ? parent.odd_age_count + 1 : parent.odd_age_count
                 end
               end

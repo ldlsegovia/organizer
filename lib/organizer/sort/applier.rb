@@ -1,8 +1,6 @@
 module Organizer
   module Sort
     module Applier
-      include Organizer::Error
-
       def sort_collection(_sort_items, _collection)
         return _collection if _sort_items.blank? || _collection.blank?
         _collection.sort! do |item, next_item|
