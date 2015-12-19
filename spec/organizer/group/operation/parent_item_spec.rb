@@ -12,9 +12,10 @@ describe Organizer::Group::Operation::ParentItem do
   end
 
   describe "#execute" do
-    let_group_collection(:group_collection, :site_id)
+    let_group(:site_group, false, :site_id)
+
     before do
-      @group_item = group_collection.first
+      @group_item = site_group.first
       @source_item1 = @group_item.first
       @source_item2 = @group_item.second
 

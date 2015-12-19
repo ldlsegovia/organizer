@@ -2,12 +2,7 @@ require 'spec_helper'
 
 describe Organizer::Group::Operation::ParentItemsExecutor do
   subject { Organizer::Group::Operation::ParentItemsExecutor }
-  let_group_collection(:gender, :gender)
-
-  before do
-    @definitions = Organizer::Group::DefinitionsCollection.new
-    @definition = @definitions.add_definition(:gender)
-  end
+  let_group(:gender, false, :gender)
 
   describe "#execute_based_on_children" do
     before do
@@ -17,8 +12,8 @@ describe Organizer::Group::Operation::ParentItemsExecutor do
         parent.age_sum + item.age
       end
 
-      @definition.parent_item_operations = operations
-      @result = subject.execute(@definitions, gender_group_collection, gender)
+      gender_definition.parent_item_operations = operations
+      @result = subject.execute(gender_definitions, gender_source_collection, gender)
     end
 
     it "returns a group collection" do

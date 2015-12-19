@@ -2,69 +2,51 @@ require 'spec_helper'
 
 describe Organizer::Group::Filter::Applier do
   subject { Organizer::Group::Filter::Applier }
-  let_collection(:collection)
+  let_group(:group, true, :site_id, :store_id)
+  let!(:filter_proc) do
+    Proc.new do |item, value|
+      item.greater_age > value
+    end
+  end
 
   describe "#apply" do
-    before do
-      operations = Organizer::Operation::Collection.new
-
-      operations.add_group_parent_item(:age_sum) do |parent, item|
-        parent.age_sum + item.age
-      end
-
-      operations.add_group_parent_item(:greatest_savings) do |parent, item|
-        (parent.greatest_savings > item.savings) ? parent.greatest_savings : item.savings
-      end
-
-      @group_definitions = Organizer::Group::DefinitionsCollection.new
-      @d1 = @group_definitions.add_definition(:site, :site_id)
-      @d2 = @group_definitions.add_definition(:store, :store_id)
-      @d1.parent_item_operations = @d2.parent_item_operations = operations
-
-      group = Organizer::Group::Builder.build(collection, @group_definitions.groups_from_definitions)
-      @group = Organizer::Group::Operation::ParentItemsExecutor.execute(@group_definitions, collection, group)
-
-      @filter_definition = Proc.new do |item, value|
-        item.age_sum < value
-      end
-    end
-
     it "filters parent group items" do
-      filter = Organizer::Filter::Item.new(@filter_definition, :filter)
-      filter.value = 150
+      filter = Organizer::Filter::Item.new(filter_proc, :filter)
+      filter.value = 33
 
-      @d1.filters << filter
-      subject.apply(@group_definitions, @group)
+      site_id_definition.filters << filter
+      subject.apply(group_definitions, group)
 
-      expect(@group.count).to eq(2)
+      expect(group.count).to eq(2)
     end
 
     it "filters child groups items" do
-      filter = Organizer::Filter::Item.new(@filter_definition, :filter)
-      filter.value = 50
+      filter = Organizer::Filter::Item.new(filter_proc, :filter)
+      filter.value = 33
 
-      @d2.filters << filter
-      subject.apply(@group_definitions, @group)
+      store_id_definition.filters << filter
+      subject.apply(group_definitions, group)
 
-      expect(@group.count).to eq(3)
-      expect(@group.first.count).to eq(0)
-      expect(@group.second.count).to eq(1)
-      expect(@group.third.count).to eq(1)
+      expect(group.count).to eq(3)
+      expect(group.first.count).to eq(0)
+      expect(group.second.count).to eq(1)
+      expect(group.third.count).to eq(1)
     end
 
     it "filters groups items in the complete hierarchy" do
-      filter1 = Organizer::Filter::Item.new(@filter_definition, :filter)
-      filter1.value = 150
-      @d1.filters << filter1
+      filter1 = Organizer::Filter::Item.new(filter_proc, :filter)
+      filter1.value = 33
+      site_id_definition.filters << filter1
 
-      filter2 = Organizer::Filter::Item.new(@filter_definition, :filter)
-      filter2.value = 50
-      @d2.filters << filter2
+      filter2 = Organizer::Filter::Item.new(filter_proc, :filter)
+      filter2.value = 33
+      store_id_definition.filters << filter2
 
-      subject.apply(@group_definitions, @group)
-      expect(@group.count).to eq(2)
-      expect(@group.first.count).to eq(0)
-      expect(@group.second.count).to eq(1)
+      subject.apply(group_definitions, group)
+
+      expect(group.count).to eq(2)
+      expect(group.first.count).to eq(1)
+      expect(group.second.count).to eq(1)
     end
   end
 end

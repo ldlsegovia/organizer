@@ -2,23 +2,10 @@ require 'spec_helper'
 
 describe Organizer::Group::Operation::ItemsExecutor do
   subject { Organizer::Group::Operation::ItemsExecutor }
-  let_group_collection(:gender, :gender)
+  let_group(:gender, true, :gender, :site_id)
 
   describe "#execute" do
     before do
-      @definitions = Organizer::Group::DefinitionsCollection.new
-      @definition = @definitions.add_definition(:gender)
-      parent_operations = Organizer::Operation::Collection.new
-
-      parent_operations.add_group_parent_item(:lower_age, nil) do |parent, item|
-        parent.lower_age = item.age if parent.lower_age.nil?
-        parent.lower_age < item.age ? parent.lower_age : item.age
-      end
-
-      parent_operations.add_group_parent_item(:greater_age) do |parent, item|
-        parent.greater_age > item.age ? parent.greater_age : item.age
-      end
-
       simple_operations = Organizer::Operation::Collection.new
 
       simple_operations.add_simple_item(:age_diff) do |item|
@@ -29,12 +16,8 @@ describe Organizer::Group::Operation::ItemsExecutor do
         item.age_diff * 2
       end
 
-      @definition.parent_item_operations = parent_operations
-      @definition.item_operations = simple_operations
-
-      result = Organizer::Group::Operation::ParentItemsExecutor.execute(
-        @definitions, gender_group_collection, gender)
-      @result = subject.execute(@definitions, result)
+      gender_definition.item_operations = simple_operations
+      @result = subject.execute(gender_definitions, gender)
     end
 
     it "returns a group collection" do
@@ -45,6 +28,13 @@ describe Organizer::Group::Operation::ItemsExecutor do
     it "returns group items with new attribute" do
       expect(@result.first.age_diff).to eq(57)
       expect(@result.last.age_diff).to eq(31)
+    end
+
+    it "executes operations on items with definition only" do
+      item = @result.first.first
+      expect(item).to be_a(Organizer::Group::Item)
+      expect(item).to_not respond_to(:age_diff)
+      expect(item).to_not respond_to(:double_age_diff)
     end
 
     it "executes operations based on generated operations" do

@@ -36,14 +36,46 @@ module HelpfulVariables
     end
   end
 
-  def let_group_collection(_name, group_attr = :store_id)
-    collection_name = "#{_name}_group_collection"
-    let_collection(collection_name)
-    let(_name) do
-      groups_collection = Organizer::Group::Collection.new
-      groups_collection << Organizer::Group::Item.new(group_attr)
-      Organizer::Group::Builder.build(
-        send(collection_name), groups_collection)
+  def let_group(_identifier, _with_operations = true, *_groups_hierarchy)
+    source_collection_identifier = "#{_identifier}_source_collection"
+    let_collection(source_collection_identifier)
+
+    definitions_collection_identifier = "#{_identifier}_definitions"
+    let!("#{_identifier}_definitions") { Organizer::Group::DefinitionsCollection.new }
+
+    _groups_hierarchy.each do |group_name|
+      group_definition_identifier = "#{group_name}_definition"
+
+      let!(group_definition_identifier) do
+        definition = send(definitions_collection_identifier).add_definition(group_name)
+        self.class.add_operations_to_group_definition(definition) if _with_operations
+        definition
+      end
     end
+
+    let!(_identifier) do
+      result = Organizer::Group::Builder.build(send(source_collection_identifier),
+        send(definitions_collection_identifier).groups_from_definitions)
+
+      return result unless _with_operations
+
+      Organizer::Group::Operation::ParentItemsExecutor.execute(
+        send(definitions_collection_identifier), send(source_collection_identifier), result)
+    end
+  end
+
+  def add_operations_to_group_definition(_definition)
+    parent_operations = Organizer::Operation::Collection.new
+
+    parent_operations.add_group_parent_item(:lower_age, nil) do |parent, item|
+      parent.lower_age = item.age if parent.lower_age.nil?
+      parent.lower_age < item.age ? parent.lower_age : item.age
+    end
+
+    parent_operations.add_group_parent_item(:greater_age) do |parent, item|
+      parent.greater_age > item.age ? parent.greater_age : item.age
+    end
+
+    _definition.parent_item_operations = parent_operations
   end
 end
