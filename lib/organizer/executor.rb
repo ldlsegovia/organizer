@@ -64,7 +64,7 @@ module Organizer
 
     def self.load_group_parent_item_operations_executor
       load_executor do |source|
-        grouped_operations = Organizer::Operation::Selector.select_group_operations(
+        grouped_operations = Organizer::Group::Operation::Selector.select(
           @definitions.groups_parent_item_operations, @selected_group_definitions)
 
         Organizer::Group::Operation::ParentItemsExecutor.execute(
