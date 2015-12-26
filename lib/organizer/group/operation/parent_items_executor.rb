@@ -33,7 +33,7 @@ module Organizer
         def self.execute_group_operations(_group_definitions, _group_item, _source_item)
           group_operations = _group_definitions.parent_item_operations(_group_item.group_name)
           return unless group_operations
-          group_operations.each { |operation| operation.execute(_group_item, _source_item) }
+          group_operations.each { |operation| operation.execute(_group_item, [_source_item]) }
         end
 
         def self.item_match_with_group_hierarchy?(_group_items_hierarchy, _source_item)

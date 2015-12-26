@@ -19,16 +19,6 @@ module Organizer
         @sort_items = Organizer::Sort::Collection.new
         @filters = Organizer::Filter::Collection.new
       end
-
-      def add_parent_item_operation(_operation, _initial_value = 0, &block)
-        if _operation.is_a?(Organizer::Group::Operation::ParentItem)
-          parent_item_operations << _operation
-        else
-          parent_item_operations.add_group_parent_item(_operation, _initial_value, &block)
-        end
-
-        parent_item_operations.last
-      end
     end
   end
 end

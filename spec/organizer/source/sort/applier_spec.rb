@@ -7,7 +7,7 @@ describe Organizer::Source::Sort::Applier do
 
   describe "#apply" do
     context "with ascendant sort item" do
-      before { @sort_items.add_item(:gender) }
+      before { @sort_items.add(:gender) }
 
       it "sorts collection" do
         result = subject.apply(@sort_items, collection)
@@ -17,7 +17,7 @@ describe Organizer::Source::Sort::Applier do
     end
 
     context "with descendding sort item" do
-      before { @sort_items.add_item(:gender, true) }
+      before { @sort_items.add(:gender, true) }
 
       it "sorts collection" do
         result = subject.apply(@sort_items, collection)
@@ -26,7 +26,7 @@ describe Organizer::Source::Sort::Applier do
       end
 
       context "with multiple sort items" do
-        before { @sort_items.add_item(:age, true) }
+        before { @sort_items.add(:age, true) }
 
         it "sorts collection" do
           result = subject.apply(@sort_items, collection)

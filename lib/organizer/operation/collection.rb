@@ -5,20 +5,10 @@ module Organizer
       include Organizer::Collection
       include Organizer::Explainer
 
-      collectable_classes Organizer::Operation::Item, Organizer::Group::Operation::ParentItem
+      collectable_classes Organizer::Operation::Item
 
-      def add_simple_item(_name, _options = {}, &block)
+      def add(_name, _options = {}, &block)
         self << Organizer::Operation::Item.new(block, _name, _options)
-        last
-      end
-
-      def add_mask_item(_attribute, _mask, _options = {})
-        self << Organizer::Operation::MaskBuilder.build(_attribute, _mask, _options)
-        last
-      end
-
-      def add_group_parent_item(_name, _initial_value = 0, _options = {}, &block)
-        self << Organizer::Group::Operation::ParentItem.new(block, _name, _initial_value, _options)
         last
       end
 

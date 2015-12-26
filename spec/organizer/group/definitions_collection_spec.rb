@@ -1,16 +1,16 @@
 require 'spec_helper'
 
 describe Organizer::Group::DefinitionsCollection do
-  describe "#add_definition" do
+  describe "#add" do
     it "adds new group definition" do
-      expect { subject.add_definition(:store_id) }.to change { subject.count }.from(0).to(1)
+      expect { subject.add(:store_id) }.to change { subject.count }.from(0).to(1)
     end
   end
 
   describe "#groups_from_definitions" do
     before do
-      subject.add_definition(:gender)
-      subject.add_definition(:store_id)
+      subject.add(:gender)
+      subject.add(:store_id)
       @groups = subject.groups_from_definitions
     end
 

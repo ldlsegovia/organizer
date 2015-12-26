@@ -8,11 +8,11 @@ describe Organizer::Group::Operation::ItemsExecutor do
     before do
       simple_operations = Organizer::Operation::Collection.new
 
-      simple_operations.add_simple_item(:age_diff) do |item|
+      simple_operations.add(:age_diff, initial_value: 0) do |item|
         item.greater_age - item.lower_age
       end
 
-      simple_operations.add_simple_item(:double_age_diff) do |item|
+      simple_operations.add(:double_age_diff, initial_value: 0) do |item|
         item.age_diff * 2
       end
 

@@ -7,7 +7,7 @@ module Organizer
 
       collectable_classes Organizer::Group::Item
 
-      def add_group(_name, _group_by_attr = nil)
+      def add(_name, _group_by_attr = nil)
         self << Organizer::Group::Item.new(_name, _group_by_attr)
         last
       end

@@ -6,7 +6,7 @@ module Organizer
         return sort_items if _sort_methods.blank?
 
         _sort_methods.each do |attr_name, orientation|
-          sort_items.add_item(attr_name.to_sym, orientation.to_s == "desc")
+          sort_items.add(attr_name.to_sym, orientation.to_s == "desc")
         end
 
         return if sort_items.empty?

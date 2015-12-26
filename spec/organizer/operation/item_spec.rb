@@ -20,34 +20,48 @@ describe Organizer::Operation::Item do
     end
 
     it "sets mask operation" do
-      proc = Proc.new {}
       mask_options = { name: :truncated, options: 5 }
-      o = Organizer::Operation::Item.new(proc, :my_operation, mask: mask_options)
+      o = Organizer::Operation::Item.new(-> {}, :my_operation, mask: mask_options)
       expect(o.mask).to be_a(Organizer::Operation::Item)
       expect(o.mask.item_name).to eq(:human_my_operation)
+    end
+
+    it "sets initial value" do
+      o = Organizer::Operation::Item.new(-> {}, :my_operation, initial_value: 10)
+      expect(o.initial_value).to eq(10)
     end
   end
 
   describe "#execute" do
     let_item(:item)
 
-    before { @proc = Proc.new { |item| item.int_attr1 + item.int_attr2 } }
+    context "without params on definition" do
+      before { @proc = Proc.new { |item| item.int_attr1 + item.int_attr2 } }
 
-    it "sets operation result as new attribute into item param" do
-      Organizer::Operation::Item.new(@proc, :attrs_sum).execute(item)
-      expect(item.attrs_sum).to eq(item.int_attr1 + item.int_attr2)
+      it "sets operation result as new attribute into item param" do
+        Organizer::Operation::Item.new(@proc, :attrs_sum).execute(item)
+        expect(item.attrs_sum).to eq(item.int_attr1 + item.int_attr2)
+      end
+
+      it "execute mask when defined" do
+        mask_options = { name: :currency, options: { separator: "-" } }
+        Organizer::Operation::Item.new(@proc, :attrs_sum, mask: mask_options).execute(item)
+        expect(item.human_attrs_sum).to eq("$666-00")
+      end
     end
 
-    it "execute mask when defined" do
-      mask_options = { name: :currency, options: { separator: "-" } }
-      Organizer::Operation::Item.new(@proc, :attrs_sum, mask: mask_options).execute(item)
-      expect(item.human_attrs_sum).to eq("$666-00")
-    end
-  end
+    context "with params on definition" do
+      before do
+        @proc = Proc.new do |item, param1, param2, param3|
+          item.int_attr1 + param1 + param2 + param3
+        end
+      end
 
-  describe "explainer mixin" do
-    let!(:explainer) { Organizer::Operation::Item.new(-> {}, :my_operation) }
-    it_should_behave_like(:explainer)
+      it "uses parent attribute to keep old results" do
+        Organizer::Operation::Item.new(@proc, :attrs_sum, initial_value: 0).execute(item, [4, 6, 84])
+        expect(item.attrs_sum).to eq(item.int_attr1 + 4 + 6 + 84)
+      end
+    end
   end
 
   describe "collection item mixin" do

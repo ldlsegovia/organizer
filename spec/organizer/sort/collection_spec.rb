@@ -14,13 +14,13 @@ describe Organizer::Sort::Collection do
     it_should_behave_like(:explainer)
   end
 
-  describe "#add_item" do
+  describe "#add" do
     it "adds a new item" do
-      expect { subject.add_item(:item_name) }.to change { subject.count }.from(0).to(1)
+      expect { subject.add(:item_name) }.to change { subject.count }.from(0).to(1)
     end
 
     it "returns the new sort item" do
-      item = subject.add_item(:item_name)
+      item = subject.add(:item_name)
       expect(item).to be_a(Organizer::Sort::Item)
       expect(item.item_name).to eq(:item_name)
       expect(item.descending).to be_falsey

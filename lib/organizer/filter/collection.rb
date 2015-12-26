@@ -7,7 +7,7 @@ module Organizer
 
       collectable_classes Organizer::Filter::Item
 
-      def add_filter(_name = nil, &block)
+      def add(_name = nil, &block)
         self << Organizer::Filter::Item.new(block, _name)
         last
       end

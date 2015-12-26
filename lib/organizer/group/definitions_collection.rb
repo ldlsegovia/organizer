@@ -7,7 +7,7 @@ module Organizer
 
       collectable_classes Organizer::Group::Definition
 
-      def add_definition(_group_name, _group_by_attr = nil)
+      def add(_group_name, _group_by_attr = nil)
         self << Organizer::Group::Definition.new(_group_name, _group_by_attr)
         last
       end
@@ -17,7 +17,7 @@ module Organizer
 
         each do |item|
           if item.is_a?(Organizer::Group::Definition)
-            groups.add_group(item.item_name, item.group_by_attr)
+            groups.add(item.item_name, item.group_by_attr)
           end
         end
 

@@ -8,7 +8,7 @@ describe Organizer::Group::Operation::ParentItemsExecutor do
     before do
       operations = Organizer::Operation::Collection.new
 
-      operations.add_group_parent_item(:age_sum) do |parent, item|
+      operations.add(:age_sum, initial_value: 0) do |parent, item|
         parent.age_sum + item.age
       end
 

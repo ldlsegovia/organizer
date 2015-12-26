@@ -8,7 +8,7 @@ describe Organizer::Group::Sort::Applier do
     before { @sort_items = Organizer::Sort::Collection.new }
 
     it "sorts parent group" do
-      @sort_items.add_item(:lower_age)
+      @sort_items.add(:lower_age)
       gender_definition.sort_items = @sort_items
 
       subject.apply(group_definitions, group)
@@ -17,7 +17,7 @@ describe Organizer::Group::Sort::Applier do
     end
 
     it "sorts child group" do
-      @sort_items.add_item(:greater_age, true)
+      @sort_items.add(:greater_age, true)
       site_id_definition.sort_items = @sort_items
 
       subject.apply(group_definitions, group)

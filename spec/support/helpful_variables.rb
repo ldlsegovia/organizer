@@ -47,7 +47,7 @@ module HelpfulVariables
       group_definition_identifier = "#{group_name}_definition"
 
       let!(group_definition_identifier) do
-        definition = send(definitions_collection_identifier).add_definition(group_name)
+        definition = send(definitions_collection_identifier).add(group_name)
         self.class.add_operations_to_group_definition(definition) if _with_operations
         definition
       end
@@ -67,12 +67,12 @@ module HelpfulVariables
   def add_operations_to_group_definition(_definition)
     parent_operations = Organizer::Operation::Collection.new
 
-    parent_operations.add_group_parent_item(:lower_age, nil) do |parent, item|
+    parent_operations.add(:lower_age) do |parent, item|
       parent.lower_age = item.age if parent.lower_age.nil?
       parent.lower_age < item.age ? parent.lower_age : item.age
     end
 
-    parent_operations.add_group_parent_item(:greater_age) do |parent, item|
+    parent_operations.add(:greater_age, initial_value: 0) do |parent, item|
       parent.greater_age > item.age ? parent.greater_age : item.age
     end
 

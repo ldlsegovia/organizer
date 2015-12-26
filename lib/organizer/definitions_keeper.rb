@@ -29,27 +29,28 @@ module Organizer
     end
 
     def add_filter(_name, &block)
-      @filters.add_filter(_name, &block)
+      @filters.add(_name, &block)
     end
 
     def add_source_default_filter(_name = nil, &block)
-      @source_default_filters.add_filter(_name, &block)
+      @source_default_filters.add(_name, &block)
     end
 
     def add_source_operation(_name, &block)
-      @source_operations.add_simple_item(_name, &block)
+      @source_operations.add(_name, &block)
     end
 
     def add_source_mask_operation(_attribute, _mask, _options = {})
-      @source_operations.add_mask_item(_attribute, _mask, _options)
+      mask = Organizer::Operation::MaskBuilder.build(_attribute, _mask, _options)
+      @source_operations << mask
     end
 
     def add_groups_parent_item_operation(_name, _initial_value = 0, &block)
-      @groups_parent_item_operations.add_group_parent_item(_name, _initial_value, &block)
+      @groups_parent_item_operations.add(_name, initial_value: _initial_value, &block)
     end
 
     def add_group_parent_item_operation(_operation_name, _initial_value = 0, &block)
-      @current_group_definition.add_parent_item_operation(_operation_name, _initial_value, &block)
+      @current_group_definition.parent_item_operations.add(_operation_name, initial_value: _initial_value, &block)
     end
 
     def add_group_definition(_name, _group_by_attr = nil, _has_parent = false)
@@ -58,7 +59,7 @@ module Organizer
         @current_groups_definitions = @groups[_name.to_sym] = Organizer::Group::DefinitionsCollection.new
       end
 
-      @current_group_definition = @current_groups_definitions.add_definition(_name, _group_by_attr)
+      @current_group_definition = @current_groups_definitions.add(_name, _group_by_attr)
     end
   end
 end

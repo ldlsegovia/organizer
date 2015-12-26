@@ -8,7 +8,7 @@ describe Organizer::Group::Builder do
     context "grouping by attribute" do
       before do
         @groups = Organizer::Group::Collection.new
-        @groups.add_group(:store, :store_id)
+        @groups.add(:store, :store_id)
       end
 
       it "returns empty group with empty source" do
@@ -45,9 +45,9 @@ describe Organizer::Group::Builder do
     context "with nested groups" do
       before do
         groups = Organizer::Group::Collection.new
-        groups.add_group(:gender)
-        groups.add_group(:site, :site_id)
-        groups.add_group(:store, :store_id)
+        groups.add(:gender)
+        groups.add(:site, :site_id)
+        groups.add(:store, :store_id)
         @group = subject.build(collection, groups)
       end
 
