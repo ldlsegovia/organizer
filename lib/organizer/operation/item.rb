@@ -18,7 +18,10 @@ module Organizer
       end
 
       def execute(_item)
-        raise_error(:not_implemented)
+        result = definition.call(_item)
+        _item.define_attribute(item_name, result)
+        mask.execute(_item) if mask
+        nil
       end
 
       def has_error?

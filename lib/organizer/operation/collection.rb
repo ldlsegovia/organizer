@@ -5,10 +5,10 @@ module Organizer
       include Organizer::Collection
       include Organizer::Explainer
 
-      collectable_classes Organizer::Operation::Simple, Organizer::Group::Operation::ParentItem
+      collectable_classes Organizer::Operation::Item, Organizer::Group::Operation::ParentItem
 
       def add_simple_item(_name, _options = {}, &block)
-        self << Organizer::Operation::Simple.new(block, _name, _options)
+        self << Organizer::Operation::Item.new(block, _name, _options)
         last
       end
 
