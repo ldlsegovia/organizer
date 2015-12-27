@@ -42,14 +42,14 @@ module Organizer
       end
     end
 
-    def operation(_name, _initial_value = 0, &block)
+    def operation(_name, &block)
       in_context do
         if @ctx.collection_parent?
           @organizer_class.add_source_operation(_name, &block)
-        # elsif @ctx.groups_parent?
-        #   @organizer_class.add_groups_parent_item_operation(_name, _initial_value, &block)
-        # elsif @ctx.group_parent?
-        #   @organizer_class.add_group_parent_item_operation(_name, _initial_value, &block)
+        elsif @ctx.groups_parent?
+          @organizer_class.add_groups_item_operation(_name, &block)
+        elsif @ctx.group_parent?
+          @organizer_class.add_group_item_operation(_name, &block)
         else
           raise_error(:forbidden_nesting)
         end

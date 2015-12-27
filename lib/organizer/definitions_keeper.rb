@@ -6,7 +6,7 @@ module Organizer
     attr_reader :filters
     attr_reader :source_default_filters, :source_operations
     attr_reader :groups
-    attr_reader :groups_parent_item_operations
+    attr_reader :groups_parent_item_operations, :groups_item_operations
 
     def initialize
       @filters = Organizer::Filter::Collection.new
@@ -16,6 +16,7 @@ module Organizer
 
       @groups = {}
       @groups_parent_item_operations = Organizer::Operation::Collection.new
+      @groups_item_operations = Organizer::Operation::Collection.new
     end
 
     def add_collection(&block)
@@ -49,8 +50,16 @@ module Organizer
       @groups_parent_item_operations.add(_name, initial_value: _initial_value, &block)
     end
 
+    def add_groups_item_operation(_name, &block)
+      @groups_item_operations.add(_name, &block)
+    end
+
     def add_group_parent_item_operation(_operation_name, _initial_value = 0, &block)
       @current_group_definition.parent_item_operations.add(_operation_name, initial_value: _initial_value, &block)
+    end
+
+    def add_group_item_operation(_operation_name, &block)
+      @current_group_definition.item_operations.add(_operation_name, &block)
     end
 
     def add_group_definition(_name, _group_by_attr = nil, _has_parent = false)

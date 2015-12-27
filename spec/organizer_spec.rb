@@ -25,8 +25,9 @@ describe Organizer do
       {
         group: :my_group,
         operation: :my_operation,
+        parent_operation: :my_operation,
         default_filter: nil,
-        human: :attr1,
+        human: :attr1
       }.each do |dsl_method, params|
         Object.send(:remove_const, :MyOrganizer) rescue nil
         expect do
@@ -45,6 +46,7 @@ describe Organizer do
           filter: :my_filter,
           groups: nil,
           group: :my_group,
+          parent_operation: :my_operation
         }.each do |dsl_method, params|
           Object.send(:remove_const, :MyOrganizer) rescue nil
           expect do
@@ -190,6 +192,51 @@ describe Organizer do
       end
     end
 
+    describe "#parent_operation" do
+      before do
+        Organizer.define("my_organizer") do
+          groups do
+            parent_operation(:operation_1, 10) {}
+            parent_operation(:operation_2) {}
+
+            group(:gender) do
+              parent_operation(:operation_3, 20) {}
+              parent_operation(:operation_4) {}
+            end
+
+            group(:site) do
+              parent_operation(:operation_5) {}
+            end
+          end
+        end
+
+        @global_operations = MyOrganizer.groups_parent_item_operations
+        @global_operation1 = @global_operations.first
+        @global_operation2 = @global_operations.last
+
+        @gender_operations = MyOrganizer.groups[:gender].parent_item_operations(:gender)
+        @site_operations = MyOrganizer.groups[:site].parent_item_operations(:site)
+      end
+
+      it "keeps global operations" do
+        expect(@global_operations.count).to eq(2)
+        expect(@global_operations).to be_a(Organizer::Operation::Collection)
+        expect(@global_operation1.item_name).to eq(:operation_1)
+        expect(@global_operation1.initial_value).to eq(10)
+        expect(@global_operation2.item_name).to eq(:operation_2)
+        expect(@global_operation2.initial_value).to eq(0)
+      end
+
+      it "keeps specific group operations" do
+        expect(@gender_operations.count).to eq(2)
+        expect(@site_operations.count).to eq(1)
+        expect(@gender_operations.first.item_name).to eq(:operation_3)
+        expect(@gender_operations.first.initial_value).to eq(20)
+        expect(@gender_operations.last.item_name).to eq(:operation_4)
+        expect(@site_operations.first.item_name).to eq(:operation_5)
+      end
+    end
+
     describe "#operation" do
       context "in collection context" do
         before do
@@ -212,47 +259,34 @@ describe Organizer do
         before do
           Organizer.define("my_organizer") do
             groups do
-              parent_operation(:operation_1, 10) {}
-              parent_operation(:operation_2) {}
+              operation(:operation_1) {}
 
               group(:gender) do
-                parent_operation(:operation_3, 20) {}
-                parent_operation(:operation_4) {}
+                operation(:operation_2) {}
               end
 
               group(:site) do
-                parent_operation(:operation_5) {}
+                operation(:operation_3) {}
               end
             end
           end
 
-          @global_operations = MyOrganizer.groups_parent_item_operations
-          @global_operation1 = @global_operations.first
-          @global_operation2 = @global_operations.last
-
-          @gender_operations = MyOrganizer.groups[:gender].parent_item_operations(:gender)
-          @site_operations = MyOrganizer.groups[:site].parent_item_operations(:site)
-        end
-
-        it "adds groups operations to MyOrganizer class" do
-          expect(@global_operations.count).to eq(2)
-          expect(@global_operations).to be_a(Organizer::Operation::Collection)
+          @global_operations = MyOrganizer.groups_item_operations
+          @gender_operations = MyOrganizer.groups[:gender].item_operations(:gender)
+          @site_operations = MyOrganizer.groups[:site].item_operations(:site)
         end
 
         it "keeps global operations" do
-          expect(@global_operation1.item_name).to eq(:operation_1)
-          expect(@global_operation1.initial_value).to eq(10)
-          expect(@global_operation2.item_name).to eq(:operation_2)
-          expect(@global_operation2.initial_value).to eq(0)
+          expect(@global_operations.count).to eq(1)
+          expect(@global_operations).to be_a(Organizer::Operation::Collection)
+          expect(@global_operations.first.item_name).to eq(:operation_1)
         end
 
         it "keeps specific group operations" do
-          expect(@gender_operations.count).to eq(2)
+          expect(@gender_operations.count).to eq(1)
           expect(@site_operations.count).to eq(1)
-          expect(@gender_operations.first.item_name).to eq(:operation_3)
-          expect(@gender_operations.first.initial_value).to eq(20)
-          expect(@gender_operations.last.item_name).to eq(:operation_4)
-          expect(@site_operations.first.item_name).to eq(:operation_5)
+          expect(@gender_operations.first.item_name).to eq(:operation_2)
+          expect(@site_operations.first.item_name).to eq(:operation_3)
         end
       end
     end
