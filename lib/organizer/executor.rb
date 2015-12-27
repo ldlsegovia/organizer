@@ -13,7 +13,7 @@ module Organizer
       load_source_sort_items
 
       load_groups
-      load_group_parent_item_operations
+      load_group_operations
       load_group_filters
       load_group_sort_items
 
@@ -62,14 +62,26 @@ module Organizer
       end
     end
 
+    def self.load_group_operations
+      Organizer::Group::Operation::Loader.load(@definitions, @selected_group_definitions)
+      load_group_parent_item_operations
+      load_group_item_operations
+      load_group_child_item_operations
+    end
+
     def self.load_group_parent_item_operations
       load_executor do |source|
-        grouped_operations = Organizer::Group::Operation::Selector.select(
-          @definitions.groups_parent_item_operations, @selected_group_definitions)
-
         Organizer::Group::Operation::ParentItemsExecutor.execute(
-          grouped_operations, @definitions.collection, source)
+          @selected_group_definitions, @definitions.collection, source)
       end
+    end
+
+    def self.load_group_item_operations
+      # TODO
+    end
+
+    def self.load_group_child_item_operations
+      # TODO
     end
 
     def self.load_group_filters
@@ -82,11 +94,11 @@ module Organizer
     end
 
     def self.load_group_sort_items
-      grouped_sort_items = Organizer::Group::Sort::Builder.build(
+      Organizer::Group::Sort::Builder.build(
         @chainer.sort_group_methods(:hash), @selected_group_definitions)
 
       load_executor do |source|
-        Organizer::Group::Sort::Applier.apply(grouped_sort_items, source)
+        Organizer::Group::Sort::Applier.apply(@selected_group_definitions, source)
       end
     end
 
