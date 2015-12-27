@@ -7,7 +7,7 @@ module Organizer
       include Organizer::Explainer
 
       attr_reader :group_by_attr
-      attr_accessor :parent_item_operations, :item_operations
+      attr_accessor :parent_item_operations, :item_operations, :child_item_operations
       attr_accessor :sort_items, :filters
 
       def initialize(_group_name, _group_by_attr = nil)
@@ -15,6 +15,7 @@ module Organizer
         @group_by_attr = _group_by_attr || _group_name
 
         @parent_item_operations = Organizer::Operation::Collection.new
+        @child_item_operations = Organizer::Operation::Collection.new
         @item_operations = Organizer::Operation::Collection.new
         @sort_items = Organizer::Sort::Collection.new
         @filters = Organizer::Filter::Collection.new

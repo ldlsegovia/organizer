@@ -68,6 +68,18 @@ module Organizer
       end
     end
 
+    def child_operation(_name, &block)
+      in_context do
+        if @ctx.groups_parent?
+          @organizer_class.add_groups_child_item_operation(_name, &block)
+        elsif @ctx.group_parent?
+          @organizer_class.add_group_child_item_operation(_name, &block)
+        else
+          raise_error(:forbidden_nesting)
+        end
+      end
+    end
+
     def groups(&nested_definition)
       in_context(nested_definition) do
         raise_error(:forbidden_nesting) unless @ctx.root_parent?
