@@ -11,6 +11,10 @@ module Organizer
             _definitions_keeper.groups_parent_item_operations.each do |operation|
               group_definition.parent_item_operations << operation
             end
+
+            _definitions_keeper.groups_item_operations.each do |operation|
+              group_definition.item_operations << operation
+            end
           end
 
           _group_definitions

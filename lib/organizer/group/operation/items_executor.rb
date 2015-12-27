@@ -4,8 +4,8 @@ module Organizer
       module ItemsExecutor
         include Organizer::Error
 
-        def self.execute(_group_definitions, _collection)
-          _collection.each do |group_item|
+        def self.execute(_group_definitions, _group_items_collection)
+          _group_items_collection.each do |group_item|
             eval_operations_against_groups(_group_definitions, [group_item])
           end
         end

@@ -280,25 +280,38 @@ MyOrganizer.new.group_by_site_id.organize
 
 #### Group Operation
 
-You can define operations that will be applied to all groups or specific groups.
-On the following example **age_sum** and **age_sum_with_initial_value** operations will be applied to **gender** and **site_id** groups but, **odd_age_count** will be applied to **gender** group only.
+You can define 3 types of operations:
+
+1. **Parent Operation**: the resulting attribute of this kind of operations is attached to parent group items and calculated based on child group item attributes. A child item can be an `Organizer::Group::Item` instance or `Organizer::Source::Item` on the deepest level of the group hierarchy.
+2. **Operation**: this operations are calculated on `Organizer::Group::Item` instances only, using another attributes from the same instance.
+3. **Child Operation (TODO)**: the resulting attribute of this kind of operations is attached to a child item and calculated using parent item attributes. Parent items will always be `Organizer::Group::Item` instances but, child items can be `Organizer::Group::Item`s or `Organizer::Source::Item`s on the deepest level.
+
+Operations defined under `groups` method, will be applied to all groups. However, operations defined under `group` methods will affect that group only.
 
 ##### Definition Example
 
 ```ruby
 Organizer.define("my_organizer") do
   groups do
-    operation(:age_sum) do |group_item, item|
-      group_item.age_sum += item.age
+    parent_operation(:age_sum) do |parent_item, item|
+      parent_item.age_sum += item.age
     end
 
-    operation(:age_sum_with_initial_value, 10) do |group_item, item|
-      group_item.age_sum_with_initial_value += item.age
+    parent_operation(:age_sum_with_initial_value, 10) do |parent_item, item|
+      parent_item.age_sum_with_initial_value += item.age
+    end
+
+    operation(:double_age_sum) do |item|
+      item.age_sum * 2
     end
 
     group(:gender) do
-      operation(:odd_age_count) do |group_item, item|
-        item.age.odd? ? group_item.odd_age_count + 1 : group_item.odd_age_count
+      parent_operation(:odd_age_count) do |parent_item, item|
+        item.age.odd? ? parent_item.odd_age_count + 1 : parent_item.odd_age_count
+      end
+
+      operation(:super_double_age_sum) do |item|
+        item.double_age_sum * 2
       end
     end
 
@@ -311,7 +324,7 @@ end
 
 ```ruby
 ## You don't need nothing special to apply operations. It's enough with the definition
-MyOrganizer.new.group_by_site_id.organize
+MyOrganizer.new.group_by_gender.organize
 ```
 
 #### Nested Groups

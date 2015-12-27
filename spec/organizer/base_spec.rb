@@ -205,9 +205,12 @@ describe Organizer::Base do
                 parent.lower_savings = item.savings if parent.lower_savings.nil?
                 parent.lower_savings < item.savings ? parent.lower_savings : item.savings
               end
+              BaseChild.add_groups_item_operation(:saving_by_age) do |item|
+                item.greater_age * item.lower_savings
+              end
             end
 
-            it "applies operations to full group hierarchy" do
+            it "applies parent operations to full group hierarchy" do
               result = @organizer.group_by_gender.organize
               expect(result.first.lower_savings).to eq(2.5)
               expect(result.first.first.lower_savings).to eq(15.5)
@@ -215,17 +218,34 @@ describe Organizer::Base do
               expect(result.second.first.greater_age).to eq(64)
             end
 
+            it "applies group item operations to full group hierarchy" do
+              result = @organizer.group_by_gender.organize
+              expect(result.first.saving_by_age).to eq(162.5)
+              expect(result.first.first.saving_by_age).to eq(480.5)
+              expect(result.second.saving_by_age).to eq(1920.0)
+              expect(result.second.first.saving_by_age).to eq(1920.0)
+            end
+
             context "with specific group operations" do
               before do
                 BaseChild.add_group_parent_item_operation(:odd_age_count, 0) do |parent, item|
                   item.age.odd? ? parent.odd_age_count + 1 : parent.odd_age_count
                 end
+                BaseChild.add_group_item_operation(:double_age_count) do |item|
+                  item.odd_age_count * 2
+                end
               end
 
-              it "applies operations to specific groups" do
+              it "applies parent operations to specific groups" do
                 result = @organizer.group_by_gender.organize
                 expect { result.first.odd_age_count }.to raise_error(NoMethodError)
                 expect(result.first.first.odd_age_count).to eq(1)
+              end
+
+              it "applies group item operations to specific groups" do
+                result = @organizer.group_by_gender.organize
+                expect { result.first.double_age_count }.to raise_error(NoMethodError)
+                expect(result.first.first.double_age_count).to eq(2)
               end
             end
 
