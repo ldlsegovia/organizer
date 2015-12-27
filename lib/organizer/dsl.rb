@@ -46,7 +46,19 @@ module Organizer
       in_context do
         if @ctx.collection_parent?
           @organizer_class.add_source_operation(_name, &block)
-        elsif @ctx.groups_parent?
+        # elsif @ctx.groups_parent?
+        #   @organizer_class.add_groups_parent_item_operation(_name, _initial_value, &block)
+        # elsif @ctx.group_parent?
+        #   @organizer_class.add_group_parent_item_operation(_name, _initial_value, &block)
+        else
+          raise_error(:forbidden_nesting)
+        end
+      end
+    end
+
+    def parent_operation(_name, _initial_value = 0, &block)
+      in_context do
+        if @ctx.groups_parent?
           @organizer_class.add_groups_parent_item_operation(_name, _initial_value, &block)
         elsif @ctx.group_parent?
           @organizer_class.add_group_parent_item_operation(_name, _initial_value, &block)

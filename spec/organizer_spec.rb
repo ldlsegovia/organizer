@@ -212,16 +212,16 @@ describe Organizer do
         before do
           Organizer.define("my_organizer") do
             groups do
-              operation(:operation_1, 10) {}
-              operation(:operation_2) {}
+              parent_operation(:operation_1, 10) {}
+              parent_operation(:operation_2) {}
 
               group(:gender) do
-                operation(:operation_3, 20) {}
-                operation(:operation_4) {}
+                parent_operation(:operation_3, 20) {}
+                parent_operation(:operation_4) {}
               end
 
               group(:site) do
-                operation(:operation_5) {}
+                parent_operation(:operation_5) {}
               end
             end
           end
