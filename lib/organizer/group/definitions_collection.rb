@@ -24,24 +24,12 @@ module Organizer
         groups
       end
 
-      def parent_item_operations(_group_name)
-        find_in_definition(_group_name, :parent_item_operations)
-      end
+      def method_missing(_method, *_args, &_block)
+        if Organizer::Group::Definition.instance_methods.include?(_method)
+          return find_in_definition(_args.first, _method)
+        end
 
-      def item_operations(_group_name)
-        find_in_definition(_group_name, :item_operations)
-      end
-
-      def child_item_operations(_group_name)
-        find_in_definition(_group_name, :child_item_operations)
-      end
-
-      def sort_items(_group_name)
-        find_in_definition(_group_name, :sort_items)
-      end
-
-      def filters(_group_name)
-        find_in_definition(_group_name, :filters)
+        super
       end
 
       private
