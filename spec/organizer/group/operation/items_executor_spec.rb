@@ -6,17 +6,17 @@ describe Organizer::Group::Operation::ItemsExecutor do
 
   describe "#execute" do
     before do
-      simple_operations = Organizer::Operation::Collection.new
+      operations = Organizer::Operation::Collection.new
 
-      simple_operations.add(:age_diff, initial_value: 0) do |item|
+      operations.add(:age_diff, initial_value: 0) do |item|
         item.greater_age - item.lower_age
       end
 
-      simple_operations.add(:double_age_diff, initial_value: 0) do |item|
+      operations.add(:double_age_diff, initial_value: 0) do |item|
         item.age_diff * 2
       end
 
-      gender_definition.item_operations = simple_operations
+      gender_definition.item_operations = operations
       @result = subject.execute(gender_definitions, gender)
     end
 

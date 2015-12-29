@@ -4,7 +4,7 @@ describe Organizer::Group::Operation::ParentItemsExecutor do
   subject { Organizer::Group::Operation::ParentItemsExecutor }
   let_group(:gender, false, :gender)
 
-  describe "#execute_based_on_children" do
+  describe "#execute" do
     before do
       operations = Organizer::Operation::Collection.new
 
