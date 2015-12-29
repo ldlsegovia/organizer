@@ -5,7 +5,7 @@ describe Organizer::Group::Filter::Applier do
   let_group(:group, true, :site_id, :store_id)
   let!(:filter_proc) do
     Proc.new do |item, value|
-      item.greater_age > value
+      item.greatest_age > value
     end
   end
 

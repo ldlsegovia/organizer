@@ -9,7 +9,7 @@ describe Organizer::Group::Operation::ItemsExecutor do
       operations = Organizer::Operation::Collection.new
 
       operations.add(:age_diff, initial_value: 0) do |item|
-        item.greater_age - item.lower_age
+        item.greatest_age - item.lowest_age
       end
 
       operations.add(:double_age_diff, initial_value: 0) do |item|

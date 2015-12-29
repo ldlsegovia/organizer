@@ -198,15 +198,15 @@ describe Organizer::Base do
 
           context "with global operations" do
             before do
-              BaseChild.add_groups_parent_item_operation(:greater_age) do |parent, item|
-                parent.greater_age > item.age ? parent.greater_age : item.age
+              BaseChild.add_groups_parent_item_operation(:greatest_age) do |parent, item|
+                parent.greatest_age > item.age ? parent.greatest_age : item.age
               end
               BaseChild.add_groups_parent_item_operation(:lower_savings, nil) do |parent, item|
                 parent.lower_savings = item.savings if parent.lower_savings.nil?
                 parent.lower_savings < item.savings ? parent.lower_savings : item.savings
               end
               BaseChild.add_groups_item_operation(:saving_by_age) do |item|
-                item.greater_age * item.lower_savings
+                item.greatest_age * item.lower_savings
               end
             end
 
@@ -214,8 +214,8 @@ describe Organizer::Base do
               result = @organizer.group_by_gender.organize
               expect(result.first.lower_savings).to eq(2.5)
               expect(result.first.first.lower_savings).to eq(15.5)
-              expect(result.second.greater_age).to eq(64)
-              expect(result.second.first.greater_age).to eq(64)
+              expect(result.second.greatest_age).to eq(64)
+              expect(result.second.first.greatest_age).to eq(64)
             end
 
             it "applies group item operations to full group hierarchy" do
@@ -235,7 +235,7 @@ describe Organizer::Base do
                   item.odd_age_count * 2
                 end
                 BaseChild.add_group_child_item_operation(:age_salad) do |item, site, gender|
-                  item.age + site.greater_age + gender.saving_by_age
+                  item.age + site.greatest_age + gender.saving_by_age
                 end
               end
 
@@ -261,8 +261,8 @@ describe Organizer::Base do
 
             context "filtering groups" do
               before do
-                BaseChild.add_filter(:greater_age_greater_than) do |item, value|
-                  item.greater_age > value
+                BaseChild.add_filter(:greatest_age_greater_than) do |item, value|
+                  item.greatest_age > value
                 end
                 BaseChild.add_filter(:lower_savings_lower_than) do |item, value|
                   item.lower_savings < value
@@ -271,12 +271,12 @@ describe Organizer::Base do
 
               it "applies filters to related groups" do
                 q = @organizer.group_by_gender
-                q = q.filter_gender_by(greater_age_greater_than: 64)
+                q = q.filter_gender_by(greatest_age_greater_than: 64)
                 q = q.filter_site_by(lower_savings_lower_than: 10)
                 result = q.organize
 
                 expect(result.size).to eq(1)
-                expect(result.first.greater_age).to eq(65)
+                expect(result.first.greatest_age).to eq(65)
                 expect(result.first.size).to eq(1)
                 expect(result.first.first.lower_savings).to eq(2.5)
               end
@@ -293,11 +293,11 @@ describe Organizer::Base do
 
               it "applies multiple filters" do
                 q = @organizer.group_by_gender
-                q = q.filter_gender_by(greater_age_greater_than: 64, lower_savings_lower_than: 3)
+                q = q.filter_gender_by(greatest_age_greater_than: 64, lower_savings_lower_than: 3)
                 result = q.organize
 
                 expect(result.size).to eq(1)
-                expect(result.first.greater_age).to eq(65)
+                expect(result.first.greatest_age).to eq(65)
                 expect(result.first.lower_savings).to eq(2.5)
               end
             end
@@ -305,14 +305,14 @@ describe Organizer::Base do
             context "sorting" do
               it "sorts related groups" do
                 q = @organizer.group_by_gender
-                q = q.sort_gender_by(:greater_age)
+                q = q.sort_gender_by(:greatest_age)
                 q = q.sort_site_by(lower_savings: :desc)
                 result = q.organize
 
-                expect(result.first.greater_age).to eq(64)
+                expect(result.first.greatest_age).to eq(64)
                 expect(result.first.first.lower_savings).to eq(45.5)
                 expect(result.first.last.lower_savings).to eq(30.0)
-                expect(result.last.greater_age).to eq(65)
+                expect(result.last.greatest_age).to eq(65)
                 expect(result.last.first.lower_savings).to eq(25.5)
                 expect(result.last.last.lower_savings).to eq(2.5)
               end

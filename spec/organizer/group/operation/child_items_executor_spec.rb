@@ -9,13 +9,13 @@ describe Organizer::Group::Operation::ChildItemsExecutor do
       gender_operations = Organizer::Operation::Collection.new
 
       gender_operations.add(:is_greatest_age) do |site_item, gender_item|
-        site_item.greater_age == gender_item.greater_age
+        site_item.greatest_age == gender_item.greatest_age
       end
 
       site_operations = Organizer::Operation::Collection.new
 
       site_operations.add(:age_sum) do |source_item, site_item, gender_item|
-        source_item.age + site_item.greater_age + gender_item.greater_age
+        source_item.age + site_item.greatest_age + gender_item.greatest_age
       end
 
       gender_definition.child_item_operations = gender_operations

@@ -67,13 +67,13 @@ module HelpfulVariables
   def add_operations_to_group_definition(_definition)
     parent_operations = Organizer::Operation::Collection.new
 
-    parent_operations.add(:lower_age) do |parent, item|
-      parent.lower_age = item.age if parent.lower_age.nil?
-      parent.lower_age < item.age ? parent.lower_age : item.age
+    parent_operations.add(:lowest_age) do |parent, item|
+      parent.lowest_age = item.age if parent.lowest_age.nil?
+      parent.lowest_age < item.age ? parent.lowest_age : item.age
     end
 
-    parent_operations.add(:greater_age, initial_value: 0) do |parent, item|
-      parent.greater_age > item.age ? parent.greater_age : item.age
+    parent_operations.add(:greatest_age, initial_value: 0) do |parent, item|
+      parent.greatest_age > item.age ? parent.greatest_age : item.age
     end
 
     _definition.parent_item_operations = parent_operations
