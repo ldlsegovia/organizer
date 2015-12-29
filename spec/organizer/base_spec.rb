@@ -234,6 +234,9 @@ describe Organizer::Base do
                 BaseChild.add_group_item_operation(:double_age_count) do |item|
                   item.odd_age_count * 2
                 end
+                BaseChild.add_group_child_item_operation(:age_salad) do |item, site, gender|
+                  item.age + site.greater_age + gender.saving_by_age
+                end
               end
 
               it "applies parent operations to specific groups" do
@@ -246,6 +249,13 @@ describe Organizer::Base do
                 result = @organizer.group_by_gender.organize
                 expect { result.first.double_age_count }.to raise_error(NoMethodError)
                 expect(result.first.first.double_age_count).to eq(2)
+              end
+
+              it "applies child operations to specific group items children" do
+                result = @organizer.group_by_gender.organize
+                expect { result.first.age_salad }.to raise_error(NoMethodError)
+                expect { result.first.first.age_salad }.to raise_error(NoMethodError)
+                expect(result.first.first.first.age_salad).to eq(215.5)
               end
             end
 

@@ -243,40 +243,27 @@ describe Organizer do
       before do
         Organizer.define("my_organizer") do
           groups do
-            child_operation(:operation_1) {}
-            child_operation(:operation_2) {}
-
             group(:gender) do
-              child_operation(:operation_3) {}
-              child_operation(:operation_4) {}
+              child_operation(:operation_1) {}
+              child_operation(:operation_2) {}
             end
 
             group(:site) do
-              child_operation(:operation_5) {}
+              child_operation(:operation_3) {}
             end
           end
         end
-
-        @global_operations = MyOrganizer.groups_child_item_operations
-        @global_operation1 = @global_operations.first
-        @global_operation2 = @global_operations.last
 
         @gender_operations = MyOrganizer.groups[:gender].child_item_operations(:gender)
         @site_operations = MyOrganizer.groups[:site].child_item_operations(:site)
       end
 
-      it "keeps global operations" do
-        expect(@global_operations.count).to eq(2)
-        expect(@global_operation1.item_name).to eq(:operation_1)
-        expect(@global_operation2.item_name).to eq(:operation_2)
-      end
-
       it "keeps specific group operations" do
         expect(@gender_operations.count).to eq(2)
         expect(@site_operations.count).to eq(1)
-        expect(@gender_operations.first.item_name).to eq(:operation_3)
-        expect(@gender_operations.last.item_name).to eq(:operation_4)
-        expect(@site_operations.first.item_name).to eq(:operation_5)
+        expect(@gender_operations.first.item_name).to eq(:operation_1)
+        expect(@gender_operations.last.item_name).to eq(:operation_2)
+        expect(@site_operations.first.item_name).to eq(:operation_3)
       end
     end
 
@@ -345,6 +332,7 @@ describe Organizer do
           default_filter: nil,
           groups: nil,
           generate_filters_for: [:attr1, :attr2],
+          child_operation: :my_operation,
           human: :attr1,
         }.each do |dsl_method, params|
           Object.send(:remove_const, :MyOrganizer) rescue nil

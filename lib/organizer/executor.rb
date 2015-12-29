@@ -66,6 +66,7 @@ module Organizer
       Organizer::Group::Operation::Loader.load(@definitions, @selected_group_definitions)
       load_group_parent_item_operations
       load_group_item_operations
+      load_group_child_item_operations
     end
 
     def self.load_group_parent_item_operations
@@ -78,6 +79,13 @@ module Organizer
     def self.load_group_item_operations
       load_executor do |source|
         Organizer::Group::Operation::ItemsExecutor.execute(
+          @selected_group_definitions, source)
+      end
+    end
+
+    def self.load_group_child_item_operations
+      load_executor do |source|
+        Organizer::Group::Operation::ChildItemsExecutor.execute(
           @selected_group_definitions, source)
       end
     end

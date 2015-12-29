@@ -284,9 +284,11 @@ You can define 3 types of operations:
 
 1. **Parent Operation**: the resulting attribute of this kind of operations is attached to parent group items and calculated based on child group item attributes. A child item can be an `Organizer::Group::Item` instance or `Organizer::Source::Item` on the deepest level of the group hierarchy.
 2. **Operation**: this operations are calculated on `Organizer::Group::Item` instances only, using another attributes from the same instance.
-3. **Child Operation (TODO)**: the resulting attribute of this kind of operations is attached to a child item and calculated using parent item attributes. Parent items will always be `Organizer::Group::Item` instances but, child items can be `Organizer::Group::Item`s or `Organizer::Source::Item`s on the deepest level.
+3. **Child Operation**: the resulting attribute of this kind of operations is attached to a child item and calculated using parent item attributes. Parent items will always be `Organizer::Group::Item` instances but, child items can be `Organizer::Group::Item`s or `Organizer::Source::Item`s on the deepest level.
 
 Operations defined under `groups` method, will be applied to all groups. However, operations defined under `group` methods will affect that group only.
+
+> Remember: a `child_operation` can't be applied inside `groups` context. It's mandatory to use this kind of operations inside a single `group`.
 
 ##### Definition Example
 
@@ -312,6 +314,10 @@ Organizer.define("my_organizer") do
 
       operation(:super_double_age_sum) do |item|
         item.double_age_sum * 2
+      end
+
+      child_operation(:age_salad) do |item, gender|
+        item.age + gender.super_double_age_sum
       end
     end
 
