@@ -198,11 +198,11 @@ describe Organizer do
       before do
         Organizer.define("my_organizer") do
           groups do
-            parent_operation(:operation_1, 10) {}
+            parent_operation(:operation_1, initial_value: 10) {}
             parent_operation(:operation_2) {}
 
             group(:gender) do
-              parent_operation(:operation_3, 20) {}
+              parent_operation(:operation_3, initial_value: 20, mask: { name: :currency }) {}
               parent_operation(:operation_4) {}
             end
 
@@ -229,6 +229,10 @@ describe Organizer do
         expect(@global_operation2.initial_value).to eq(0)
       end
 
+      it "creates masked operation" do
+        expect(@gender_operations.first.mask.item_name).to eq(:human_operation_3)
+      end
+
       it "keeps specific group operations" do
         expect(@gender_operations.count).to eq(2)
         expect(@site_operations.count).to eq(1)
@@ -249,7 +253,7 @@ describe Organizer do
             end
 
             group(:site) do
-              child_operation(:operation_3) {}
+              child_operation(:operation_3, mask: { name: :currency }) {}
             end
           end
         end
@@ -265,6 +269,10 @@ describe Organizer do
         expect(@gender_operations.last.item_name).to eq(:operation_2)
         expect(@site_operations.first.item_name).to eq(:operation_3)
       end
+
+      it "creates masked operation" do
+        expect(@site_operations.first.mask.item_name).to eq(:human_operation_3)
+      end
     end
 
     describe "#operation" do
@@ -272,7 +280,7 @@ describe Organizer do
         before do
           Organizer.define("my_organizer") do
             collection do
-              operation(:my_operation) {}
+              operation(:my_operation, mask: { name: :currency }) {}
             end
           end
 
@@ -282,6 +290,10 @@ describe Organizer do
         it "adds an operation to MyOrganizer class" do
           expect(@operations.count).to eq(1)
           expect(@operations).to be_a(Organizer::Operation::Collection)
+        end
+
+        it "creates masked operation" do
+          expect(@operations.first.mask.item_name).to eq(:human_my_operation)
         end
       end
 
@@ -296,7 +308,7 @@ describe Organizer do
               end
 
               group(:site) do
-                operation(:operation_3) {}
+                operation(:operation_3, mask: { name: :currency }) {}
               end
             end
           end
@@ -317,6 +329,10 @@ describe Organizer do
           expect(@site_operations.count).to eq(1)
           expect(@gender_operations.first.item_name).to eq(:operation_2)
           expect(@site_operations.first.item_name).to eq(:operation_3)
+        end
+
+        it "creates masked operation" do
+          expect(@site_operations.first.mask.item_name).to eq(:human_operation_3)
         end
       end
     end

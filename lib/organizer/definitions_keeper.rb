@@ -37,8 +37,8 @@ module Organizer
       @source_default_filters.add(_name, &block)
     end
 
-    def add_source_operation(_name, &block)
-      @source_operations.add(_name, &block)
+    def add_source_operation(_name, _options = {}, &block)
+      @source_operations.add(_name, _options, &block)
     end
 
     def add_source_mask_operation(_attribute, _mask, _options = {})
@@ -46,24 +46,26 @@ module Organizer
       @source_operations << mask
     end
 
-    def add_groups_parent_item_operation(_name, _initial_value = 0, &block)
-      @groups_parent_item_operations.add(_name, initial_value: _initial_value, &block)
+    def add_groups_parent_item_operation(_name, _options = {}, &block)
+      _options[:initial_value] = 0 unless _options.has_key?(:initial_value)
+      @groups_parent_item_operations.add(_name, _options, &block)
     end
 
-    def add_groups_item_operation(_name, &block)
-      @groups_item_operations.add(_name, &block)
+    def add_groups_item_operation(_name, _options = {}, &block)
+      @groups_item_operations.add(_name, _options, &block)
     end
 
-    def add_group_parent_item_operation(_operation_name, _initial_value = 0, &block)
-      @current_group_definition.parent_item_operations.add(_operation_name, initial_value: _initial_value, &block)
+    def add_group_parent_item_operation(_operation_name, _options = {}, &block)
+      _options[:initial_value] = 0 unless _options.has_key?(:initial_value)
+      @current_group_definition.parent_item_operations.add(_operation_name, _options, &block)
     end
 
-    def add_group_item_operation(_operation_name, &block)
-      @current_group_definition.item_operations.add(_operation_name, &block)
+    def add_group_item_operation(_operation_name, _options = {}, &block)
+      @current_group_definition.item_operations.add(_operation_name, _options, &block)
     end
 
-    def add_group_child_item_operation(_operation_name, &block)
-      @current_group_definition.child_item_operations.add(_operation_name, &block)
+    def add_group_child_item_operation(_operation_name, _options = {}, &block)
+      @current_group_definition.child_item_operations.add(_operation_name, _options, &block)
     end
 
     def add_group_definition(_name, _group_by_attr = nil, _has_parent = false)

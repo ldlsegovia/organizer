@@ -167,6 +167,18 @@ Organizer.define("my_organizer") do
 end
 ```
 
+You can mask your operations too. For example:
+
+```ruby
+Organizer.define("my_organizer") do
+  collection do
+    operation(:newer_attribute, mask: { name: :currency, options: { unit: "€" } }) do |item|
+      item.attrs_sum * 2
+    end
+  end
+end
+```
+
 ##### Usage Example
 
 ```ruby
