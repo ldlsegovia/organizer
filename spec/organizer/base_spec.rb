@@ -83,7 +83,7 @@ describe Organizer::Base do
 
       context "working with operations" do
         before do
-          BaseChild.add_source_operation(:new_attr, mask: { name: :currency, options: { unit: "€", precision: 3 } }) do |item|
+          BaseChild.add_source_operation(:new_attr, currency: { unit: "€", precision: 3 }) do |item|
             item.age * 2
           end
         end
@@ -168,7 +168,7 @@ describe Organizer::Base do
 
           context "with operations" do
             before do
-              BaseChild.add_groups_parent_item_operation(:attrs_sum, initial_value: 10, mask: { name: :currency }) do |parent, item|
+              BaseChild.add_groups_parent_item_operation(:attrs_sum, 10, :currency) do |parent, item|
                 parent.attrs_sum + item.age
               end
             end
@@ -212,14 +212,14 @@ describe Organizer::Base do
 
           context "with global operations" do
             before do
-              BaseChild.add_groups_parent_item_operation(:greatest_age) do |parent, item|
+              BaseChild.add_groups_parent_item_operation(:greatest_age, 0) do |parent, item|
                 parent.greatest_age > item.age ? parent.greatest_age : item.age
               end
-              BaseChild.add_groups_parent_item_operation(:lower_savings, initial_value: nil) do |parent, item|
+              BaseChild.add_groups_parent_item_operation(:lower_savings) do |parent, item|
                 parent.lower_savings = item.savings if parent.lower_savings.nil?
                 parent.lower_savings < item.savings ? parent.lower_savings : item.savings
               end
-              BaseChild.add_groups_item_operation(:saving_by_age, mask: { name: :percentage }) do |item|
+              BaseChild.add_groups_item_operation(:saving_by_age, :percentage) do |item|
                 item.greatest_age * item.lower_savings
               end
             end
@@ -247,13 +247,13 @@ describe Organizer::Base do
 
             context "with specific group operations" do
               before do
-                BaseChild.add_group_parent_item_operation(:odd_age_count, initial_value: 0) do |parent, item|
+                BaseChild.add_group_parent_item_operation(:odd_age_count, 0) do |parent, item|
                   item.age.odd? ? parent.odd_age_count + 1 : parent.odd_age_count
                 end
                 BaseChild.add_group_item_operation(:double_age_count) do |item|
                   item.odd_age_count * 2
                 end
-                BaseChild.add_group_child_item_operation(:age_salad, mask: { name: :size }) do |item, site, gender|
+                BaseChild.add_group_child_item_operation(:age_salad, :size) do |item, site, gender|
                   item.age + site.greatest_age + gender.saving_by_age
                 end
               end

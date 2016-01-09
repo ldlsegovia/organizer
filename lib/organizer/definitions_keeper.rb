@@ -37,8 +37,10 @@ module Organizer
       @source_default_filters.add(_name, &block)
     end
 
-    def add_source_operation(_name, _options = {}, &block)
-      @source_operations.add(_name, _options, &block)
+    def add_source_operation(_name, _mask = nil, &block)
+      options = {}
+      load_mask_option(options, _mask)
+      @source_operations.add(_name, options, &block)
     end
 
     def add_source_mask_operation(_attribute, _mask, _options = {})
@@ -46,26 +48,34 @@ module Organizer
       @source_operations << mask
     end
 
-    def add_groups_parent_item_operation(_name, _options = {}, &block)
-      _options[:initial_value] = 0 unless _options.has_key?(:initial_value)
-      @groups_parent_item_operations.add(_name, _options, &block)
+    def add_groups_parent_item_operation(_name, _initial_value = nil, _mask = nil, &block)
+      options = { initial_value: _initial_value }
+      load_mask_option(options, _mask)
+      @groups_parent_item_operations.add(_name, options, &block)
     end
 
-    def add_groups_item_operation(_name, _options = {}, &block)
-      @groups_item_operations.add(_name, _options, &block)
+    def add_groups_item_operation(_name, _mask = nil, &block)
+      options = {}
+      load_mask_option(options, _mask)
+      @groups_item_operations.add(_name, options, &block)
     end
 
-    def add_group_parent_item_operation(_operation_name, _options = {}, &block)
-      _options[:initial_value] = 0 unless _options.has_key?(:initial_value)
-      @current_group_definition.parent_item_operations.add(_operation_name, _options, &block)
+    def add_group_parent_item_operation(_operation_name, _initial_value = nil, _mask = nil, &block)
+      options = { initial_value: _initial_value }
+      load_mask_option(options, _mask)
+      @current_group_definition.parent_item_operations.add(_operation_name, options, &block)
     end
 
-    def add_group_item_operation(_operation_name, _options = {}, &block)
-      @current_group_definition.item_operations.add(_operation_name, _options, &block)
+    def add_group_item_operation(_operation_name, _mask = nil, &block)
+      options = {}
+      load_mask_option(options, _mask)
+      @current_group_definition.item_operations.add(_operation_name, options, &block)
     end
 
-    def add_group_child_item_operation(_operation_name, _options = {}, &block)
-      @current_group_definition.child_item_operations.add(_operation_name, _options, &block)
+    def add_group_child_item_operation(_operation_name, _mask = nil, &block)
+      options = {}
+      load_mask_option(options, _mask)
+      @current_group_definition.child_item_operations.add(_operation_name, options, &block)
     end
 
     def add_group_definition(_name, _group_by_attr = nil, _has_parent = false)
@@ -75,6 +85,20 @@ module Organizer
       end
 
       @current_group_definition = @current_groups_definitions.add(_name, _group_by_attr)
+    end
+
+    private
+
+    def load_mask_option(_options, _mask_data)
+      if _mask_data
+        if _mask_data.is_a?(Hash)
+          mask_name = _mask_data.keys.first
+          mask_options = _mask_data[mask_name]
+          _options[:mask] = { name: mask_name, options: mask_options }
+        else
+          _options[:mask] = { name: _mask_data }
+        end
+      end
     end
   end
 end

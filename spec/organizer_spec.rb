@@ -198,11 +198,11 @@ describe Organizer do
       before do
         Organizer.define("my_organizer") do
           groups do
-            parent_operation(:operation_1, initial_value: 10) {}
-            parent_operation(:operation_2) {}
+            parent_operation(:operation_1, 10) {}
+            parent_operation(:operation_2, 0) {}
 
             group(:gender) do
-              parent_operation(:operation_3, initial_value: 20, mask: { name: :currency }) {}
+              parent_operation(:operation_3, 20, :currency) {}
               parent_operation(:operation_4) {}
             end
 
@@ -253,7 +253,7 @@ describe Organizer do
             end
 
             group(:site) do
-              child_operation(:operation_3, mask: { name: :currency }) {}
+              child_operation(:operation_3, :currency) {}
             end
           end
         end
@@ -280,7 +280,7 @@ describe Organizer do
         before do
           Organizer.define("my_organizer") do
             collection do
-              operation(:my_operation, mask: { name: :currency }) {}
+              operation(:my_operation, :currency) {}
             end
           end
 
@@ -308,7 +308,7 @@ describe Organizer do
               end
 
               group(:site) do
-                operation(:operation_3, mask: { name: :currency }) {}
+                operation(:operation_3, :currency) {}
               end
             end
           end

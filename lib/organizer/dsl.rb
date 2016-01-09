@@ -42,36 +42,36 @@ module Organizer
       end
     end
 
-    def operation(_name, _options = {}, &block)
+    def operation(_name, _mask = nil, &block)
       in_context do
         if @ctx.collection_parent?
-          @organizer_class.add_source_operation(_name, _options, &block)
+          @organizer_class.add_source_operation(_name, _mask, &block)
         elsif @ctx.groups_parent?
-          @organizer_class.add_groups_item_operation(_name, _options, &block)
+          @organizer_class.add_groups_item_operation(_name, _mask, &block)
         elsif @ctx.group_parent?
-          @organizer_class.add_group_item_operation(_name, _options, &block)
+          @organizer_class.add_group_item_operation(_name, _mask, &block)
         else
           raise_error(:forbidden_nesting)
         end
       end
     end
 
-    def parent_operation(_name, _options = {}, &block)
+    def parent_operation(_name, _initial_value = nil, _mask = nil, &block)
       in_context do
         if @ctx.groups_parent?
-          @organizer_class.add_groups_parent_item_operation(_name, _options, &block)
+          @organizer_class.add_groups_parent_item_operation(_name, _initial_value, _mask, &block)
         elsif @ctx.group_parent?
-          @organizer_class.add_group_parent_item_operation(_name, _options, &block)
+          @organizer_class.add_group_parent_item_operation(_name, _initial_value, _mask, &block)
         else
           raise_error(:forbidden_nesting)
         end
       end
     end
 
-    def child_operation(_name, _options = {}, &block)
+    def child_operation(_name, _mask = nil, &block)
       in_context do
         if @ctx.group_parent?
-          @organizer_class.add_group_child_item_operation(_name, _options, &block)
+          @organizer_class.add_group_child_item_operation(_name, _mask, &block)
         else
           raise_error(:forbidden_nesting)
         end

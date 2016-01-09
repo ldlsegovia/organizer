@@ -172,7 +172,7 @@ You can mask your operations too. For example:
 ```ruby
 Organizer.define("my_organizer") do
   collection do
-    operation(:newer_attribute, mask: { name: :currency, options: { unit: "€" } }) do |item|
+    operation(:newer_attribute, currency: { unit: "€" }) do |item|
       item.attrs_sum * 2
     end
   end
@@ -311,7 +311,7 @@ Organizer.define("my_organizer") do
       parent_item.age_sum += item.age
     end
 
-    parent_operation(:age_sum_with_initial_value, 10) do |parent_item, item|
+    parent_operation(:age_sum_with_initial_value, 10, currency: { unit: "$" }) do |parent_item, item|
       parent_item.age_sum_with_initial_value += item.age
     end
 
@@ -324,11 +324,11 @@ Organizer.define("my_organizer") do
         item.age.odd? ? parent_item.odd_age_count + 1 : parent_item.odd_age_count
       end
 
-      operation(:super_double_age_sum) do |item|
+      operation(:super_double_age_sum, :percentage) do |item|
         item.double_age_sum * 2
       end
 
-      child_operation(:age_salad) do |item, gender|
+      child_operation(:age_salad, :percentage) do |item, gender|
         item.age + gender.super_double_age_sum
       end
     end
