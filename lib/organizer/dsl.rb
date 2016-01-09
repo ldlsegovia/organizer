@@ -10,13 +10,13 @@ module Organizer
     end
 
     def collection(&nested_definition)
-      in_context(nested_definition) do
+      in_context(nested_definition, true) do
         raise_error(:forbidden_nesting) unless @ctx.root_parent?
       end
     end
 
     def source(&block)
-      in_context do
+      in_context(nil, true) do
         if @ctx.collection_parent?
           @organizer_class.add_collection(&block)
         else
@@ -103,7 +103,7 @@ module Organizer
     end
 
     def groups(&nested_definition)
-      in_context(nested_definition) do
+      in_context(nested_definition, true) do
         raise_error(:forbidden_nesting) unless @ctx.root_parent?
       end
     end
@@ -125,9 +125,10 @@ module Organizer
 
     private
 
-    def in_context(_nested_definition = nil, &action)
-      caller_method_name = caller[0][/`.*'/][1..-2]
-      @ctx.open(self, caller_method_name, _nested_definition, &action)
+    def in_context(_nested_definition = nil, _execute_once = false, &action)
+      ctx_type = caller[0][/`.*'/][1..-2]
+      raise_error(:forbidden_nesting) if _execute_once && @ctx.already_executed?(ctx_type)
+      @ctx.open(self, ctx_type, _nested_definition, &action)
       nil
     end
 

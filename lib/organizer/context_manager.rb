@@ -14,6 +14,7 @@ module Organizer
 
     def initialize
       @ctx_hierarchy = []
+      @executed_ctxs = []
       @prev_ctx_hierarchy = []
     end
 
@@ -22,7 +23,12 @@ module Organizer
       @ctx_hierarchy << ctx
       ctx.data = _dsl.instance_eval(&action) if action
       _dsl.instance_eval(&_definition) if _definition
+      @executed_ctxs << _ctx_type
       close
+    end
+
+    def already_executed?(_ctx_type)
+      !!@executed_ctxs.find { |ctx| ctx == _ctx_type }
     end
 
     def parent_ctx

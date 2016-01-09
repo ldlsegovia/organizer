@@ -61,18 +61,29 @@ describe Organizer do
         end
       end
 
-      # it "raises error executing collection method twice" do
-      #   expect do
-      #     Organizer.define("my_organizer") do
-      #       collection {}
-      #       collection {}
-      #     end
-      #   end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
-      # end
+      it "raises error executing collection method twice" do
+        expect do
+          Organizer.define("my_organizer") do
+            collection {}
+            collection {}
+          end
+        end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
+      end
     end
 
     describe "#source" do
       let_collection(:collection)
+
+      it "raises error executing source method twice" do
+        expect do
+          Organizer.define("my_organizer") do
+            collection do
+              source {}
+              source {}
+            end
+          end
+        end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
+      end
 
       context "with unfiltered collection" do
         before do
@@ -369,6 +380,15 @@ describe Organizer do
             end
           end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
         end
+      end
+
+      it "raises error executing collection method twice" do
+        expect do
+          Organizer.define("my_organizer") do
+            groups {}
+            groups {}
+          end
+        end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
       end
     end
 
