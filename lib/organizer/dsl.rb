@@ -16,29 +16,53 @@ module Organizer
     end
 
     def source(&block)
-      in_collection_context { @organizer_class.add_collection(&block) }
+      in_context do
+        if @ctx.collection_parent?
+          @organizer_class.add_collection(&block)
+        else
+          raise_error(:forbidden_nesting)
+        end
+      end
     end
 
     def default_filter(_name = nil, &block)
-      in_collection_context { @organizer_class.add_source_default_filter(_name, &block) }
+      in_context do
+        if @ctx.collection_parent?
+          @organizer_class.add_source_default_filter(_name, &block)
+        else
+          raise_error(:forbidden_nesting)
+        end
+      end
     end
 
     def generate_filters_for(*_attributes)
-      in_root_context do
-        filters = Organizer::Filter::Generator.generate(_attributes)
-        filters.each { |filter| @organizer_class.add_filter(filter.item_name, &filter.definition) }
+      in_context do
+        if @ctx.root_parent?
+          filters = Organizer::Filter::Generator.generate(_attributes)
+          filters.each { |filter| @organizer_class.add_filter(filter.item_name, &filter.definition) }
+        else
+          raise_error(:forbidden_nesting)
+        end
       end
     end
 
     def filter(_name, &block)
-      in_root_context do
-        @organizer_class.add_filter(_name, &block)
+      in_context do
+        if @ctx.root_parent?
+          @organizer_class.add_filter(_name, &block)
+        else
+          raise_error(:forbidden_nesting)
+        end
       end
     end
 
     def human(_attribute, _mask = :clean, _options = {})
-      in_collection_context do
-        @organizer_class.add_source_mask_operation(_attribute, _mask, _options)
+      in_context do
+        if @ctx.collection_parent?
+          @organizer_class.add_source_mask_operation(_attribute, _mask, _options)
+        else
+          raise_error(:forbidden_nesting)
+        end
       end
     end
 
@@ -105,26 +129,6 @@ module Organizer
       caller_method_name = caller[0][/`.*'/][1..-2]
       @ctx.open(self, caller_method_name, _nested_definition, &action)
       nil
-    end
-
-    def in_specific_context(_dsl_method, &action)
-      in_context do
-        if @ctx.send("#{_dsl_method}_parent?")
-          action.call
-        else
-          raise_error(:forbidden_nesting)
-        end
-      end
-    end
-
-    def method_missing(_method, *_args, &block)
-      if _method =~ /\Ain_\w+_context$/
-        dsl_method_name = _method.to_s.gsub("in_", "").gsub("_context", "")
-        in_specific_context(dsl_method_name, *_args, &block)
-        return
-      end
-
-      super
     end
 
     def create_organizer_class(_organizer_name)

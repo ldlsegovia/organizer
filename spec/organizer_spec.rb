@@ -60,6 +60,15 @@ describe Organizer do
           end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
         end
       end
+
+      # it "raises error executing collection method twice" do
+      #   expect do
+      #     Organizer.define("my_organizer") do
+      #       collection {}
+      #       collection {}
+      #     end
+      #   end.to(raise_organizer_error(Organizer::DSLException, :forbidden_nesting))
+      # end
     end
 
     describe "#source" do
