@@ -7,6 +7,7 @@ module Organizer
     CHAINABLE_METHODS = [
       { name: :skip_default_filter, pattern: /\Askip_default_filters$/, scope: :collection },
       { name: :sort, pattern: /\Asort_by$/, scope: :collection },
+      { name: :limit, pattern: /\Alimit$/, scope: :collection },
       { name: :filter, pattern: /\Afilter_by$/, scope: :collection },
       { name: :group, pattern: /\Agroup_by_\w+$/, scope: nil },
       { name: :sort_group, pattern: /\Asort_\w+_by$/, scope: :group },
@@ -68,6 +69,7 @@ module Organizer
     def validate_chaining(_method)
       raise_error(:invalid_chaining) if _method.group? && group
       validate_uniqueness(_method, :skip_default_filter)
+      validate_uniqueness(_method, :limit)
     end
 
     def validate_uniqueness(_method, _method_name)

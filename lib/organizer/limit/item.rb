@@ -10,7 +10,7 @@ module Organizer
       def initialize(_name, _value)
         raise_error(:blank_name) unless _name
         raise_error(:not_integer_value) unless /\A\d+\z/.match(_value.to_s)
-        @value = _value
+        @value = _value.to_i
         @item_name = _name
       end
     end

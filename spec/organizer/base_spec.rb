@@ -151,6 +151,19 @@ describe Organizer::Base do
         end
       end
 
+      context "limit" do
+        it "limits collection by given value" do
+          result = @organizer.limit(2).organize
+          expect(result.count).to eq(2)
+          expect(result).to be_a(Organizer::Source::Collection)
+        end
+
+        it "raises error trying to call limit twice" do
+          expect { @organizer.limit(46).limit(84) }.to(
+            raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
+        end
+      end
+
       context "working with groups" do
         context "grouping by attribute" do
           before { BaseChild.add_group_definition(:site_id) }
