@@ -127,6 +127,13 @@ module Organizer
   end
 
   module Limit
+    class CollectionException < ::Exception
+      ERRORS = {
+        invalid_item: "Invalid item for collection. Must be Organizer::Limit::Item instance",
+        repeated_item: "Repeated item. An Item with same name was added previously",
+      }
+    end
+
     class ItemException < ::Exception
       ERRORS = {
         blank_name: "name param is mandatory",
