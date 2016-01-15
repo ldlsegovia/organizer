@@ -126,6 +126,15 @@ module Organizer
     end
   end
 
+  module Limit
+    class ItemException < ::Exception
+      ERRORS = {
+        blank_name: "name param is mandatory",
+        not_integer_value: "It is not a positive integer"
+      }
+    end
+  end
+
   module Group
     class CollectionException < ::Exception
       ERRORS = {
