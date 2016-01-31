@@ -8,7 +8,7 @@ module Organizer
 
       attr_reader :group_by_attr
       attr_accessor :parent_item_operations, :item_operations, :child_item_operations
-      attr_accessor :sort_items, :filters
+      attr_accessor :sort_items, :filters, :limit_item
 
       def initialize(_group_name, _group_by_attr = nil)
         @item_name = _group_name

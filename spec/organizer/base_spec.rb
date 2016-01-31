@@ -359,6 +359,23 @@ describe Organizer::Base do
                   raise_organizer_error(Organizer::Group::Sort::BuilderException, :unknown_group))
               end
             end
+
+            context "limit" do
+              it "limits related groups" do
+                q = @organizer.group_by_gender
+                q = q.limit_gender_to(1)
+                q = q.limit_site_to(2)
+                result = q.organize
+
+                expect(result.size).to eq(1)
+                expect(result.first.size).to eq(2)
+              end
+
+              it "raises error trying to call limit twice" do
+                expect { @organizer.group_by_gender.limit_gender_to(46).limit_gender_to(84) }.to(
+                  raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
+              end
+            end
           end
         end
       end

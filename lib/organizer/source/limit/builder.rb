@@ -3,11 +3,10 @@ module Organizer
     module Limit
       module Builder
         include Organizer::Error
+        extend Organizer::Limit::Builder
 
         def self.build(_limit_method)
-          return if _limit_method.blank?
-          limit = _limit_method.args.first
-          Organizer::Limit::Item.new(:collection_limit, limit)
+          build_limit_item(_limit_method)
         end
       end
     end
