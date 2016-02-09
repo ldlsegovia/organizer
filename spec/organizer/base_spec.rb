@@ -151,6 +151,19 @@ describe Organizer::Base do
         end
       end
 
+      context "limit" do
+        it "limits collection by given value" do
+          result = @organizer.limit(2).organize
+          expect(result.count).to eq(2)
+          expect(result).to be_a(Organizer::Source::Collection)
+        end
+
+        it "raises error trying to call limit twice" do
+          expect { @organizer.limit(46).limit(84) }.to(
+            raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
+        end
+      end
+
       context "working with groups" do
         context "grouping by attribute" do
           before { BaseChild.add_group_definition(:site_id) }
@@ -344,6 +357,23 @@ describe Organizer::Base do
               it "raises error trying to sort unknown groups" do
                 expect { @organizer.group_by_gender.sort_unknown_group_by(value: 64).organize }.to(
                   raise_organizer_error(Organizer::Group::Sort::BuilderException, :unknown_group))
+              end
+            end
+
+            context "limit" do
+              it "limits related groups" do
+                q = @organizer.group_by_gender
+                q = q.limit_gender_to(1)
+                q = q.limit_site_to(2)
+                result = q.organize
+
+                expect(result.size).to eq(1)
+                expect(result.first.size).to eq(2)
+              end
+
+              it "raises error trying to call limit twice" do
+                expect { @organizer.group_by_gender.limit_gender_to(46).limit_gender_to(84) }.to(
+                  raise_organizer_error(Organizer::ChainerException, :invalid_chaining))
               end
             end
           end

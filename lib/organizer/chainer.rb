@@ -7,9 +7,11 @@ module Organizer
     CHAINABLE_METHODS = [
       { name: :skip_default_filter, pattern: /\Askip_default_filters$/, scope: :collection },
       { name: :sort, pattern: /\Asort_by$/, scope: :collection },
+      { name: :limit, pattern: /\Alimit$/, scope: :collection },
       { name: :filter, pattern: /\Afilter_by$/, scope: :collection },
       { name: :group, pattern: /\Agroup_by_\w+$/, scope: nil },
       { name: :sort_group, pattern: /\Asort_\w+_by$/, scope: :group },
+      { name: :limit_group, pattern: /\Alimit_\w+_to$/, scope: :group },
       { name: :filter_group, pattern: /\Afilter_\w+_by$/, scope: :group }
     ]
 
@@ -68,11 +70,18 @@ module Organizer
     def validate_chaining(_method)
       raise_error(:invalid_chaining) if _method.group? && group
       validate_uniqueness(_method, :skip_default_filter)
+      validate_uniqueness(_method, :limit)
+      validate_uniqueness(_method, :limit_group, true)
     end
 
-    def validate_uniqueness(_method, _method_name)
-      return if @chained_methods.select { |method| method.name == _method.name }.empty?
-      raise_error(:invalid_chaining) if _method.name == _method_name
+    def validate_uniqueness(_method, _method_name, _in_group_ctx = false)
+      existent_method = @chained_methods.find do |method|
+        same_name = method.name == _method_name
+        same_group = _in_group_ctx ? _method.group_name == method.group_name : true
+        same_name && same_group
+      end
+
+      raise_error(:invalid_chaining) if existent_method
     end
 
     def get_grouped_methods(_methods, _args_as)

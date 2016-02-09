@@ -11,11 +11,13 @@ module Organizer
       load_source_default_filters
       load_source_filters
       load_source_sort_items
+      load_source_limit_items
 
       load_groups
       load_group_operations
       load_group_filters
       load_group_sort_items
+      load_group_limit_items
 
       execute(@executors.shift, _definitions.collection, @executors)
     end
@@ -49,6 +51,14 @@ module Organizer
 
       load_executor do |source|
         Organizer::Source::Sort::Applier.apply(sort_items, source)
+      end
+    end
+
+    def self.load_source_limit_items
+      limit_item = Organizer::Source::Limit::Builder.build(@chainer.limit_methods.first)
+
+      load_executor do |source|
+        Organizer::Source::Limit::Applier.apply(limit_item, source)
       end
     end
 
@@ -105,6 +115,15 @@ module Organizer
 
       load_executor do |source|
         Organizer::Group::Sort::Applier.apply(@selected_group_definitions, source)
+      end
+    end
+
+    def self.load_group_limit_items
+      Organizer::Group::Limit::Builder.build(
+        @chainer.limit_group_methods, @selected_group_definitions)
+
+      load_executor do |source|
+        Organizer::Group::Limit::Applier.apply(@selected_group_definitions, source)
       end
     end
 
