@@ -2,7 +2,7 @@ require "require_all"
 require "active_support/all"
 require "colorize"
 
-require_all "lib"
+require_rel "organizer"
 
 module Organizer
   include Organizer::Error
