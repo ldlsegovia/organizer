@@ -81,6 +81,19 @@ shared_examples :attributes_handler do
       instance.define_attributes(struct)
       expect(instance.first_name).to eq("Leandro")
     end
+
+    context "working with Active Record" do
+      before do
+        Object.send(:remove_const, :SomeActiveRecordClass) rescue nil
+        class SomeActiveRecordClass < ActiveRecord::Base; end
+        @ar_instance = SomeActiveRecordClass.new
+      end
+
+      it "works with active record instances" do
+        instance.define_attributes(@ar_instance)
+        expect(instance).to respond_to(:msg)
+      end
+    end
   end
 
   describe "#attribute_names" do
