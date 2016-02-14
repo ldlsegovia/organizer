@@ -1,8 +1,8 @@
 module Organizer
   module AttributesHandler
     def define_attributes(_hash)
-      raise_error(:must_be_a_hash) unless _hash.is_a?(Hash)
-      _hash.each { |attr_name, value| define_attribute(attr_name, value) }
+      raise_error(:must_respond_to_hash) unless _hash.respond_to?(:to_h)
+      _hash.to_h.each { |attr_name, value| define_attribute(attr_name, value) }
       self
     end
 

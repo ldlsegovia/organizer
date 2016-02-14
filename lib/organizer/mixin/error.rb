@@ -42,14 +42,13 @@ module Organizer
       ERRORS = {
         invalid_item: "Invalid item for collection. Must be Organizer::Source::Item instance",
         repeated_item: "Repeated item. An Item with same name was added previously",
-        invalid_collection_structure: "Invalid collection structure. Must be Array",
-        invalid_collection_item_structure: "Invalid collection item structure. Must be a Hash"
+        invalid_collection_structure: "Invalid collection structure. Must respond to the 'each' method"
       }
     end
 
     class ItemException < ::Exception
       ERRORS = {
-        must_be_a_hash: "_hash parameter must be a Hash",
+        must_respond_to_hash: "_hash parameter must be a Hash or respond to to_h method",
         invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
         attr_already_defined: "Attribute already defined",
         attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
@@ -153,7 +152,7 @@ module Organizer
 
     class DefinitionException < ::Exception
       ERRORS = {
-        must_be_a_hash: "_hash parameter must be a Hash",
+        must_respond_to_hash: "_hash parameter must be a Hash or respond to to_h method",
         invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
         attr_already_defined: "Attribute already defined",
         attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
@@ -164,7 +163,7 @@ module Organizer
       ERRORS = {
         invalid_item: "Invalid group item. Must be Organizer::Group::Item only",
         repeated_item: "Repeated item. An Item with same name was added previously",
-        must_be_a_hash: "_hash parameter must be a Hash",
+        must_respond_to_hash: "_hash parameter must be a Hash or respond to to_h method",
         invalid_attribute_key: "Invalid _hash key. A key can contain: alphanumeric, space, underscore and hypen characters",
         attr_already_defined: "Attribute already defined",
         attributes_handler_not_included: "The class must contain Organizer::AttributesHandler mixin"
