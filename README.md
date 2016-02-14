@@ -279,7 +279,7 @@ You can define groups. The data will be grouped by the attribute passed in `grou
 Organizer.define("my_organizer") do
   groups do
     group(:site_id) # grouping by attribute
-    group(site: :site_id) # named group
+    group(:site, :site_id) # named group
   end
 end
 ```

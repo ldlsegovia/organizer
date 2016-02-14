@@ -28,9 +28,7 @@ module Organizer
       end
 
       def organize
-        result = Organizer::Executor.run(definitions_keeper, chainer)
-        @chainer = nil
-        result
+        Organizer::Executor.run(definitions_keeper, chainer)
       end
 
       private
