@@ -1,6 +1,6 @@
 # Organizer
 
-Organizer is a ruby gem that allows you to build, through a DSL, definitions that later will be used, over denormalized data, to perform operations like: **filtering, ordering, grouping, complex attributes generation, etc** very easily.
+Organizer is a ruby gem that allows you to build, through a DSL, definitions that later will be used, over denormalized data, to perform operations like: **filtering, ordering, grouping, complex attributes generation, etc** easily.
 
 > Keep in mind, this gem is designed to facilitate data structures generation more than performance.
 
@@ -79,7 +79,8 @@ MyOrganizer.new.organize
 
 #### Source
 
-This method takes a block containing a denormalized collection. The block's content will be executed later. So, you can pass anything that produces a collection.
+This method takes a block containing a denormalized collection. The block's content will be executed later. So, you can pass anything that produces a collection. More specifically, you can pass anything that implements the `each` method.
+Each item inside collection must respond to `to_h` method. This gem implements `to_h` on `ActiveRecord::Base` class. So, you can work with Active Record models without to do nothing special.
 
 > Remember: this is the only mandatory method. All actions will be executed over the collection passed here.
 
