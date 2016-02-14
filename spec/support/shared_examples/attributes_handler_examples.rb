@@ -10,9 +10,9 @@ shared_examples :attributes_handler do
 
   describe "#define_attributes" do
     it "returns error with invalid hash param" do
-      [nil, ["value1", "value2"], "some string", 1].each do |invalid_hash|
+      [["value1", "value2"], "some string", 1].each do |invalid_hash|
         expect { instance.define_attributes(invalid_hash) }.to(
-          raise_organizer_error(error_class, :must_be_a_hash))
+          raise_organizer_error(error_class, :must_respond_to_hash))
       end
     end
 
@@ -74,6 +74,12 @@ shared_examples :attributes_handler do
       instance.define_attributes(valid_attributes)
       expect { instance.define_attributes(valid_attributes) }.to(
         raise_organizer_error(error_class, :attr_already_defined))
+    end
+
+    it "works with objects implementing to_h method" do
+      struct = OpenStruct.new(first_name: "Leandro")
+      instance.define_attributes(struct)
+      expect(instance.first_name).to eq("Leandro")
     end
   end
 
