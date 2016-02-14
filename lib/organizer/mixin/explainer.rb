@@ -11,6 +11,10 @@ module Organizer
       puts result
     end
 
+    def inspect
+      explain
+    end
+
     private
 
     def explain_item(_indent = 0, _output = "", _collection_limit = 10)
@@ -70,7 +74,13 @@ module Organizer
       output = ""
       attribute_names.each_with_index do |attr_name, idx|
         value = send(attr_name)
-        value = "\"#{value}\"" if value.is_a?(String)
+
+        if value.is_a?(String)
+          value = "\"#{value}\""
+        elsif value.nil?
+          value = "nil"
+        end
+
         formatted_attr_name = "#{attr_name}=#{value}#{SPACE}"
         output << (idx.odd? ? formatted_attr_name.light_blue : formatted_attr_name.cyan)
       end
