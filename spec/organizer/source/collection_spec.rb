@@ -22,11 +22,6 @@ describe Organizer::Source::Collection do
         raise_organizer_error(Organizer::Source::CollectionException, :invalid_collection_structure))
     end
 
-    it "raises error with collection method not returning a Array of Hashes" do
-      expect { Organizer::Source::Collection.new.fill(["I'm not a hash"]) }.to(
-        raise_organizer_error(Organizer::Source::CollectionException, :invalid_collection_item_structure))
-    end
-
     it "returns an Organizer::Source::Collection instance" do
       collection = Organizer::Source::Collection.new.fill(raw_collection)
       expect(collection).to be_a(Organizer::Source::Collection)

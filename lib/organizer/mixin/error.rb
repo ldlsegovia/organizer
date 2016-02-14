@@ -42,8 +42,7 @@ module Organizer
       ERRORS = {
         invalid_item: "Invalid item for collection. Must be Organizer::Source::Item instance",
         repeated_item: "Repeated item. An Item with same name was added previously",
-        invalid_collection_structure: "Invalid collection structure. Must be Array",
-        invalid_collection_item_structure: "Invalid collection item structure. Must be a Hash"
+        invalid_collection_structure: "Invalid collection structure. Must respond to the 'each' method"
       }
     end
 
