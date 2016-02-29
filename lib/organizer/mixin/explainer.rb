@@ -4,18 +4,23 @@ module Organizer
     SPACE = "\s"
     TAB = "\s\s"
     DIVIDER = "\s|\s"
+    DEFAULT_COLLECTION_LIMIT = 10
 
-    def explain(_colorize = true, _collection_limit = 10)
-      result = explain_item(0, "", _collection_limit)
-      result = result.uncolorize.gsub("\s\n", "\n") unless _colorize
-      puts result
+    def explain(_colorize = true, _collection_limit = DEFAULT_COLLECTION_LIMIT)
+      puts build_output(_colorize, _collection_limit)
     end
 
     def inspect
-      explain
+      build_output(true, DEFAULT_COLLECTION_LIMIT)
     end
 
     private
+
+    def build_output(_colorize, _collection_limit)
+      result = explain_item(0, "", _collection_limit)
+      result = result.uncolorize.gsub("\s\n", "\n") unless _colorize
+      result
+    end
 
     def explain_item(_indent = 0, _output = "", _collection_limit = 10)
       load_class_output(_indent, _output)
