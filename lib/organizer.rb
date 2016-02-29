@@ -1,6 +1,7 @@
 require "require_all"
 require "active_support/all"
 require "colorize"
+require "pry"
 
 require_rel "organizer"
 

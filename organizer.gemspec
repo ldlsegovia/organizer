@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activesupport", "~> 4.2", ">= 4.2.0"
   spec.add_dependency "colorize", "~> 0.7", ">= 0.7.7"
   spec.add_dependency "require_all", "~> 1.3", ">= 1.3.3"
+  spec.add_dependency "pry-byebug", "~> 3.1", ">= 3.1.0"
 
   spec.add_development_dependency "bundler", "~> 1.9"
   spec.add_development_dependency "rake", "~> 10.0"
@@ -29,6 +30,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec-nc", "~> 0.2", ">= 0.2.0"
   spec.add_development_dependency "guard", "~> 2.12", ">= 2.12.5"
   spec.add_development_dependency "guard-rspec", "~> 4.5", ">= 4.5.0"
-  spec.add_development_dependency "pry-byebug", "~> 3.1", ">= 3.1.0"
   spec.add_development_dependency "simplecov", "~> 0.10", ">= 0.10.0"
 end
